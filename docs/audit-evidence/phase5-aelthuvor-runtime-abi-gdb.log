@@ -1,0 +1,54 @@
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+add symbol table from file "/workspace/work/Aelthuvor/build/runtime-abi.elf"
+Hardware assisted breakpoint 1 at 0x1040b0: file kernel/external.c, line 17.
+
+Breakpoint 1, external_prepared () at kernel/external.c:17
+17	    __asm__ volatile ("" : : : "memory");
+ELF: image+stack pages= 16 CR3= 0x146000 stack_top=0x08400000
+Hardware assisted breakpoint 2 at 0x8000000: file arch/x86/startup.S, line 7.
+
+Breakpoint 2, _start () at arch/x86/startup.S:7
+7	    cld
+CPL3: EIP= 0x8000000 ESP= 0x83ffffc CR3= 0x146000
+Hardware assisted breakpoint 3 at 0x102c40: file kernel/syscall.c, line 12.
+
+Breakpoint 3, syscall_dispatch (frame=0x128264 <domains+8580>) at kernel/syscall.c:12
+12	    struct domain *domain = domain_from_trap(frame);
+TRAP1: CPL=0 ESP=0x12824c FRAME=0x128264 USER_ESP=0x83fff7c USER_SS=0x23
+PASS: hardware outer ESP/SS and trusted per-domain trap stack 1
+Hardware assisted breakpoint 4 at 0x8000020: file src/runtime.c, line 21.
+
+Breakpoint 4, ael_start () at src/runtime.c:21
+21	    if (ael_runtime_probe(&ael_runtime, AEL_REQUIRED_MAJOR, LIBERUMS_ABI_MINOR, AEL_REQUIRED_FEATURES) != 0) {
+Hardware assisted breakpoint 5 at 0x1040c0: file kernel/external.c, line 21.
+
+Breakpoint 5, external_reaped () at kernel/external.c:21
+21	    __asm__ volatile ("" : : : "memory");
+PASS: external image, stack, tables and dynamic resources reclaimed
+Hardware assisted breakpoint 6 at 0x1040b0: file kernel/external.c, line 17.
+
+Breakpoint 6, external_prepared () at kernel/external.c:17
+17	    __asm__ volatile ("" : : : "memory");
+ELF: image+stack pages= 16 CR3= 0x146000 stack_top=0x08400000
+Hardware assisted breakpoint 7 at 0x8000000: file arch/x86/startup.S, line 7.
+
+Breakpoint 7, _start () at arch/x86/startup.S:7
+7	    cld
+CPL3: EIP= 0x8000000 ESP= 0x83ffffc CR3= 0x146000
+Hardware assisted breakpoint 8 at 0x102c40: file kernel/syscall.c, line 12.
+
+Breakpoint 8, syscall_dispatch (frame=0x128264 <domains+8580>) at kernel/syscall.c:12
+12	    struct domain *domain = domain_from_trap(frame);
+TRAP1: CPL=0 ESP=0x12824c FRAME=0x128264 USER_ESP=0x83fff7c USER_SS=0x23
+PASS: hardware outer ESP/SS and trusted per-domain trap stack 1
+Hardware assisted breakpoint 9 at 0x8000020: file src/runtime.c, line 21.
+
+Breakpoint 9, ael_start () at src/runtime.c:21
+21	    if (ael_runtime_probe(&ael_runtime, AEL_REQUIRED_MAJOR, LIBERUMS_ABI_MINOR, AEL_REQUIRED_FEATURES) != 0) {
+Hardware assisted breakpoint 10 at 0x1040c0: file kernel/external.c, line 21.
+
+Breakpoint 10, external_reaped () at kernel/external.c:21
+21	    __asm__ volatile ("" : : : "memory");
+PASS: external image, stack, tables and dynamic resources reclaimed
+[Inferior 1 (process 1) detached]

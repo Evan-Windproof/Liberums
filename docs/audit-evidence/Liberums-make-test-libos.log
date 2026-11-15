@@ -1,0 +1,10 @@
+make -C "/workspace/work/Aelthuvor" integration LIBERUMS="/workspace/work/Liberums" QEMU="/workspace/work/tools/bin/qemu-system-i386" GDB="/workspace/work/tools/bin/gdb"
+make[1]: Entering directory '/workspace/work/Aelthuvor'
+python3 tests/check_sdk.py
+PASS: SDK SHA256, file set and ABI version
+python3 tests/integration.py --liberums "/workspace/work/Liberums" --qemu "/workspace/work/tools/bin/qemu-system-i386" --gdb "/workspace/work/tools/bin/gdb"
+FAIL: public ABI drift: syscall.h
+PASS: SDK SHA256, file set and ABI version
+make[1]: *** [Makefile:58: integration] Error 1
+make[1]: Leaving directory '/workspace/work/Aelthuvor'
+make: *** [Makefile:126: test-libos] Error 2

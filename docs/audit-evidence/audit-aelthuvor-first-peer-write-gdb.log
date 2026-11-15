@@ -1,0 +1,66 @@
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+add symbol table from file "/workspace/work/Aelthuvor/build/first.elf"
+Hardware assisted breakpoint 1 at 0x1040b0: file kernel/external.c, line 17.
+
+Breakpoint 1, external_prepared () at kernel/external.c:17
+17	    __asm__ volatile ("" : : : "memory");
+ELF: image+stack pages= 16 CR3= 0x145000 stack_top=0x08400000
+AUDIT INPUT: peer user data selects hostile access to 0x09000000
+Hardware assisted breakpoint 2 at 0x8000010: file src/runtime.c, line 16.
+
+Breakpoint 2, ael_checkpoint (stage=stage@entry=1) at src/runtime.c:16
+16	    __asm__ volatile ("nop" : : "r"(stage) : "memory");
+
+Breakpoint 2, ael_checkpoint (stage=stage@entry=2) at src/runtime.c:16
+16	    __asm__ volatile ("nop" : : "r"(stage) : "memory");
+CPL3: EIP= 0x8000010 ESP= 0x83fff8c CR3= 0x145000
+AUDIT ABI: version= 0x10002 features= 31
+CPL3: EIP= 0x8000010 ESP= 0x83fff8c CR3= 0x145000
+RESOURCE: PFN= 0x157 PTE= 0x157067 data= 0xa3110000
+LIBOS: policy= 0 live=1 VA= 0x9000000 PFN= 0x157 generation= 4
+Hardware assisted breakpoint 3 at 0x1022c0: file kernel/domain.c, line 91.
+
+Breakpoint 3, domain_fault (frame=frame@entry=0x12a424 <domains+17220>, address=150994944) at kernel/domain.c:91
+91	    struct domain *domain = domain_from_trap(frame);
+TRAP2: CPL=0 ESP=0x12a3ec FRAME=0x12a424 USER_ESP=0x8002fbc USER_SS=0x23
+PASS: hardware outer ESP/SS and trusted per-domain trap stack 2
+AUDIT PEER PF: vector=14 error=6 CR2=0x09000000 EIP= 0x800024f
+Hardware assisted breakpoint 4 at 0x1040c0: file kernel/external.c, line 21.
+
+Breakpoint 4, external_reaped () at kernel/external.c:21
+21	    __asm__ volatile ("" : : : "memory");
+PASS: external image, stack, tables and dynamic resources reclaimed
+AUDIT PEER: Aelthuvor exit=0; hostile peer faulted; all pages zero/free
+Hardware assisted breakpoint 5 at 0x1040b0: file kernel/external.c, line 17.
+
+Breakpoint 5, external_prepared () at kernel/external.c:17
+17	    __asm__ volatile ("" : : : "memory");
+ELF: image+stack pages= 16 CR3= 0x145000 stack_top=0x08400000
+AUDIT INPUT: peer user data selects hostile access to 0x09000000
+Hardware assisted breakpoint 6 at 0x8000010: file src/runtime.c, line 16.
+
+Breakpoint 6, ael_checkpoint (stage=stage@entry=1) at src/runtime.c:16
+16	    __asm__ volatile ("nop" : : "r"(stage) : "memory");
+
+Breakpoint 6, ael_checkpoint (stage=stage@entry=2) at src/runtime.c:16
+16	    __asm__ volatile ("nop" : : "r"(stage) : "memory");
+CPL3: EIP= 0x8000010 ESP= 0x83fff8c CR3= 0x145000
+AUDIT ABI: version= 0x10002 features= 31
+CPL3: EIP= 0x8000010 ESP= 0x83fff8c CR3= 0x145000
+RESOURCE: PFN= 0x157 PTE= 0x157067 data= 0xa3110000
+LIBOS: policy= 0 live=1 VA= 0x9000000 PFN= 0x157 generation= 8
+Hardware assisted breakpoint 7 at 0x1022c0: file kernel/domain.c, line 91.
+
+Breakpoint 7, domain_fault (frame=frame@entry=0x12a424 <domains+17220>, address=150994944) at kernel/domain.c:91
+91	    struct domain *domain = domain_from_trap(frame);
+TRAP2: CPL=0 ESP=0x12a3ec FRAME=0x12a424 USER_ESP=0x8002fbc USER_SS=0x23
+PASS: hardware outer ESP/SS and trusted per-domain trap stack 2
+AUDIT PEER PF: vector=14 error=6 CR2=0x09000000 EIP= 0x800024f
+Hardware assisted breakpoint 8 at 0x1040c0: file kernel/external.c, line 21.
+
+Breakpoint 8, external_reaped () at kernel/external.c:21
+21	    __asm__ volatile ("" : : : "memory");
+PASS: external image, stack, tables and dynamic resources reclaimed
+AUDIT PEER: Aelthuvor exit=0; hostile peer faulted; all pages zero/free
+[Inferior 1 (process 1) detached]

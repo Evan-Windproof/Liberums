@@ -1,0 +1,31 @@
+python3 tests/check_sdk.py
+PASS: SDK SHA256, file set and ABI version
+mkdir -p build/best/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -DAEL_BEST_FIT_BUILD -c src/runtime.c -o build/best/runtime.o
+mkdir -p build/best/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic  -c examples/memory_demo.c -o build/best/demo.o
+ld -m elf_i386 -nostdlib --build-id=none -T linker.ld -Map=build/best.map build/best/runtime.o build/best/demo.o build/startup.o build/tests/memory_checks.o build/libaelthuvor.a -o build/best.elf
+mkdir -p build/fault/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic  -c src/runtime.c -o build/fault/runtime.o
+mkdir -p build/fault/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -DAEL_FAULT_BUILD -c examples/memory_demo.c -o build/fault/demo.o
+ld -m elf_i386 -nostdlib --build-id=none -T linker.ld -Map=build/fault.map build/fault/runtime.o build/fault/demo.o build/startup.o build/tests/memory_checks.o build/libaelthuvor.a -o build/fault.elf
+mkdir -p build/readonly/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic  -c src/runtime.c -o build/readonly/runtime.o
+mkdir -p build/readonly/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -DAEL_READONLY_BUILD -c examples/memory_demo.c -o build/readonly/demo.o
+ld -m elf_i386 -nostdlib --build-id=none -T linker.ld -Map=build/readonly.map build/readonly/runtime.o build/readonly/demo.o build/startup.o build/tests/memory_checks.o build/libaelthuvor.a -o build/readonly.elf
+mkdir -p build/exit-live/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic  -c src/runtime.c -o build/exit-live/runtime.o
+mkdir -p build/exit-live/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -DAEL_EXIT_LIVE_BUILD -c examples/memory_demo.c -o build/exit-live/demo.o
+ld -m elf_i386 -nostdlib --build-id=none -T linker.ld -Map=build/exit-live.map build/exit-live/runtime.o build/exit-live/demo.o build/startup.o build/tests/memory_checks.o build/libaelthuvor.a -o build/exit-live.elf
+mkdir -p build/runtime-abi/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -DAEL_REQUIRED_MAJOR=2 -c src/runtime.c -o build/runtime-abi/runtime.o
+mkdir -p build/runtime-abi/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic  -c examples/memory_demo.c -o build/runtime-abi/demo.o
+ld -m elf_i386 -nostdlib --build-id=none -T linker.ld -Map=build/runtime-abi.map build/runtime-abi/runtime.o build/runtime-abi/demo.o build/startup.o build/tests/memory_checks.o build/libaelthuvor.a -o build/runtime-abi.elf
+python3 tests/integration.py --liberums "/workspace/work/Liberums" --qemu "/workspace/work/tools/bin/qemu-system-i386" --gdb "/workspace/work/tools/bin/gdb"
+FAIL: public ABI drift: syscall.h
+PASS: SDK SHA256, file set and ABI version
+make: *** [Makefile:58: integration] Error 1

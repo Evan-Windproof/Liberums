@@ -1,0 +1,12 @@
+python3 tests/phase6.py --qemu "/workspace/work/tools/bin/qemu-system-i386" --gdb "/workspace/work/tools/bin/gdb"
+PASS: phase6-spin two real hardware lifecycles
+PASS: phase6-ack two real hardware lifecycles
+PASS: phase6-force two real hardware lifecycles
+PASS: phase6-release two real hardware lifecycles
+PASS: phase6-exit-pending two real hardware lifecycles
+PASS: phase6-immutable-abi11 ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: phase6-cooperative-note ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: phase6-cooperative-note-rejected no COOPERATIVE promise under preemption
+PASS: phase6-profile-rejection ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: phase6-external-preempt two independently built ELF lifecycles
+PASS: Phase 6 QEMU guests=10 / lifecycle rounds=20; native boundary suites=2

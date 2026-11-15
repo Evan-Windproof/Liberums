@@ -1,0 +1,99 @@
+Package: gdb
+Version: 16.3-1
+Architecture: amd64
+
+Package: ipxe-qemu
+Version: 1.21.1+git20250501.dad20602+dfsg-1
+Architecture: all
+
+Package: libaio1t64
+Version: 0.3.113-8+b1
+Architecture: amd64
+
+Package: libbabeltrace1
+Version: 1.5.11-4+b2
+Architecture: amd64
+
+Package: libbrlapi0.8
+Version: 6.7-3.1+deb13u3
+Architecture: amd64
+
+Package: libcacard0
+Version: 1:2.8.0-3+b2
+Architecture: amd64
+
+Package: libcapstone5
+Version: 5.0.7-1~deb13u1
+Architecture: amd64
+
+Package: libdaxctl1
+Version: 81-1
+Architecture: amd64
+
+Package: libdebuginfod-common
+Version: 0.192-4
+Architecture: all
+
+Package: libdebuginfod1t64
+Version: 0.192-4
+Architecture: amd64
+
+Package: libdw1t64
+Version: 0.192-4
+Architecture: amd64
+
+Package: libexecs1
+Version: 1.4-2+b2
+Architecture: amd64
+
+Package: libfdt1
+Version: 1.7.2-2+b1
+Architecture: amd64
+
+Package: libipt2
+Version: 2.1.2-1
+Architecture: amd64
+
+Package: libndctl6
+Version: 81-1
+Architecture: amd64
+
+Package: libpmem1
+Version: 1.13.1-1.1+b1
+Architecture: amd64
+
+Package: libsource-highlight-common
+Version: 3.1.9-4.3
+Architecture: all
+
+Package: libsource-highlight4t64
+Version: 3.1.9-4.3+b1
+Architecture: amd64
+
+Package: liburing2
+Version: 2.9-1
+Architecture: amd64
+
+Package: libusbredirparser1t64
+Version: 0.15.0-1
+Architecture: amd64
+
+Package: libvdeplug2t64
+Version: 4.0.1-5.1+b1
+Architecture: amd64
+
+Package: qemu-system-common
+Version: 1:10.0.13+ds-0+deb13u1
+Architecture: amd64
+
+Package: qemu-system-data
+Version: 1:10.0.13+ds-0+deb13u1
+Architecture: all
+
+Package: qemu-system-x86
+Version: 1:10.0.13+ds-0+deb13u1
+Architecture: amd64
+
+Package: seabios
+Version: 1.16.3-2
+Architecture: all

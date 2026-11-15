@@ -1,0 +1,24 @@
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+Hardware assisted breakpoint 1 at 0x102110: file kernel/domain.c, line 25.
+
+Breakpoint 1, domains_prepared () at kernel/domain.c:25
+25	    __asm__ volatile ("" : : : "memory");
+PASS: two private CR3 trees, supervisor kernel, bounded user pages and cleared data/stacks
+Hardware assisted breakpoint 2 at 0x1022c0: file kernel/domain.c, line 91.
+
+Breakpoint 2, domain_fault (frame=frame@entry=0x128264 <domains+8580>, address=142606336) at kernel/domain.c:91
+91	    struct domain *domain = domain_from_trap(frame);
+TRAP1: CPL=0 ESP=0x12822c FRAME=0x128264 USER_ESP=0x8002fbc USER_SS=0x23
+PASS: hardware outer ESP/SS and trusted per-domain trap stack 1
+PASS: user hardware fault vector/error/EIP/CR2 checked: 14 4 0x800024c 0x8800000
+Hardware assisted breakpoint 3 at 0x102120: file kernel/domain.c, line 29.
+
+Breakpoint 3, domains_reaped () at kernel/domain.c:29
+29	    __asm__ volatile ("" : : : "memory");
+PASS: kernel CR3 restored; all 12 pages unmapped, zeroed and freed
+
+Breakpoint 3, domains_reaped () at kernel/domain.c:29
+29	    __asm__ volatile ("" : : : "memory");
+PASS: kernel CR3 restored; all 12 pages unmapped, zeroed and freed
+[Inferior 1 (process 1) detached]

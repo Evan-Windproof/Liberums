@@ -1,0 +1,75 @@
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+Hardware assisted breakpoint 1 at 0x1040b0: file kernel/external.c, line 17.
+
+Breakpoint 1, external_prepared () at kernel/external.c:17
+17	    __asm__ volatile ("" : : : "memory");
+ELF: image+stack pages= 13 CR3= 0x146000 stack_top=0x08400000
+Hardware assisted breakpoint 2 at 0x8000000
+
+Breakpoint 2, 0x08000000 in ?? ()
+CPL3: EIP= 0x8000000 ESP= 0x83ffffc CR3= 0x146000
+Hardware assisted breakpoint 3 at 0x8000380
+
+Breakpoint 3, 0x08000380 in ?? ()
+CPL3: EIP= 0x8000380 ESP= 0x83fff9c CR3= 0x146000
+Hardware assisted breakpoint 4 at 0x102c40: file kernel/syscall.c, line 12.
+
+Breakpoint 4, syscall_dispatch (frame=0x128264 <domains+8580>) at kernel/syscall.c:12
+12	    struct domain *domain = domain_from_trap(frame);
+TRAP1: CPL=0 ESP=0x12824c FRAME=0x128264 USER_ESP=0x83fffa0 USER_SS=0x23
+PASS: hardware outer ESP/SS and trusted per-domain trap stack 1
+Hardware assisted breakpoint 5 at 0x8000380
+
+Breakpoint 5, 0x08000380 in ?? ()
+CPL3: EIP= 0x8000380 ESP= 0x83fff9c CR3= 0x146000
+RESOURCE: PFN= 0x155 PTE= 0x155067 data= 0xaabb0000
+Hardware assisted breakpoint 6 at 0x8000020
+
+Breakpoint 6, 0x08000020 in ?? ()
+Hardware assisted breakpoint 7 at 0x8000380
+
+Breakpoint 7, 0x08000380 in ?? ()
+CPL3: EIP= 0x8000380 ESP= 0x83fff9c CR3= 0x146000
+Hardware assisted breakpoint 8 at 0x1040c0: file kernel/external.c, line 21.
+
+Breakpoint 8, external_reaped () at kernel/external.c:21
+21	    __asm__ volatile ("" : : : "memory");
+PASS: external image, stack, tables and dynamic resources reclaimed
+Hardware assisted breakpoint 9 at 0x1040b0: file kernel/external.c, line 17.
+
+Breakpoint 9, external_prepared () at kernel/external.c:17
+17	    __asm__ volatile ("" : : : "memory");
+ELF: image+stack pages= 13 CR3= 0x146000 stack_top=0x08400000
+Hardware assisted breakpoint 10 at 0x8000000
+
+Breakpoint 10, 0x08000000 in ?? ()
+CPL3: EIP= 0x8000000 ESP= 0x83ffffc CR3= 0x146000
+Hardware assisted breakpoint 11 at 0x8000380
+
+Breakpoint 11, 0x08000380 in ?? ()
+CPL3: EIP= 0x8000380 ESP= 0x83fff9c CR3= 0x146000
+Hardware assisted breakpoint 12 at 0x102c40: file kernel/syscall.c, line 12.
+
+Breakpoint 12, syscall_dispatch (frame=0x128264 <domains+8580>) at kernel/syscall.c:12
+12	    struct domain *domain = domain_from_trap(frame);
+TRAP1: CPL=0 ESP=0x12824c FRAME=0x128264 USER_ESP=0x83fffa0 USER_SS=0x23
+PASS: hardware outer ESP/SS and trusted per-domain trap stack 1
+Hardware assisted breakpoint 13 at 0x8000380
+
+Breakpoint 13, 0x08000380 in ?? ()
+CPL3: EIP= 0x8000380 ESP= 0x83fff9c CR3= 0x146000
+RESOURCE: PFN= 0x155 PTE= 0x155067 data= 0xaabb0000
+Hardware assisted breakpoint 14 at 0x8000020
+
+Breakpoint 14, 0x08000020 in ?? ()
+Hardware assisted breakpoint 15 at 0x8000380
+
+Breakpoint 15, 0x08000380 in ?? ()
+CPL3: EIP= 0x8000380 ESP= 0x83fff9c CR3= 0x146000
+Hardware assisted breakpoint 16 at 0x1040c0: file kernel/external.c, line 21.
+
+Breakpoint 16, external_reaped () at kernel/external.c:21
+21	    __asm__ volatile ("" : : : "memory");
+PASS: external image, stack, tables and dynamic resources reclaimed
+[Inferior 1 (process 1) detached]

@@ -1,0 +1,4 @@
+make: Entering directory '/workspace/work/Aelthuvor'
+python3 tests/check_sdk.py --source "/workspace/work/sdk-source49"
+PASS: SDK SHA256, file set and ABI version; pinned Liberums source
+make: Leaving directory '/workspace/work/Aelthuvor'

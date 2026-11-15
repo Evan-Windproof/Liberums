@@ -1,0 +1,9 @@
+python3 tests/check_sdk.py
+PASS: SDK SHA256, file set and ABI version
+mkdir -p build
+gcc -std=c11 -g -O1 -Wall -Wextra -Werror -Wpedantic -fsanitize=address,undefined -fno-omit-frame-pointer \
+	-Iinclude -Isdk/include -Itests tests/memory_tests.c tests/memory_checks.c src/memory.c src/page.c src/compat.c -o build/memory-tests
+python3 tests/sdk_tests.py
+PASS: 4 SDK drift rejection tests
+./build/memory-tests
+PASS: 77438415 host assertions; both policies, ABI, rollback, page lifecycle; 132 mock calls

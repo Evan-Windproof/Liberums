@@ -1,0 +1,20 @@
+/workspace/work/tools/bin/qemu-system-i386 -machine pc -accel tcg -cpu qemu32 -m 32M -smp 1 -display none -serial stdio -monitor none -nic none -no-reboot -no-shutdown -kernel build/liberums.elf -append "domain-test=bad-stack"  -S -gdb tcp:127.0.0.1:39769
+IDT: 32 exception gates ready
+Memory map: accepted regions=0x00000006
+Physical pages: free=0x00001eb0
+Paging: enabled with WP, cr0=0x80010011
+Phase 2: protected memory foundations ready
+Liberums: boot successful
+Phase 1: x86 32-bit C11 kernel, COM1 ready
+Multiboot handoff accepted; interrupts disabled; halting.
+
+USER FAULT domain=0x00000001 vector=0x00000006 error=0x00000000 eip=0x0800026e cr2=0x00000000
+Bb
+Domains: round completed, all pages reclaimed
+
+USER FAULT domain=0x00000001 vector=0x00000006 error=0x00000000 eip=0x0800026e cr2=0x00000000
+Bb
+Domains: round completed, all pages reclaimed
+Phase 3: user domains completed
+qemu-system-i386: terminating on signal 15 from pid 1548 (python3)
+make[1]: *** [Makefile:93: debug] Terminated

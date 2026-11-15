@@ -1,0 +1,19 @@
+/workspace/work/tools/bin/qemu-system-i386 -machine pc -accel tcg -cpu qemu32 -m 32M -smp 1 -display none -serial stdio -monitor none -nic none -no-reboot -no-shutdown -kernel build/liberums.elf -append "resource-test=basic"  -S -gdb tcp:127.0.0.1:58065
+IDT: 32 exception gates ready
+Memory map: accepted regions=0x00000006
+Physical pages: free=0x00001eb0
+Paging: enabled with WP, cr0=0x80010011
+Phase 2: protected memory foundations ready
+Liberums: boot successful
+Phase 1: x86 32-bit C11 kernel, COM1 ready
+Multiboot handoff accepted; interrupts disabled; halting.
+
+Domains: round completed, all pages reclaimed
+
+Domains: round completed, all pages reclaimed
+Phase 3: user domains completed
+Phase 4: resource experiment completed
+qemu-system-i386: terminating on signal 15 from pid 1719 (python3)
+make[1]: *** wait: No child processes.  Stop.
+make[1]: *** Waiting for unfinished jobs....
+make[1]: *** wait: No child processes.  Stop.

@@ -1,0 +1,74 @@
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+Hardware assisted breakpoint 1 at 0x102110: file kernel/domain.c, line 25.
+
+Breakpoint 1, domains_prepared () at kernel/domain.c:25
+25	    __asm__ volatile ("" : : : "memory");
+PASS: two private CR3 trees, supervisor kernel, bounded user pages and cleared data/stacks
+
+CPU#0
+EAX=0013a000 EBX=00000000 ECX=08800000 EDX=00134000
+ESI=00000000 EDI=00000000 EBP=0012e9b8 ESP=0012e97c
+EIP=00102110 EFL=00000002 [-------] CPL=0 II=0 A20=1 SMM=0 HLT=0
+ES =0010 00000000 ffffffff 00cf9300 DPL=0 DS   [-WA]
+CS =0008 00000000 ffffffff 00cf9a00 DPL=0 CS32 [-R-]
+SS =0010 00000000 ffffffff 00cf9300 DPL=0 DS   [-WA]
+DS =0010 00000000 ffffffff 00cf9300 DPL=0 DS   [-WA]
+FS =0010 00000000 ffffffff 00cf9300 DPL=0 DS   [-WA]
+GS =0010 00000000 ffffffff 00cf9300 DPL=0 DS   [-WA]
+LDT=0000 00000000 0000ffff 00008200 DPL=0 LDT
+TR =0028 00126040 00000067 00008900 DPL=0 TSS32-avl
+GDT=     00126000 0000002f
+IDT=     0010abe0 000007ff
+CR0=80010011 CR2=00000000 CR3=00121000 CR4=00000000
+DR0=00000000 DR1=00000000 DR2=00000000 DR3=00000000
+DR6=ffff0ff0 DR7=00000400
+EFER=0000000000000000
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+XMM00=0000000000000000 0000000000000000 XMM01=0000000000000000 0000000000000000
+XMM02=0000000000000000 0000000000000000 XMM03=0000000000000000 0000000000000000
+XMM04=0000000000000000 0000000000000000 XMM05=0000000000000000 0000000000000000
+XMM06=0000000000000000 0000000000000000 XMM07=0000000000000000 0000000000000000
+Hardware assisted breakpoint 2 at 0x8000020
+
+Breakpoint 2, 0x08000020 in ?? ()
+USER1: CS=0x1b SS=0x23 EIP=0x8000020 ESP=0x8002fbc CR0=0x80010019 CR3=0x130000 ESP0=0x1282a0
+PASS: actual user CPL=3, segments, CR3 and TSS ESP0 for domain 1
+Hardware assisted breakpoint 3 at 0x102c40: file kernel/syscall.c, line 12.
+
+Breakpoint 3, syscall_dispatch (frame=0x128264 <domains+8580>) at kernel/syscall.c:12
+12	    struct domain *domain = domain_from_trap(frame);
+TRAP1: CPL=0 ESP=0x12824c FRAME=0x128264 USER_ESP=0x8002fc0 USER_SS=0x23
+PASS: hardware outer ESP/SS and trusted per-domain trap stack 1
+Hardware assisted breakpoint 4 at 0x8000020
+
+Breakpoint 4, 0x08000020 in ?? ()
+USER2: CS=0x1b SS=0x23 EIP=0x8000020 ESP=0x8002fbc CR0=0x80010019 CR3=0x136000 ESP0=0x12a460
+PASS: actual user CPL=3, segments, CR3 and TSS ESP0 for domain 2
+Hardware assisted breakpoint 5 at 0x102c40: file kernel/syscall.c, line 12.
+
+Breakpoint 5, syscall_dispatch (frame=0x12a424 <domains+17220>) at kernel/syscall.c:12
+12	    struct domain *domain = domain_from_trap(frame);
+TRAP2: CPL=0 ESP=0x12a40c FRAME=0x12a424 USER_ESP=0x8002fc0 USER_SS=0x23
+PASS: hardware outer ESP/SS and trusted per-domain trap stack 2
+Hardware assisted breakpoint 6 at 0x102120: file kernel/domain.c, line 29.
+
+Breakpoint 6, domains_reaped () at kernel/domain.c:29
+29	    __asm__ volatile ("" : : : "memory");
+PASS: kernel CR3 restored; all 12 pages unmapped, zeroed and freed
+PASS: normal/unknown/invalid scalar syscalls and register/NT/DF preservation
+Hardware assisted breakpoint 7 at 0x102110: file kernel/domain.c, line 25.
+
+Breakpoint 7, domains_prepared () at kernel/domain.c:25
+25	    __asm__ volatile ("" : : : "memory");
+PASS: two private CR3 trees, supervisor kernel, bounded user pages and cleared data/stacks
+Hardware assisted breakpoint 8 at 0x102120: file kernel/domain.c, line 29.
+
+Breakpoint 8, domains_reaped () at kernel/domain.c:29
+29	    __asm__ volatile ("" : : : "memory");
+PASS: kernel CR3 restored; all 12 pages unmapped, zeroed and freed
+[Inferior 1 (process 1) detached]

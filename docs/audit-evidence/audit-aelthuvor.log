@@ -1,0 +1,29 @@
+PASS: SDK SHA256, file set and ABI version
+SDK: elf.h 2fcfab45adc03ee39169f36b7d43068ad5dd2c008b2b686f94ae137f8e659e5c current-identical= True
+SDK: resource.h 9641ad44d3b036019c80ca7d75e85eb6a4347184b139f345279fa60c3772a298 current-identical= True
+SDK: syscall.h cd8763a11e815807de7eb4f4b0e2289ddb2271d41f09718973c4210f18c4ad93 current-identical= False
+Kernel source baseline: 85a493466afe2038ca22a9870f6f9ce37dd7f3a8 LibOS: b10d337d254b18e98204990203a77a215c82c568
+ELF SHA256: first 777517549199e9e8e4c74d4881952bfea1005f9f4320b48040c57c528ccd631b
+ELF SHA256: best 8c3f769ed50598b8f76166f85b5d827de541a4aef97092e79fa6d58b677ca590
+ELF SHA256: fault 3028e05626515dc75cd6539501641861317b26beb2daa61d2406fee5952085df
+ELF SHA256: readonly 74d1716bf39f77d434252c34d9581cc4bc78a8c86c410380b82cb5a892e64b88
+ELF SHA256: exit-live 6e27f248c00c732ffea0026ad96ccb0a69e3c9aeb467bffa781ec701ec090a30
+ELF SHA256: runtime-abi 740cf3b222c01804734441b514b6cb2fe4a3ffc7f3500285c4d58568d51b7f02
+AUDIT: only ABI version oracle adapted to 1.2; all SDK, PTE, CPL3, allocator, peer, zeroing and reclamation assertions retained
+PASS: phase5-aelthuvor-first two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-best two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-fault two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-readonly two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-exit-live two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-runtime-abi two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-bad-major two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-missing-feature two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-oom two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: Aelthuvor integration 9 QEMU guests / 18 lifecycles; no skipped checks
+PASS: phase6-cooperative-note-rejected no COOPERATIVE promise under preemption
+PASS: audit-aelthuvor-first-peer-read two actual denied-access lifecycles
+PASS: audit-aelthuvor-first-peer-write two actual denied-access lifecycles
+PASS: phase6-cooperative-note-rejected no COOPERATIVE promise under preemption
+PASS: audit-aelthuvor-best-peer-read two actual denied-access lifecycles
+PASS: audit-aelthuvor-best-peer-write two actual denied-access lifecycles
+PASS: ABI 1.1 Aelthuvor on ABI 1.2 cooperative kernel; 9 integration guests / 18 lifecycles plus 2 preempt rejection guests / 4 lifecycles plus 4 hostile-peer guests / 8 lifecycles. No Aelthuvor revocation handling claimed.

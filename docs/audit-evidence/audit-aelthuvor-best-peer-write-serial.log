@@ -1,0 +1,20 @@
+/workspace/work/tools/bin/qemu-system-i386 -machine pc -accel tcg -cpu qemu32 -m 32M -smp 1 -display none -serial stdio -monitor none -nic none -no-reboot -no-shutdown -kernel build/liberums.elf -append "external" -initrd "/workspace/work/Aelthuvor/build/best.elf" -S -gdb tcp:127.0.0.1:37637
+IDT: 32 exception gates ready
+Memory map: accepted regions=0x00000006
+Physical pages: free=0x00001ea0
+Paging: enabled with WP, cr0=0x80010011
+Phase 2: protected memory foundations ready
+Liberums: boot successful
+Phase 1: x86 32-bit C11 kernel, COM1 ready
+Multiboot handoff accepted; interrupts disabled; halting.
+Aelthuvor best-fit
+
+USER FAULT domain=0x00000002 vector=0x0000000e error=0x00000006 eip=0x0800024f cr2=0x09000000
+Aelthuvor memory checks passed
+Aelthuvor best-fit
+
+USER FAULT domain=0x00000002 vector=0x0000000e error=0x00000006 eip=0x0800024f cr2=0x09000000
+Aelthuvor memory checks passed
+Phase 5: external execution completed
+qemu-system-i386: terminating on signal 15 from pid 3718 (python3)
+make: *** [Makefile:93: debug] Terminated

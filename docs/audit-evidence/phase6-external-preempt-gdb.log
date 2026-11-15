@@ -1,0 +1,15 @@
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+add symbol table from file "/workspace/work/Liberums/build/external/preempt.elf"
+Hardware assisted breakpoint 1 at 0x1040c0: file kernel/external.c, line 21.
+
+Breakpoint 1, external_reaped () at kernel/external.c:21
+21	    __asm__ volatile ("" : : : "memory");
+PHASE6 EXTERNAL: preemptions 702 peer 3 IRQs 702
+external_domains_run (boot=boot@entry=0x10a000 <boot>) at kernel/external.c:33
+33	    for (uint32_t round = 0; round < 2; ++round) {
+
+Breakpoint 1, external_reaped () at kernel/external.c:21
+21	    __asm__ volatile ("" : : : "memory");
+PHASE6 EXTERNAL: preemptions 318 peer 3 IRQs 1021
+[Inferior 1 (process 1) detached]

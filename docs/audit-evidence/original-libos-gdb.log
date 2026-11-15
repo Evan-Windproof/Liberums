@@ -1,0 +1,38 @@
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+add symbol table from file "/workspace/work/Aelthuvor/build/first.elf"
+Hardware assisted breakpoint 1 at 0x1040b0: file kernel/external.c, line 17.
+
+Breakpoint 1, external_prepared () at kernel/external.c:17
+17	    __asm__ volatile ("" : : : "memory");
+ELF: image+stack pages= 16 CR3= 0x145000 stack_top=0x08400000
+Hardware assisted breakpoint 2 at 0x8000000: file arch/x86/startup.S, line 7.
+
+Breakpoint 2, _start () at arch/x86/startup.S:7
+7	    cld
+CPL3: EIP= 0x8000000 ESP= 0x83ffffc CR3= 0x145000
+Hardware assisted breakpoint 3 at 0x102c40: file kernel/syscall.c, line 12.
+
+Breakpoint 3, syscall_dispatch (frame=0x128264 <domains+8580>) at kernel/syscall.c:12
+12	    struct domain *domain = domain_from_trap(frame);
+TRAP1: CPL=0 ESP=0x12824c FRAME=0x128264 USER_ESP=0x83fff7c USER_SS=0x23
+PASS: hardware outer ESP/SS and trusted per-domain trap stack 1
+Hardware assisted breakpoint 4 at 0x102c40: file kernel/syscall.c, line 12.
+
+Breakpoint 4, syscall_dispatch (frame=0x128264 <domains+8580>) at kernel/syscall.c:12
+12	    struct domain *domain = domain_from_trap(frame);
+TRAP1: CPL=0 ESP=0x12824c FRAME=0x128264 USER_ESP=0x83fff7c USER_SS=0x23
+PASS: hardware outer ESP/SS and trusted per-domain trap stack 1
+Hardware assisted breakpoint 5 at 0x8000010: file src/runtime.c, line 16.
+
+Breakpoint 5, ael_checkpoint (stage=stage@entry=1) at src/runtime.c:16
+16	    __asm__ volatile ("nop" : : "r"(stage) : "memory");
+CPL3: EIP= 0x8000010 ESP= 0x83fffcc CR3= 0x145000
+Hardware assisted breakpoint 6 at 0x8000010: file src/runtime.c, line 16.
+
+Breakpoint 6, ael_checkpoint (stage=stage@entry=2) at src/runtime.c:16
+16	    __asm__ volatile ("nop" : : "r"(stage) : "memory");
+CPL3: EIP= 0x8000010 ESP= 0x83fff8c CR3= 0x145000
+/workspace/work/Liberums/build/phase5-aelthuvor-first.gdb:242: Error in sourced command file:
+ABI query results
+[Inferior 1 (process 1) detached]

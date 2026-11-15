@@ -1,0 +1,49 @@
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+Hardware assisted breakpoint 1 at 0x102110: file kernel/domain.c, line 25.
+
+Breakpoint 1, domains_prepared () at kernel/domain.c:25
+25	    __asm__ volatile ("" : : : "memory");
+PASS: two private CR3 trees, supervisor kernel, bounded user pages and cleared data/stacks
+Hardware assisted breakpoint 2 at 0x8000157
+
+Breakpoint 2, 0x08000157 in ?? ()
+RESOURCE: 2 owner= 1 epoch= 1 gen= 1 PFN= 0x13c rights= 0x3f refs= 0
+AUDIT: owned= 1 counts= [1, 0] CR3= 0x130000
+CHECKPOINT: 1 7 handle= (2, 1) PFN= 0x13c
+
+Breakpoint 2, 0x08000157 in ?? ()
+RESOURCE: 2 owner= 2 epoch= 1 gen= 2 PFN= 0x13c rights= 0x3f refs= 1
+PTE: 2 0x9003000 0x13c000 0x13c027
+AUDIT: owned= 1 counts= [0, 1] CR3= 0x136000
+CHECKPOINT: 2 8 handle= (2, 2) PFN= 0x13c
+Hardware assisted breakpoint 3 at 0x102120: file kernel/domain.c, line 29.
+
+Breakpoint 3, domains_reaped () at kernel/domain.c:29
+29	    __asm__ volatile ("" : : : "memory");
+PASS: kernel CR3 restored; all 12 pages unmapped, zeroed and freed
+PASS: all resource handles dead; dynamic tables and pages cleared/freed
+Hardware assisted breakpoint 4 at 0x102110: file kernel/domain.c, line 25.
+
+Breakpoint 4, domains_prepared () at kernel/domain.c:25
+25	    __asm__ volatile ("" : : : "memory");
+PASS: two private CR3 trees, supervisor kernel, bounded user pages and cleared data/stacks
+Hardware assisted breakpoint 5 at 0x8000157
+
+Breakpoint 5, 0x08000157 in ?? ()
+RESOURCE: 2 owner= 1 epoch= 2 gen= 4 PFN= 0x13c rights= 0x3f refs= 0
+AUDIT: owned= 1 counts= [1, 0] CR3= 0x130000
+CHECKPOINT: 1 7 handle= (2, 4) PFN= 0x13c
+
+Breakpoint 5, 0x08000157 in ?? ()
+RESOURCE: 2 owner= 2 epoch= 2 gen= 5 PFN= 0x13c rights= 0x3f refs= 1
+PTE: 2 0x9003000 0x13c000 0x13c027
+AUDIT: owned= 1 counts= [0, 1] CR3= 0x136000
+CHECKPOINT: 2 8 handle= (2, 5) PFN= 0x13c
+Hardware assisted breakpoint 6 at 0x102120: file kernel/domain.c, line 29.
+
+Breakpoint 6, domains_reaped () at kernel/domain.c:29
+29	    __asm__ volatile ("" : : : "memory");
+PASS: kernel CR3 restored; all 12 pages unmapped, zeroed and freed
+PASS: all resource handles dead; dynamic tables and pages cleared/freed
+[Inferior 1 (process 1) detached]

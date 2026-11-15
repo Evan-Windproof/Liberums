@@ -1,0 +1,14 @@
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+Hardware assisted breakpoint 1 at 0x104e50: file tests/phase6_runtime.c, line 27.
+
+Breakpoint 1, phase6_reaped () at tests/phase6_runtime.c:27
+27	    __asm__ volatile ("" : : : "memory");
+PHASE6 HARDWARE: force round 1 {'irq': 2, 'kernel': 1, 'kernel_restored': 1, 'user': 1, 'resumed': 0, 'peer': 2, 'request': 1, 'complete': 1, 'zero': 1, 'reowned': 1} ticks 8
+phase6_test_run (args=args@entry=0x10ab08 <boot+2824> "build/liberums.elf phase6=force") at tests/phase6_runtime.c:78
+78	    for (uint32_t round = 0; round < 2; ++round) {
+
+Breakpoint 1, phase6_reaped () at tests/phase6_runtime.c:27
+27	    __asm__ volatile ("" : : : "memory");
+PHASE6 HARDWARE: force round 2 {'irq': 2, 'kernel': 1, 'kernel_restored': 1, 'user': 1, 'resumed': 0, 'peer': 4, 'request': 2, 'complete': 2, 'zero': 2, 'reowned': 2} ticks 16
+[Inferior 1 (process 1) detached]

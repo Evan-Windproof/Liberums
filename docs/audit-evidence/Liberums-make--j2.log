@@ -1,0 +1,98 @@
+mkdir -p build/user/
+mkdir -p build/user/
+gcc -Iinclude -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2 -c user/program.c -o build/user/program.o
+gcc -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -c user/entry_checks.S -o build/user/entry_checks.o
+mkdir -p build/user/
+gcc -Iinclude -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2 -c user/resource_entry.c -o build/user/resource_entry.o
+mkdir -p build/user/
+gcc -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -c user/resource_faults.S -o build/user/resource_faults.o
+mkdir -p build/kernel/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c kernel/main.c -o build/kernel/main.o
+mkdir -p build/kernel/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c kernel/serial.c -o build/kernel/serial.o
+mkdir -p build/kernel/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c kernel/panic.c -o build/kernel/panic.o
+mkdir -p build/arch/x86/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c arch/x86/idt.c -o build/arch/x86/idt.o
+mkdir -p build/kernel/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c kernel/memory_map.c -o build/kernel/memory_map.o
+mkdir -p build/kernel/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c kernel/boot_info.c -o build/kernel/boot_info.o
+mkdir -p build/kernel/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c kernel/physical_pages.c -o build/kernel/physical_pages.o
+mkdir -p build/arch/x86/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c arch/x86/paging.c -o build/arch/x86/paging.o
+mkdir -p build/kernel/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c kernel/selftest.c -o build/kernel/selftest.o
+mkdir -p build/arch/x86/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c arch/x86/gdt.c -o build/arch/x86/gdt.o
+mkdir -p build/kernel/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c kernel/domain.c -o build/kernel/domain.o
+mkdir -p build/kernel/
+mkdir -p build/kernel/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c kernel/syscall.c -o build/kernel/syscall.o
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c kernel/capability.c -o build/kernel/capability.o
+mkdir -p build/kernel/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c kernel/resource.c -o build/kernel/resource.o
+mkdir -p build/tests/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c tests/resource_pressure.c -o build/tests/resource_pressure.o
+mkdir -p build/kernel/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c kernel/elf_loader.c -o build/kernel/elf_loader.o
+mkdir -p build/kernel/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c kernel/external.c -o build/kernel/external.o
+mkdir -p build/arch/x86/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c arch/x86/user_space.c -o build/arch/x86/user_space.o
+mkdir -p build/tests/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c tests/elf_pressure.c -o build/tests/elf_pressure.o
+mkdir -p build/arch/x86/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c arch/x86/pic.c -o build/arch/x86/pic.o
+mkdir -p build/arch/x86/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c arch/x86/pit.c -o build/arch/x86/pit.o
+mkdir -p build/kernel/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c kernel/tick.c -o build/kernel/tick.o
+mkdir -p build/kernel/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c kernel/timer.c -o build/kernel/timer.o
+mkdir -p build/kernel/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c kernel/scheduler.c -o build/kernel/scheduler.o
+mkdir -p build/kernel/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c kernel/revoke.c -o build/kernel/revoke.o
+mkdir -p build/tests/
+gcc -Iinclude  -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2  -MMD -MP -c tests/phase6_runtime.c -o build/tests/phase6_runtime.o
+mkdir -p build/arch/x86/
+gcc -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -ffreestanding -fno-pic -fno-pie -g3 -c arch/x86/irq.S -o build/arch/x86/irq.o
+mkdir -p build/arch/x86/
+gcc -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -ffreestanding -fno-pic -fno-pie -g3 -c arch/x86/boot.S -o build/arch/x86/boot.o
+mkdir -p build/arch/x86/
+gcc -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -ffreestanding -fno-pic -fno-pie -g3 -c arch/x86/isr.S -o build/arch/x86/isr.o
+mkdir -p build/arch/x86/
+gcc -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -ffreestanding -fno-pic -fno-pie -g3 -c arch/x86/test_faults.S -o build/arch/x86/test_faults.o
+mkdir -p build/arch/x86/
+gcc -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -ffreestanding -fno-pic -fno-pie -g3 -c arch/x86/user_context.S -o build/arch/x86/user_context.o
+mkdir -p build/user/
+gcc -Iinclude -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2 -c user/test_a.c -o build/user/test_a.o
+mkdir -p build/user/
+gcc -Iinclude -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2 -c user/test_b.c -o build/user/test_b.o
+mkdir -p build/user/
+gcc -Iinclude -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2 -Os -DRESOURCE_IMAGE_BASIC -c user/resource_test.c -o build/user/resource_BASIC.o
+mkdir -p build/user/
+gcc -Iinclude -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2 -Os -DRESOURCE_IMAGE_TRANSFER -c user/resource_test.c -o build/user/resource_TRANSFER.o
+mkdir -p build/user/
+gcc -Iinclude -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2 -Os -DRESOURCE_IMAGE_FAULT -c user/resource_test.c -o build/user/resource_FAULT.o
+gcc -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -g3 -c tests/fixtures/preempt/entry.S -o build/phase6-entry.o
+gcc -Iinclude -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -Wall -Wextra -Werror -Wpedantic -g3 -O2 -Os -c tests/fixtures/preempt/program.c -o build/phase6-program.o
+ld -m elf_i386 -nostdlib --build-id=none -T user/linker.ld build/user/test_a.o build/user/program.o build/user/entry_checks.o -o build/user_a.elf
+ld -m elf_i386 -nostdlib --build-id=none -T user/linker.ld build/user/test_b.o build/user/program.o build/user/entry_checks.o -o build/user_b.elf
+ld -m elf_i386 -nostdlib --build-id=none -T user/linker.ld build/user/resource_entry.o build/user/resource_BASIC.o build/user/resource_faults.o -o build/resource_BASIC.elf
+ld -m elf_i386 -nostdlib --build-id=none -T user/linker.ld build/user/resource_entry.o build/user/resource_TRANSFER.o build/user/resource_faults.o -o build/resource_TRANSFER.elf
+ld -m elf_i386 -nostdlib --build-id=none -T user/linker.ld build/phase6-entry.o build/phase6-program.o -o build/phase6-user.elf
+objcopy -O binary build/user_a.elf build/user_a.bin
+objcopy -O binary build/user_b.elf build/user_b.bin
+objcopy -O binary build/resource_BASIC.elf build/resource_BASIC.bin
+objcopy -O binary build/resource_TRANSFER.elf build/resource_TRANSFER.bin
+ld -m elf_i386 -nostdlib --build-id=none -T user/linker.ld build/user/resource_entry.o build/user/resource_FAULT.o build/user/resource_faults.o -o build/resource_FAULT.elf
+objcopy -O binary build/phase6-user.elf build/phase6-user.bin
+objcopy -O binary build/resource_FAULT.elf build/resource_FAULT.bin
+mkdir -p build/arch/x86/
+gcc -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -ffreestanding -fno-pic -fno-pie -g3 -c arch/x86/user_images.S -o build/arch/x86/user_images.o
+ld -m elf_i386 -nostdlib --build-id=none -T arch/x86/linker.ld \
+	-Map=build/liberums.map  build/kernel/main.o build/kernel/serial.o build/kernel/panic.o build/arch/x86/idt.o build/kernel/memory_map.o build/kernel/boot_info.o build/kernel/physical_pages.o build/arch/x86/paging.o build/kernel/selftest.o build/arch/x86/gdt.o build/kernel/domain.o build/kernel/syscall.o build/kernel/capability.o build/kernel/resource.o build/tests/resource_pressure.o build/kernel/elf_loader.o build/kernel/external.o build/arch/x86/user_space.o build/tests/elf_pressure.o build/arch/x86/pic.o build/arch/x86/pit.o build/kernel/tick.o build/kernel/timer.o build/kernel/scheduler.o build/kernel/revoke.o build/tests/phase6_runtime.o build/arch/x86/irq.o build/arch/x86/boot.o build/arch/x86/isr.o build/arch/x86/test_faults.o build/arch/x86/user_context.o build/arch/x86/user_images.o -o build/liberums.elf
