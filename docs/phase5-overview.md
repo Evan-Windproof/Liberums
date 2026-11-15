@@ -1,8 +1,8 @@
 # Phase 5 — External LibOS Infrastructure
 
-本阶段让 Liberums 能运行外部独立编译的 ELF32 程序，并公布实验性 ABI 1.0。
-它没有实现 LibOS，也没有修改、连接或提交 Aelthuvor 仓库。
-Aelthuvor 以后只需依照公开 ABI 编译自己的程序，作为 Multiboot 模块交给 Liberums。
+本阶段让 Liberums 能运行外部独立编译的 ELF32 程序，并公布实验性 ABI 1.1。
+基础设施在先前提交独立完成；本次与独立 Aelthuvor Phase 1 完成真实跨仓库集成。
+Aelthuvor 依照固定的公开 SDK 编译自己的 ELF，作为 Multiboot 模块交给 Liberums。
 内核不链接该项目的源码或库，也不按程序符号名识别某个 LibOS。
 
 ## 为什么将 LibOS 放在外部
@@ -69,6 +69,6 @@ SDK 目录只需含 `abi/`。自动测试实际复制这三个公开头文件到
 [公开 ABI](phase5-abi.md) → [ELF 加载过程](phase5-elf-loader.md)
 → [模块](phase5-modules.md) → [实际验收](phase5-validation.md)。
 
-仍无抢占、SMP、动态链接器、通用 ELF 特性、完整异步撤销或 LibOS。
+内核仍无抢占、SMP、动态链接器、通用 ELF 特性或完整异步撤销。
 普通非 PAE i686 没有 NX，不能把只读代码和 ELF 标志宣传为完整 W^X。
-Phase 5 完成后停止；Aelthuvor 的实现属于另一个独立任务。
+`make test-libos` 验证独立 Aelthuvor 的两种管理策略；完成后不进入 Phase 6。

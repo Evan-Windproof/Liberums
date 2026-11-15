@@ -86,7 +86,7 @@ def corpus(reference):
     change('bad-note-size', [(phoff+96+16,'I',35)])
     change('bad-note-name', [(note[1]+12,'B',ord('X'))])
     change('abi-major', [(note[1]+24,'I',2)], -93)
-    change('abi-minor', [(note[1]+28,'I',1)], -93)
+    change('abi-minor', [(note[1]+28,'I',struct.unpack_from('<I', original, note[1]+28)[0]+1)], -93)
     change('abi-features', [(note[1]+32,'I',0x80000000)], -93)
     path = BUILD / 'external-sdk/truncated.elf'
     path.write_bytes(original[:51])
@@ -248,7 +248,12 @@ def main():
     parser.add_argument('--qemu',default='qemu-system-i386')
     parser.add_argument('--gdb',default='gdb')
     parser.add_argument('--mode',choices=['all','normal'],default='all')
+    parser.add_argument('--aelthuvor', type=Path, help='audit independent LibOS build directory instead of fixtures')
     args=parser.parse_args()
+    if args.aelthuvor:
+        from libos import suite
+        suite(args.aelthuvor, args.qemu, args.gdb)
+        return
     out=sdk_build()
     positives=[('minimal',out/'minimal.elf','minimal'),('multi',out/'normal.elf','normal'),
                ('kernel-fault',out/'fault.elf','fault'),('code-fault',out/'code-fault.elf','code-fault'),

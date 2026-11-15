@@ -4,8 +4,8 @@
 可验证的资源所有权和用户态 LibOS。语言为 C11 与少量 x86 汇编，
 目标为 **32 位 x86（i686）+ QEMU**，许可证为 **GPL-3.0-or-later**。
 
-**当前完成 Phase 5：提供公开 ABI 1.0，支持从 Multiboot 模块加载独立编译的 ELF32，
-以真实 Ring 3 运行多页程序并使用 Phase 4 资源接口。尚无 LibOS、抢占或异步撤销，不是完整 Exokernel。**
+**当前完成 Phase 5：提供公开 ABI 1.1，支持从 Multiboot 模块加载独立编译的 ELF32，
+以真实 Ring 3 运行多页程序并使用 Phase 4 资源接口。已与独立 Aelthuvor Phase 1 完成 Ring 3 集成；无抢占或异步撤销，不是完整 Exokernel。**
 实现代码为本项目编写；引导遵循公开的 Multiboot v1 协议。
 
 ## 目录结构
@@ -54,7 +54,7 @@ Liberums/
 └── build/             # 生成的 ELF、对象、链接映射、测试日志（Git 忽略）
 ```
 
-内置测试映像位于 `user/`。未来 Aelthuvor 是独立仓库；Liberums 不包含或依赖其源码，本阶段没有实现 LibOS。
+内置测试映像位于 `user/`。Aelthuvor 是独立仓库；Liberums 不包含其源码，也不链接其实现。测试仅通过外部 ELF 对接。
 
 ## 工具要求
 
@@ -233,12 +233,28 @@ python3 tests/phase5.py
 ```
 
 只有显式 external token 才加载恰好一个模块；默认 make run 继续原正常流程。
-独立程序只需 `include/abi/`：ABI 1.0、查询号 3、Feature Flags，以及保留原调用号的资源 API。
+独立程序只需 `include/abi/`：ABI 1.1、版本查询号 3、额度查询号 4、Feature Flags，以及保留原调用号的资源 API。
 外部程序可有多个代码/只读/数据/BSS 页和四页零栈；旧单页断言与六页路径继续独立验证。
 
 教学文档：[概览](docs/phase5-overview.md)、[公开 ABI/接入规范](docs/phase5-abi.md)、
 [ELF profile](docs/phase5-elf-loader.md)、[模块](docs/phase5-modules.md)、
-[实际验收](docs/phase5-validation.md)。没有动态链接器、文件系统或 Aelthuvor 实现。
+[实际验收](docs/phase5-validation.md)。没有动态链接器或文件系统；Aelthuvor 实现位于独立仓库。
+
+## 独立 Aelthuvor Phase 1 集成
+
+将 [Aelthuvor](https://github.com/Evan-Windproof/Aelthuvor) 克隆为同级目录（也可覆盖路径）：
+
+```sh
+make -C ../Aelthuvor
+make test-libos                     # 默认 AELTHUVOR=../Aelthuvor
+make test-libos AELTHUVOR=/path/to/Aelthuvor
+make run QEMU_APPEND=external QEMU_INITRD=../Aelthuvor/build/aelthuvor.elf
+```
+
+`make test` 仍可在只有内核仓库时运行全部 103 个原验收场景；`make test-libos`
+另构建独立 LibOS，运行 9 个 QEMU/GDB 场景、各两轮，检查用户分配策略、真实资源绑定、
+正常退出/故障回收、ABI 拒绝及部分加载回滚。源码和依赖互不混入。
+日志在各自 `build/` 下，详见 [双仓库验收](docs/phase5-validation.md#双仓库集成追加验收)。
 
 ## Exokernel 边界与下一步
 
@@ -249,7 +265,7 @@ python3 tests/phase5.py
 
 完整设计与下一阶段建议见 [架构规划](docs/architecture.md)。
 Phase 5 到此结束。外部加载不等于实现 LibOS，也不扩大资源授权模型。
-后续独立 LibOS 可依据公开 ABI 开展管理策略实验；本次没有进入下一阶段或修改其他仓库。
+Aelthuvor Phase 1 已使用同一套资源机制验证 first-fit/best-fit；本次没有进入 Phase 6。
 合作式执行下恶意用户可无限占用 CPU，没有公平性或强制 CPU 撤销保证。
 
 ## 许可证

@@ -3,8 +3,8 @@
 #define LIBERUMS_RESOURCE_H
 #include <kernel/capability.h>
 #define RESOURCE_CAPACITY 16u
-#define RESOURCE_DOMAIN_LIMIT 4u
-#define RESOURCE_BINDING_LIMIT 4u
+#define RESOURCE_DOMAIN_LIMIT LIBERUMS_RESOURCE_DOMAIN_LIMIT
+#define RESOURCE_BINDING_LIMIT LIBERUMS_RESOURCE_BINDING_LIMIT
 struct domain;
 enum resource_state { RESOURCE_FREE, RESOURCE_OWNED, RESOURCE_RECLAIMING };
 struct resource_binding { uint32_t address, rights; };

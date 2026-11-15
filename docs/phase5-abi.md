@@ -1,4 +1,4 @@
-# 实验性公开 ABI 1.0 与最小 SDK
+# 实验性公开 ABI 1.1 与最小 SDK
 
 ## SDK 的边界
 
@@ -16,7 +16,7 @@
 ## ABI 查询与兼容性
 
 `SYS_ABI_QUERY=3`，不接收参数：EAX 返回 `(major << 16) | minor`，EDX 返回 Feature Flags。
-当前为 `0x00010000` 和 `0x0000000f`。
+当前为 `0x00010001` 和 `0x0000001f`。
 
 | 特性位 | 名称 | 当前含义 |
 | --- | --- | --- |
@@ -24,6 +24,7 @@
 | 2 | TRANSFER | 受限独占转移与接收通知 |
 | 4 | ELF32 | 本文规定的受限 ET_EXEC 加载 profile |
 | 8 | COOPERATIVE | 单 CPU 合作式用户执行，无 CPU 抢占保证 |
+| 16 | LIMITS | 只读资源额度查询（1.1 新增） |
 
 `liberums_abi_compatible(version, features, major, minor, required)` 要求 major 相同、
 实际 minor 不低于所需值、全部 required 特性存在。客户端不应因为多了一个 minor 就拒绝运行。
@@ -45,6 +46,7 @@ ELF note 让加载器提前检查要求，程序启动后仍应查询实际 ABI�
 | 1 | exit | EBX=uint32 退出状态；不返回 |
 | 2 | log_char | EBX=0..255；0 成功，-22 越界，-11 超过每域 128 次额度 |
 | 3 | ABI query | EAX=版本，EDX=特性位；无输入 |
+| 4 | resource limits | 无输入；EAX=每域动态页上限，EDX=每资源绑定上限 |
 | 16 | page_claim | EBX=rights；EAX=index，EDX=generation |
 | 17 | page_claim_specific | EBX=PFN，ECX=rights；EAX=index，EDX=generation |
 | 18 | page_map | EBX=index，ECX=generation，EDX=VA，ESI=R/W；EAX=0 |
@@ -83,5 +85,17 @@ EAGAIN=-11、ENOMEM=-12、EBUSY=-16、EINVAL=-22、ENOSPC=-28、EOVERFLOW=-75、
 仅复制这三个公开头文件和加载 profile，不包含 kernel/、user/ 内部头或实现。
 使用 freestanding i686 工具链、静态 ET_EXEC、公开 ELF note 和链接地址范围；
 提供自己的 `_start`、入口栈使用约定、ABI 检查和低级资源封装，再用 initrd 运行。
-LibOS 内存策略、数据结构和库实现由未来独立项目负责，不能假设有内核堆/文件/网络服务。
-本阶段没有对该仓库作任何修改。
+LibOS 内存策略、数据结构和库实现由独立项目负责，不能假设有内核堆/文件/网络服务。
+具体实现和验证见 Aelthuvor 仓库；内核只接收它的构建产物。
+
+## 1.0 → 1.1 与独立 SDK 固定
+
+1.1 仅增加 `SYS_RESOURCE_LIMITS=4` 和 LIMITS 位，原 0..3、16..23 与寄存器约定不变。
+调用 4 不接受参数，只改 EAX/EDX。它返回配置上限（当前 4/4），不保证物理空闲页数量，
+也不分配或授权任何资源。内核上限引用公开常量，避免两份数字漂移。
+现有 1.0 ELF note 和客户端仍兼容；要求 1.1 的 Aelthuvor 会在旧内核上安全拒绝。
+
+Aelthuvor 的 `sdk/manifest.json` 记录来源仓库、完整提交、ABI 版本与每文件 SHA256。
+默认构建验证 vendored 文件，`make check-sdk SDK_SOURCE=../Liberums` 额外比较固定提交和当前
+公开目录；集成测试也检查工作目录公开头一致。只升级内核而 SDK 不变时，不应隐式混入新头；
+接口升级应单独审查、重新固定来源并运行两边测试。内核仓库不依赖 LibOS 源码或算法。

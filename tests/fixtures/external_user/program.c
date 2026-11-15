@@ -40,6 +40,10 @@ __attribute__((section(".text.entry"))) _Noreturn void _start(void)
     }
 #endif
     check(liberums_abi_compatible(version, features, requirement.major, requirement.minor, requirement.required_features), 1);
+    uint32_t bindings;
+    check((features & LIBERUMS_FEATURE_LIMITS) != 0, 17);
+    check(liberums_call(SYS_RESOURCE_LIMITS, 0, 0, 0, 0, &bindings)
+          == LIBERUMS_RESOURCE_DOMAIN_LIMIT && bindings == LIBERUMS_RESOURCE_BINDING_LIMIT, 18);
     check(external_far_function() == 0x12345678, 2);
     check(external_rodata[0] == 0x12 && external_rodata[4999] == 0x34, 3);
     check(external_data[0] == 0x56 && external_data[4999] == 0x78, 4);

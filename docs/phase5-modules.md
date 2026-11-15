@@ -44,7 +44,7 @@ external 标记选择新激活条件；rollback_pages 仅记录失败时已分�
 
 boot_context 保存已校验模块范围，沿用原保留区顺序，不改变 Phase 2 模块测试约定。
 main 在原初始化后检查完整的 external token，调用新协调模块；默认继续 domains_run。
-syscall 只新增 ABI 查询号 3，原 0/1/2 与 16..23 的含义和权限检查不变。
+syscall 提供 ABI 查询号 3 和只读额度查询号 4，原 0/1/2 与 16..23 的含义和权限检查不变。
 
 ## `tests/fixtures/external_user/`
 
@@ -64,3 +64,10 @@ phase5.py 把 SDK 单独复制后编译，生成损坏 ELF，通过实际 QEMU/G
 
 原测试脚本均不改断言；make test 继续原顺序，然后增加 Phase 5，另提供 external-fixtures 目标。
 详见 [实际验收](phase5-validation.md)。
+
+## 独立 LibOS 验收
+
+`tests/libos.py` 由 `tests/phase5.py --aelthuvor /path/to/build` 调用。
+只读取独立编译的 ELF、调试符号和映像字节，不导入 Aelthuvor C 源码或链接它的库。
+GDB 为检查用户状态而装入外部符号不影响内核构建或授权。
+`make test-libos` 通过独立仓库的 `make integration` 编排构建，再将 ELF 路径交给此脚本。

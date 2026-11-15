@@ -20,6 +20,10 @@
 #define RESOURCE_ALL 63u
 #define RESOURCE_WINDOW 0x09000000u
 #define RESOURCE_WINDOW_END 0x09010000u
+/* Query SYS_RESOURCE_LIMITS for the running kernel's quotas. These constants
+ * describe this SDK's reference kernel, not authority granted to a caller. */
+#define LIBERUMS_RESOURCE_DOMAIN_LIMIT 4u
+#define LIBERUMS_RESOURCE_BINDING_LIMIT 4u
 #define RES_EPERM (-1)
 #define RES_ENOENT (-2)
 #define RES_ESRCH (-3)

@@ -12,6 +12,7 @@ PYTHON ?= python3
 HOST_CC ?= gcc
 GDB_PORT ?= 1234
 QEMU_INITRD ?=
+AELTHUVOR ?= ../Aelthuvor
 QEMU_APPEND ?=
 
 BUILD := build
@@ -116,6 +117,10 @@ test: $(KERNEL) test-memory $(BUILD)/elf-tests external-fixtures
 	$(PYTHON) tests/phase3.py --qemu "$(QEMU)" --gdb "$(GDB)"
 	$(PYTHON) tests/phase4.py --qemu "$(QEMU)" --gdb "$(GDB)"
 	$(PYTHON) tests/phase5.py --qemu "$(QEMU)" --gdb "$(GDB)"
+
+.PHONY: test-libos
+test-libos: $(KERNEL)
+	$(MAKE) -C "$(AELTHUVOR)" integration LIBERUMS="$(CURDIR)" QEMU="$(QEMU)" GDB="$(GDB)"
 
 clean:
 	rm -rf $(BUILD)

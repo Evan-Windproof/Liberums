@@ -1,5 +1,7 @@
 # Phase 5 实际验收记录
 
+> 以下主体为 ABI 1.0 基础设施首次验收的历史记录；本次 ABI 1.1 与双仓库结果见文末追加节。
+
 日期：2026-11-15（Asia/Taipei）。以下结果来自实际构建、宿主解析器、QEMU 和 GDB。
 本次只操作 Liberums，没有修改或提交 Aelthuvor 仓库。
 
@@ -153,3 +155,65 @@ count/live 为零，空闲数恢复失败前值；恢复暂存页后 B 仍正常
 
 完整测试后提交与推送 Liberums，并核对远程 SHA；最终报告提供实际提交和分支。
 该文件不包含自己的提交 SHA，避免循环。Phase 5 完成后停止。
+
+
+## 双仓库集成追加验收
+
+本次任务中，远程 main 已是 `bdee0ad`（Phase 5 基础设施），并包含指定 Phase 4 基准
+`d3efffd359f3a25a7a28758c32622208ca64029a`。工作区干净；fetch 后保留所有这些提交，未回退。
+先完整运行当前基准，103 个 QEMU guest、49 个 ELF 宿主输入、原 10,905 条宿主断言均通过。
+
+本次内核增加向后兼容的 ABI 1.1：只读额度查询号 4、LIMITS 特性位；
+资源上限改为引用公开常量，未改变任何已有调用号、参数、所有权和页表保护。
+原 minimal fixture 明确要求 1.0，仍在 1.1 内核上正常执行；损坏 minor 测试改为要求当前版本加一。
+新增 `tests/libos.py`，由 `tests/phase5.py --aelthuvor <独立build目录>` 调用。
+
+Aelthuvor 在独立仓库开发 C11 runtime、页面封装、块分配器和静态应用 ELF。
+其 first-fit/best-fit 不要求内核区分算法；源码和库均未复制进本仓库。
+公开 ABI 固定来源/哈希见该仓库 sdk/manifest.json。
+
+实际执行并成功：
+
+```sh
+export PATH=/workspace/.liberums-tools/bin:$PATH
+make clean
+make -j2
+make test
+make
+git diff --check
+make test-libos AELTHUVOR=../Aelthuvor
+```
+
+Aelthuvor 侧也执行 clean/build/test/integration 与固定 SDK 来源检查。
+环境为 Debian 13，GCC 14.2.0、Binutils 2.44、Make 4.4.1、QEMU 10.0.13/TCG/qemu32/32 MiB、GDB 16.3。
+本机器原先没有 QEMU/GDB，经验证 Debian 签名索引和包校验下载、解包到仓库外工具目录，未关闭验证。
+
+| 本次最终套件 | 结果 |
+| --- | --- |
+| 原 Phase 1–4 | 51 个 QEMU guest 全部通过；原 10,905 条宿主断言通过 |
+| 基础设施 Phase 5 | 52 个 QEMU guest，49 个 ELF 宿主输入全部通过 |
+| Aelthuvor 宿主 | 77,438,415 条断言，ASan/UBSan 无报告；另四类 SDK 漂移拒绝测试 |
+| 双仓库集成 | 9 个 QEMU guest、18 个生命周期全部通过 |
+| 本次最终 QEMU 合计 | 112 个场景；没有必需项跳过 |
+
+新集成场景为 first、best、跨域故障、只读代码写故障、活跃资源退出、运行时 ABI 拒绝、
+ELF note major 拒绝、ELF note feature 拒绝、实际部分加载 ENOMEM 回滚。
+GDB 逐段核对外部 ELF/BSS/栈/PTE，入口和运行时 CS=0x1b、SS=0x23、私有 CR3；
+在前两次调用核对真实 int 0x80 外层帧、TSS 可信栈及号 3/4。
+
+分配后实际 PFN=0x155（first 本次构建）、VA=0x09000000、PTE=0x00155067，
+资源 owner=1、epoch 匹配当前域、rights=47、references=1，1024 字为 0xa3110000|i。
+peer B 无动态窗口映射，在不同 CR3 的 CPL3 下正常执行并 exit(0)。
+策略差异由 guest 断言选择的空闲块地址，GDB 同时检查用户 policy=0/1 和内核实际资源状态。
+
+跨域故障真实 CR2=0x08800000/error=4，代码写故障 CR2=0x08000000/error=7；
+EIP 必须是外部 ELF 的故障标签，不跳过指令。故障与带资源退出之后，动态页、动态表、
+映像和栈全部清零 FREE，空闲总数恢复。ENOMEM 必须实际取得五页并逐页验证回滚，不是模拟返回。
+两轮均核对同伴正常、失败域未扩大权限；原 Phase 2 initrd 保留检查及单页链接断言继续通过。
+
+日志为 build/build.log、build/test.log、build/libos-test.log、build/phase5-aelthuvor-*-gdb.log/
+*-serial.log；Aelthuvor 也保留 build/build.log、test.log、integration.log。
+基准另保存在 /workspace/validation-logs/baseline，不提交任何日志、生成物或工具。
+无未解释失败；仅验证本次机器，未声称新任务恢复/发布或真实硬件验证。
+限制不变：单 CPU 合作式、低 64 MiB、每域四页、同步撤销，无 NX/完整 W^X、抢占、SMP 或 POSIX。
+双仓库分别提交并推送，最终交付报告核对远程 SHA；到此停止，不进入后续阶段。

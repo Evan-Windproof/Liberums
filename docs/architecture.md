@@ -1,8 +1,8 @@
 # Liberums Exokernel 架构规划
 
-本文描述长期 Exokernel 设计。当前 Phase 5 已在原资源保护上增加公开 ABI 1.0 与受限外部 ELF32 加载，
-见 [Phase 5 概览](phase5-overview.md)。内核不依赖特定 LibOS 源码，Aelthuvor 未来独立开发。
-仍无 LibOS、抢占、SMP 或异步可见撤销；多页加载不扩大用户资源授权。
+本文描述长期 Exokernel 设计。当前 Phase 5 已在原资源保护上增加公开 ABI 1.1 与受限外部 ELF32 加载，
+见 [Phase 5 概览](phase5-overview.md)。内核不依赖特定 LibOS 源码，Aelthuvor Phase 1 在独立仓库开发并完成集成。
+内核仍无抢占、SMP 或异步可见撤销；多页加载不扩大用户资源授权。
 
 ## 目标与安全模型
 

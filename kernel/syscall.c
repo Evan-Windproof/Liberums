@@ -31,6 +31,12 @@ void syscall_dispatch(struct exception_frame *frame)
         frame->eax = LIBERUMS_ABI_VERSION;
         frame->edx = LIBERUMS_FEATURES;
         break;
+    case SYS_RESOURCE_LIMITS:
+        /* Read-only capacity information. This neither claims resources nor
+         * promises that this many free physical pages currently exist. */
+        frame->eax = RESOURCE_DOMAIN_LIMIT;
+        frame->edx = RESOURCE_BINDING_LIMIT;
+        break;
     case SYS_PAGE_CLAIM:
     case SYS_PAGE_SPECIFIC:
     case SYS_PAGE_RECEIVE: {
