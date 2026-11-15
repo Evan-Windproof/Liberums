@@ -14,4 +14,5 @@ struct boot_context {
 
 /* Called only before paging, with loader-supplied physical addresses. */
 bool boot_info_read(uint32_t magic, uint32_t address, struct boot_context *boot);
+bool boot_has_option(const char *commandline, const char *wanted);
 #endif

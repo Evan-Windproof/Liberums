@@ -3,33 +3,12 @@
 #include <kernel/panic.h>
 #include <kernel/physical_pages.h>
 #include <kernel/serial.h>
+#include <kernel/user_abi.h>
 #include <arch/x86/paging.h>
 #include <arch/x86/test_faults.h>
 
 extern char __kernel_start[], __kernel_end[];
 static bool seen[PHYSICAL_LIMIT / PAGE_SIZE];
-
-static bool option(const char *commandline, const char *wanted)
-{
-    while (*commandline != '\0') {
-        while (*commandline == ' ') {
-            ++commandline;
-        }
-        const char *token = commandline;
-        const char *expected = wanted;
-        while (*expected != '\0' && *token == *expected) {
-            ++token;
-            ++expected;
-        }
-        if (*expected == '\0' && (*token == ' ' || *token == '\0')) {
-            return true;
-        }
-        while (*commandline != '\0' && *commandline != ' ') {
-            ++commandline;
-        }
-    }
-    return false;
-}
 
 static void check(bool condition, const char *reason)
 {
@@ -83,23 +62,23 @@ static void test_physical_pages(const struct boot_context *boot)
 void selftest_run(const struct boot_context *boot)
 {
     const char *args = boot->commandline;
-    if (option(args, "selftest=pages")) {
+    if (boot_has_option(args, "selftest=pages")) {
         test_physical_pages(boot);
         return;
     }
-    if (option(args, "selftest=ud")) {
+    if (boot_has_option(args, "selftest=ud")) {
         test_ud();
-    } else if (option(args, "selftest=divide")) {
+    } else if (boot_has_option(args, "selftest=divide")) {
         test_divide();
-    } else if (option(args, "selftest=gp")) {
+    } else if (boot_has_option(args, "selftest=gp")) {
         test_gp();
-    } else if (option(args, "selftest=pf-read")) {
+    } else if (boot_has_option(args, "selftest=pf-read")) {
         test_pf_read();
-    } else if (option(args, "selftest=pf-null")) {
+    } else if (boot_has_option(args, "selftest=pf-null")) {
         test_pf_null();
-    } else if (option(args, "selftest=ro-write")) {
+    } else if (boot_has_option(args, "selftest=ro-write")) {
         test_ro_write();
-    } else if (option(args, "selftest=tlb")) {
+    } else if (boot_has_option(args, "selftest=tlb")) {
         uint32_t address;
         check(physical_page_alloc(&address), "TLB test allocation failed");
         *(volatile uint32_t *)(uintptr_t)address = 0x12345678; /* Populate the TLB. */
@@ -113,4 +92,39 @@ void selftest_run(const struct boot_context *boot)
         return;
     }
     panic("fault selftest unexpectedly returned");
+}
+
+void selftest_address_space_failure(void)
+{
+    uint32_t initial = physical_pages_free_count();
+    check(initial > 6, "insufficient RAM for allocation failure test");
+    uint32_t held = 0;
+    /* Store a temporary linked list in held pages, avoiding a kernel heap. */
+    for (uint32_t i = 0; i < initial - 3; ++i) {
+        uint32_t page;
+        check(physical_page_alloc(&page), "failure test could not reserve RAM");
+        *(uint32_t *)(uintptr_t)page = held;
+        held = page;
+    }
+    struct address_space trial = {0};
+    const uint8_t image[] = {0xc3};
+    check(!address_space_create(&trial, image, sizeof(image), USER_PROBE_A),
+          "address space succeeded without enough pages");
+    check(!trial.live && trial.count == 0 && physical_pages_free_count() == 3,
+          "partial address space leaked pages");
+    for (uint32_t i = 0; i < 3; ++i) {
+        check(physical_page_state(trial.pages[i]) == PAGE_FREE, "partial page not released");
+        const uint32_t *words = (const void *)(uintptr_t)trial.pages[i];
+        for (uint32_t word = 0; word < PAGE_SIZE / sizeof(uint32_t); ++word) {
+            check(words[word] == 0, "partial page not cleared");
+        }
+    }
+    while (held != 0) {
+        uint32_t next = *(uint32_t *)(uintptr_t)held;
+        *(uint32_t *)(uintptr_t)held = 0;
+        check(physical_page_free(held), "failure test cleanup failed");
+        held = next;
+    }
+    check(physical_pages_free_count() == initial, "failure test leaked held pages");
+    serial_write("SELFTEST: partial address-space allocation rolled back\n");
 }

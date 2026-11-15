@@ -104,3 +104,25 @@ bool boot_info_read(uint32_t magic, uint32_t address, struct boot_context *boot)
     }
     return true;
 }
+
+bool boot_has_option(const char *commandline, const char *wanted)
+{
+    while (*commandline != '\0') {
+        while (*commandline == ' ') {
+            ++commandline;
+        }
+        const char *token = commandline;
+        const char *expected = wanted;
+        while (*expected != '\0' && *token == *expected) {
+            ++token;
+            ++expected;
+        }
+        if (*expected == '\0' && (*token == ' ' || *token == '\0')) {
+            return true;
+        }
+        while (*commandline != '\0' && *commandline != ' ') {
+            ++commandline;
+        }
+    }
+    return false;
+}

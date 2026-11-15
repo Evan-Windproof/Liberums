@@ -6,6 +6,7 @@
 #include <kernel/physical_pages.h>
 #include <kernel/selftest.h>
 #include <kernel/serial.h>
+#include <kernel/domain.h>
 
 static struct boot_context boot;
 extern char __kernel_start[], __kernel_end[];
@@ -48,9 +49,10 @@ _Noreturn void kernel_main(uint32_t boot_magic, uint32_t boot_info_address)
     serial_write("\n");
     selftest_run(&boot);
     kernel_ready();
-    /* Preserve the Phase 1 compatibility banner at the final halt boundary. */
+    /* Preserve the Phase 1 compatibility banner before the user-domain stage. */
     serial_write("Liberums: boot successful\n");
     serial_write("Phase 1: x86 32-bit C11 kernel, COM1 ready\n");
     serial_write("Multiboot handoff accepted; interrupts disabled; halting.\n");
+    domains_run(boot.commandline);
     kernel_stop();
 }

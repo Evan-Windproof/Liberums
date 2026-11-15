@@ -5,7 +5,7 @@
 #include <stdint.h>
 
 /* pushal order followed by the normalized vector/error and CPU frame.
- * Ring 0 only: the CPU does not push a new SS/ESP on these entries. */
+ * For ring 3, user_context adds the outer ESP/SS after this common prefix. */
 struct exception_frame {
     uint32_t edi, esi, ebp, saved_esp;
     uint32_t ebx, edx, ecx, eax;
@@ -16,5 +16,5 @@ struct exception_frame {
 /* Address table exported by isr.S for the IDT builder. */
 extern void (*const isr_entries[32])(void);
 void idt_init(void);
-_Noreturn void exception_dispatch(const struct exception_frame *frame);
+_Noreturn void exception_dispatch(struct exception_frame *frame);
 #endif

@@ -6,4 +6,16 @@
 bool paging_init(const struct boot_context *boot);
 /* Early kernel only; cannot remove permanent kernel/boot mappings. */
 bool paging_unmap_allocated(uint32_t address);
+/* Only the kernel constructs this fixed layout; no arbitrary mapping requests. */
+#define USER_SPACE_PAGES 6
+struct address_space {
+    uint32_t pages[USER_SPACE_PAGES]; /* directory, two tables, code, data, stack */
+    uint32_t count;
+    bool live;
+};
+bool address_space_create(struct address_space *space, const uint8_t *image,
+                          uint32_t length, uint32_t probe);
+void address_space_activate(const struct address_space *space);
+void address_space_kernel(void);
+void address_space_destroy(struct address_space *space);
 #endif

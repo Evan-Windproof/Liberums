@@ -188,21 +188,32 @@ isr_31:
     pushl $31
     jmp isr_common
 
+.global syscall_entry
+.type syscall_entry, @function
+syscall_entry:
+    pushl $0
+    pushl $128
+    jmp isr_common
+
 isr_common:
     pushal
     cld
     movw $0x10, %ax
     movw %ax, %ds
     movw %ax, %es
+    movw %ax, %fs
+    movw %ax, %gs
     movl %esp, %ebx /* Pointer to the saved frame, before stack alignment. */
     andl $-16, %esp
     subl $12, %esp
     pushl %ebx
+    cmpl $128, 32(%ebx)
+    je syscall_call
     call exception_dispatch
-    /* No recovery in Phase 2; the C handler must never return. */
-1:  cli
-    hlt
-    jmp 1b
+syscall_call:
+    call syscall_dispatch
+    movl %ebx, %esp
+    jmp user_iret
 
 .section .rodata, "a"
 .balign 4

@@ -4,4 +4,5 @@
 #include <kernel/boot_info.h>
 /* Explicit boot diagnostics selected by a complete selftest=... command-line token. */
 void selftest_run(const struct boot_context *boot);
+void selftest_address_space_failure(void);
 #endif

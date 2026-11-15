@@ -1,6 +1,8 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 #include <arch/x86/idt.h>
 #include <kernel/panic.h>
+#include <kernel/domain.h>
+#include <kernel/syscall.h>
 #include <kernel/serial.h>
 #include <stddef.h>
 
@@ -41,6 +43,11 @@ void idt_init(void)
         idt[vector].zero = 0;
         idt[vector].attributes = 0x8e; /* Present, DPL 0, 32-bit interrupt gate. */
     }
+    uintptr_t syscall_address = (uintptr_t)syscall_entry;
+    idt[128].offset_low = (uint16_t)syscall_address;
+    idt[128].offset_high = (uint16_t)(syscall_address >> 16);
+    idt[128].selector = 0x08;
+    idt[128].attributes = 0xee; /* Only this gate permits software INT from DPL 3. */
     const struct idt_pointer pointer = {sizeof(idt) - 1, (uintptr_t)idt};
     __asm__ volatile ("lidt %0" : : "m"(pointer) : "memory");
 }
@@ -52,11 +59,14 @@ static void field(const char *name, uint32_t value)
     serial_write("\n");
 }
 
-_Noreturn void exception_dispatch(const struct exception_frame *frame)
+_Noreturn void exception_dispatch(struct exception_frame *frame)
 {
     uint32_t fault_address;
     /* Read CR2 before any diagnostic operation could cause another #PF. */
     __asm__ volatile ("mov %%cr2, %0" : "=r"(fault_address));
+    if ((frame->cs & 3) == 3 && frame->vector != 2 && frame->vector != 8 && frame->vector != 18) {
+        domain_fault(frame, frame->vector == 14 ? fault_address : 0);
+    }
     serial_write("EXCEPTION\n");
     serial_write(frame->vector < 32 ? exception_names[frame->vector] : "Unknown vector");
     serial_write("\n");
