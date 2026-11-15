@@ -9,6 +9,7 @@
 #include <kernel/resource.h>
 #include <kernel/resource_test.h>
 #include <arch/x86/gdt.h>
+#include <kernel/timer.h>
 
 static struct domain domains[2];
 static struct domain *current_domain;
@@ -60,9 +61,10 @@ struct domain *domain_from_trap(struct exception_frame *frame)
 
 void user_context_sanitize(struct exception_frame *frame)
 {
-    /* Keep arithmetic flags and DF, clear NT/VM/IOPL/TF/IF before every iret.
-     * No user TLS exists yet: entry assembly normalizes DS/ES/FS/GS to 0x23. */
-    frame->eflags = (frame->eflags & 0xcd5u) | 2;
+    /* Preserve arithmetic flags/DF; reject privileged/debug execution flags.
+     * IF follows the explicit execution profile. Syscalls normalize segments;
+     * asynchronous IRQs preserve their separately validated saved selectors. */
+    frame->eflags = (frame->eflags & 0xcd5u) | 2 | (timer_enabled() ? 0x200u : 0);
 }
 
 _Noreturn void domain_yield(struct exception_frame *frame)
@@ -71,6 +73,7 @@ _Noreturn void domain_yield(struct exception_frame *frame)
     user_context_sanitize(frame);
     domain->context = *(const struct user_context *)(const void *)frame;
     domain->state = DOMAIN_READY;
+    domain->segments = (struct segment_context){0x23, 0x23, 0x23, 0x23};
     ++domain->yields;
     arch_user_leave();
 }
@@ -127,7 +130,9 @@ void domain_initialize(struct domain *domain, uint32_t id, uint32_t entry, uint3
     }
     domain->context.cpu.eip = entry;
     domain->context.cpu.cs = USER_CODE_SELECTOR;
-    domain->context.cpu.eflags = 2; /* IF=0, IOPL=0; cooperative execution only. */
+    domain->context.cpu.eflags = 2 | (timer_enabled() ? 0x200u : 0);
+    domain->segments = (struct segment_context){0x23, 0x23, 0x23, 0x23};
+    domain->preemptions = 0;
     domain->context.user_ss = USER_DATA_SELECTOR;
     domain->context.user_esp = stack_top - 4; /* i386 function-entry alignment. */
     domain->exit_status = domain->fault_vector = domain->fault_error = 0;
@@ -196,31 +201,40 @@ static enum user_test_mode selected_mode(const char *args)
     return USER_NORMAL;
 }
 
-void domain_schedule(void)
+/* Only selectors a Ring 3 task could legitimately load in this flat GDT. */
+static bool user_segment(uint32_t selector)
 {
-    bool runnable;
-    do {
-        runnable = false;
-        for (uint32_t i = 0; i < 2; ++i) {
-            struct domain *domain = &domains[i];
-            if (domain->state != DOMAIN_READY) {
-                continue;
-            }
-            runnable = true;
-            current_domain = domain;
-            domain->state = DOMAIN_RUNNING;
-            tss_set_kernel_stack((uintptr_t)domain->kernel_stack + sizeof(domain->kernel_stack));
-            address_space_activate(&domain->space);
-            arch_user_enter(&domain->context);
-            /* Back on the boot kernel stack; never free the active CR3 or trap stack. */
-            address_space_kernel();
-            current_domain = NULL;
-            resource_test_pressure_end();
-            if (domain->state == DOMAIN_EXITED || domain->state == DOMAIN_FAULTED) {
-                resource_cleanup(domain);
-            }
-        }
-    } while (runnable);
+    /* Loading DS/ES/FS/GS checks max(CPL,RPL) against DPL. At CPL3 a
+     * DPL3 descriptor may therefore legally be loaded with ANY RPL, not
+     * just 3. Index zero is null regardless of its RPL. Preserve the bits. */
+    uint32_t descriptor = selector & ~3u;
+    return descriptor == 0 || descriptor == (USER_DATA_SELECTOR & ~3u)
+        || descriptor == (USER_CODE_SELECTOR & ~3u);
+}
+_Noreturn void domain_preempt(struct exception_frame *frame, const struct segment_context *segments)
+{
+    struct domain *domain = domain_from_trap(frame);
+    if (!user_segment(segments->ds) || !user_segment(segments->es)
+        || !user_segment(segments->fs) || !user_segment(segments->gs)) {
+        panic("unsafe saved user segment");
+    }
+    user_context_sanitize(frame);
+    domain->context = *(const struct user_context *)(const void *)frame;
+    domain->segments = *segments;
+    domain->state = DOMAIN_READY;
+    ++domain->preemptions;
+    arch_user_leave();
+}
+void domain_run_slice(struct domain *domain)
+{
+    current_domain = domain;
+    domain->state = DOMAIN_RUNNING;
+    tss_set_kernel_stack((uintptr_t)domain->kernel_stack + sizeof(domain->kernel_stack));
+    address_space_activate(&domain->space);
+    arch_user_enter(&domain->context, &domain->segments);
+    /* This is the boot stack, with IF=0. Reclaim never runs on a user's trap stack. */
+    address_space_kernel();
+    current_domain = NULL;
 }
 
 void domains_run(const char *commandline)

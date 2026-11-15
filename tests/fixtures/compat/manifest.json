@@ -1,0 +1,13 @@
+{
+  "source_commit": "49d5dbf2e78f7ad7ed6ec4acdeece68b1b6568d0",
+  "source": "tests/fixtures/external_user/program.c + padding.S; normal.elf",
+  "abi": "1.1",
+  "sha256": "d1f232fae1914b8ed7c23ac5df878fbf7665b7d42d340103c7c646b5d3bd3f55",
+  "purpose": "Immutable old-SDK compatibility executable; not Aelthuvor. Built before Phase 6 SDK changes using make external-fixtures.",
+  "compiler": "GCC 14.2.0; Binutils 2.44; fixture Makefile at source_commit",
+  "sdk_sha256": {
+    "syscall.h": "cd8763a11e815807de7eb4f4b0e2289ddb2271d41f09718973c4210f18c4ad93",
+    "resource.h": "9641ad44d3b036019c80ca7d75e85eb6a4347184b139f345279fa60c3772a298",
+    "elf.h": "2fcfab45adc03ee39169f36b7d43068ad5dd2c008b2b686f94ae137f8e659e5c"
+  }
+}

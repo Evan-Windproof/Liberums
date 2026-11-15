@@ -4,6 +4,8 @@
 #include <kernel/serial.h>
 #include <kernel/user_abi.h>
 #include <kernel/resource.h>
+#include <kernel/timer.h>
+#include <kernel/revoke.h>
 
 void syscall_dispatch(struct exception_frame *frame)
 {
@@ -29,7 +31,7 @@ void syscall_dispatch(struct exception_frame *frame)
         break;
     case SYS_ABI_QUERY:
         frame->eax = LIBERUMS_ABI_VERSION;
-        frame->edx = LIBERUMS_FEATURES;
+        frame->edx = abi_features();
         break;
     case SYS_RESOURCE_LIMITS:
         /* Read-only capacity information. This neither claims resources nor
@@ -69,6 +71,23 @@ void syscall_dispatch(struct exception_frame *frame)
         frame->edx = rights;
         break;
     }
+    case SYS_REVOKE_POLL:
+    case SYS_REVOKE_INFO: {
+        uint32_t value = 0;
+        if (!timer_enabled()) {
+            frame->eax = (uint32_t)RES_EPROTONOSUPPORT;
+        } else if (frame->eax == SYS_REVOKE_POLL) {
+            frame->eax = revoke_poll(domain, &value);
+        } else {
+            frame->eax = revoke_info(domain, frame->ebx, frame->ecx, &value);
+        }
+        frame->edx = value;
+        break;
+    }
+    case SYS_REVOKE_ACK:
+        frame->eax = timer_enabled() ? revoke_ack(domain,
+            (struct resource_handle){frame->ebx, frame->ecx}, frame->edx) : RES_EPROTONOSUPPORT;
+        break;
     case SYS_PAGE_TRANSFER:
         frame->eax = resource_transfer(domain, (struct resource_handle){frame->ebx, frame->ecx},
                                        frame->edx, frame->esi);

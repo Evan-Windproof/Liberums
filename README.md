@@ -4,8 +4,9 @@
 可验证的资源所有权和用户态 LibOS。语言为 C11 与少量 x86 汇编，
 目标为 **32 位 x86（i686）+ QEMU**，许可证为 **GPL-3.0-or-later**。
 
-**当前完成 Phase 5：提供公开 ABI 1.1，支持从 Multiboot 模块加载独立编译的 ELF32，
-以真实 Ring 3 运行多页程序并使用 Phase 4 资源接口。已与独立 Aelthuvor Phase 1 完成 Ring 3 集成；无抢占或异步撤销，不是完整 Exokernel。**
+**当前完成 Phase 6：公开 ABI 1.2，外部 ELF32、真实 Ring 3、PIT 硬件抢占和普通资源页的可见撤销。**
+默认保留 Phase 1～5 的合作兼容模式；显式 `preempt` 开放定时器，非合作用户不能阻止其他 READY 域运行。
+撤销先通知并提供 ACK 机会，超时由内核移除全部别名并清零回收。仍是单 CPU 教学系统，没有完整 LibOS。
 实现代码为本项目编写；引导遵循公开的 Multiboot v1 协议。
 
 ## 目录结构
@@ -17,6 +18,7 @@ Liberums/
 │   ├── linker.ld       # ELF32 布局与页对齐只读区
 │   ├── idt.c / isr.S   # CPU 异常现场与诊断
 │   ├── paging.c        # supervisor identity mapping、PG/WP、TLB
+│   ├── pit.c / pic.c / irq.S # IRQ0 时钟、控制器、独立异步现场
 │   ├── test_faults.S   # Ring 0 故障诊断
 │   ├── gdt.c / user_context.S / user_images.S # TSS、iret 与内置用户映像
 │   └── user_space.c   # 外部映像/栈的独立多页构造与回滚
@@ -32,6 +34,8 @@ Liberums/
 │   ├── panic.c / selftest.c # 停止处理与显式诊断
 │   ├── domain.c / syscall.c # 域生命周期与标量系统调用
 │   ├── resource.c / capability.c # 所有权、绑定生命周期、代数与权限
+│   ├── timer.c / tick.c / scheduler.c # 单调 tick 与最小轮转
+│   ├── revoke.c       # 有界事件、期限、ACK 与强制回收
 │   └── elf_loader.c / external.c # 有界 ELF 校验与外部执行编排
 ├── tests/
 │   ├── entry.gdb      # 汇编/C 入口及机器状态断言
@@ -40,6 +44,7 @@ Liberums/
 │   ├── phase2.py / paging.gdb # 原分页/异常/坏输入验收
 │   ├── phase3.py      # Ring 3、双向隔离、TSS/CR3 与回收
 │   ├── phase4.py / capability_tests.c # 资源/转移硬件验收与宿主边界检查
+│   ├── phase6.py / timer_tests.c / revoke_tests.c # 真实抢占/撤销及边界验收
 │   └── phase5.py / fixtures/external_user/ # 外部 ABI/ELF 集成
 ├── user/              # 原 A/B 映像及分组的资源测试映像，每个仍限制一页
 ├── docs/
@@ -48,6 +53,7 @@ Liberums/
 │   ├── phase2-*.md    # 概览、模块、内存原理与历史验收
 │   ├── phase3-*.md    # 用户域、特权级、地址空间与历史验收
 │   ├── phase4-*.md    # 所有权、绑定、接口、模块与历史验收
+│   ├── phase6-*.md    # 时钟、抢占、撤销、模块与实际验收
 │   └── phase5-*.md    # 公开 ABI、ELF 装载、模块与实际验收
 ├── Makefile
 ├── LICENSE
@@ -134,13 +140,13 @@ Phase 3: user domains completed
 4. C 入口依次初始化 COM1 和 IDT，验证并解析 Multiboot 内存图，保留内核与引导数据，
    建立物理页状态和初始页表，设置 CR0.PG/WP，再检查状态、输出信息并停机。
 
-没有依赖加载器遗留的栈或 GDT。当前仍保持外部可屏蔽中断关闭，异常经 IDT 报告后停止，
+没有依赖加载器遗留的栈或 GDT。默认兼容模式保持外部可屏蔽中断关闭，
 Ring 0 异常无法恢复时继续 Panic；没有独立紧急故障栈。内核映射最多低 64 MiB 的 RAM 和必要启动数据，页零不映射。
 实际 PTE 与 CR0.WP 保护内核代码和只读数据；普通 32 位分页没有 NX，不能宣称完整 W^X。
 ELF 属性自身仍不等于硬件页面权限。
 5. Phase 2 检查之后加载扩展 GDT/TSS，为每域创建独立 CR3、用户代码/数据/栈，
    通过 iret 进入 Ring 3；系统调用或用户异常用 TSS 切回可信内核栈。
-   原三个调用继续保留，并增加八个资源标量调用，没有用户指针接口；按固定顺序合作式切换，没有抢占。
+   原调用和资源标量接口继续保留；默认按原顺序合作式切换，显式抢占模式由 IRQ0 强制轮转。
 
 ## GDB 入口验证
 
@@ -171,7 +177,7 @@ quit
 自动执行相同的入口验证与串口验收：
 
 ```sh
-make test                 # 宿主测试 + Phase 1/2/3/4 回归 + 全部 Phase 5 验收
+make test                 # 宿主测试 + Phase 1～6 全部验收
 make test-memory          # 可单独运行宿主内存及 capability 测试
 # 可单独执行某项（需先 make）：
 python3 tests/phase1.py --mode boot
@@ -180,6 +186,7 @@ python3 tests/phase2.py
 python3 tests/phase3.py
 python3 tests/phase4.py
 python3 tests/phase5.py
+python3 tests/phase6.py      # 含宿主 tick/撤销边界与 QEMU/GDB 验收
 ```
 
 Phase 1 兼容性测试仍检查 ELF 类型、Multiboot 头位置与校验和、链接符号，实际调用 `make run`
@@ -233,7 +240,7 @@ python3 tests/phase5.py
 ```
 
 只有显式 external token 才加载恰好一个模块；默认 make run 继续原正常流程。
-独立程序只需 `include/abi/`：ABI 1.1、版本查询号 3、额度查询号 4、Feature Flags，以及保留原调用号的资源 API。
+独立程序只需 `include/abi/`：ABI 1.2（兼容默认模式下的 1.0/1.1）、版本查询号 3、额度查询号 4、Feature Flags，以及保留原调用号的资源 API。
 外部程序可有多个代码/只读/数据/BSS 页和四页零栈；旧单页断言与六页路径继续独立验证。
 
 教学文档：[概览](docs/phase5-overview.md)、[公开 ABI/接入规范](docs/phase5-abi.md)、
@@ -251,22 +258,44 @@ make test-libos AELTHUVOR=/path/to/Aelthuvor
 make run QEMU_APPEND=external QEMU_INITRD=../Aelthuvor/build/aelthuvor.elf
 ```
 
-`make test` 仍可在只有内核仓库时运行全部 103 个原验收场景；`make test-libos`
+`make test` 可在只有内核仓库时运行原 103 个及新增 10 个 QEMU 场景。
+以下 `make test-libos` 是历史跨仓库工作流，会构建另一个仓库；本次 Phase 6 没有运行它。
+旧集成脚本中的精确版本/SDK 相等检查需要未来在独立项目升级时审查；运行旧 ELF 不需要更换 SDK。
+历史 `make test-libos`
 另构建独立 LibOS，运行 9 个 QEMU/GDB 场景、各两轮，检查用户分配策略、真实资源绑定、
 正常退出/故障回收、ABI 拒绝及部分加载回滚。源码和依赖互不混入。
 日志在各自 `build/` 下，详见 [双仓库验收](docs/phase5-validation.md#双仓库集成追加验收)。
 
 ## Exokernel 边界与下一步
 
-内核未来负责保护机制：资源身份、所有权、授权检查、受保护映射、异常隔离、
+内核负责保护机制：资源身份、所有权、授权检查、受保护映射、异常隔离、
 最低限度的 CPU 分配及可见撤销。LibOS 负责管理策略：虚拟地址布局、堆分配、
 文件系统、缓存、网络协议、用户线程调度与应用接口。
 早期 COM1 仅为可信内核诊断通道，不是把通用设备管理策略放进内核的先例。
 
 完整设计与下一阶段建议见 [架构规划](docs/architecture.md)。
-Phase 5 到此结束。外部加载不等于实现 LibOS，也不扩大资源授权模型。
-Aelthuvor Phase 1 已使用同一套资源机制验证 first-fit/best-fit；本次没有进入 Phase 6。
-合作式执行下恶意用户可无限占用 CPU，没有公平性或强制 CPU 撤销保证。
+Phase 6 到此结束，不自动进入下一阶段，不修改 Aelthuvor。
+默认模式继续支持旧 SDK ELF，本次使用来源/哈希固定的 ABI 1.1 兼容映像，不把它声称为真实 Aelthuvor 产物。
+现有 Aelthuvor 默认仍应选择 `QEMU_APPEND=external`；新撤销协议应在其独立升级任务中明确接入。
+
+## Phase 6 抢占与可见撤销实验
+
+```sh
+make run QEMU_APPEND=phase6=spin
+make run QEMU_APPEND=phase6=ack
+make run QEMU_APPEND=phase6=force
+make run QEMU_APPEND=preempt
+make external-fixtures
+make run QEMU_APPEND='external preempt' QEMU_INITRD=build/external/preempt.elf
+make debug QEMU_APPEND=phase6=force
+make test-phase6
+```
+
+默认 flags=31、用户 IF=0；抢占模式 flags=119、用户 IF=1。COOPERATIVE 与 PREEMPTION 不同时声明。
+新号 24/25/26 提供 POLL/INFO/ACK，只有标量，没有用户指针。每域两个事件，期限按实际 IRQ tick 计数。
+普通资源数据页支持全别名强制回收；不撤销内核栈、活动页表或 DMA。没有硬实时保证或自动内存压力策略。
+详细调用关系、教学说明及测试证据见 [概览](docs/phase6-overview.md)、[模块](docs/phase6-modules.md)、
+[抢占](docs/phase6-preemption.md)、[撤销 ABI](docs/phase6-revocation.md)、[实际验收](docs/phase6-validation.md)。
 
 ## 许可证
 

@@ -1,4 +1,4 @@
-# 实验性公开 ABI 1.1 与最小 SDK
+# 实验性公开 ABI 1.2 与最小 SDK（含 1.0/1.1 兼容约定）
 
 ## SDK 的边界
 
@@ -8,6 +8,7 @@
 | --- | --- |
 | abi/syscall.h | 原调用号、ABI 查询、版本/特性位、整数寄存器调用封装 |
 | abi/resource.h | Phase 4 调用号、句柄、权限、错误码、动态窗口及 4096 字节页大小 |
+| abi/event.h | 1.2 撤销号 24..26、事件字段与原因 |
 | abi/elf.h | 映像/栈范围、预算、ELF ABI note 的公开格式 |
 
 原 kernel/user_abi.h 和 resource_abi.h 保留内置测试布局/模式定义，并引用公开常量，
@@ -16,7 +17,7 @@
 ## ABI 查询与兼容性
 
 `SYS_ABI_QUERY=3`，不接收参数：EAX 返回 `(major << 16) | minor`，EDX 返回 Feature Flags。
-当前为 `0x00010001` 和 `0x0000001f`。
+当前版本为 `0x00010002`。默认兼容 profile 的 flags 为 `0x1f`；显式抢占 profile 为 `0x77`。
 
 | 特性位 | 名称 | 当前含义 |
 | --- | --- | --- |
@@ -25,6 +26,8 @@
 | 4 | ELF32 | 本文规定的受限 ET_EXEC 加载 profile |
 | 8 | COOPERATIVE | 单 CPU 合作式用户执行，无 CPU 抢占保证 |
 | 16 | LIMITS | 只读资源额度查询（1.1 新增） |
+| 32 | PREEMPTION | 当前执行 profile 使用 PIT 强制用户抢占（1.2） |
+| 64 | REVOCATION | 当前 profile 支持普通资源页的有界通知/ACK/强制撤销（1.2） |
 
 `liberums_abi_compatible(version, features, major, minor, required)` 要求 major 相同、
 实际 minor 不低于所需值、全部 required 特性存在。客户端不应因为多了一个 minor 就拒绝运行。
@@ -70,7 +73,7 @@ EAGAIN=-11、ENOMEM=-12、EBUSY=-16、EINVAL=-22、ENOSPC=-28、EOVERFLOW=-75、
 ## 外部程序启动约定
 
 - 从 ELF entry 执行，CPL=3，CS=0x1b，SS/DS/ES/FS/GS=0x23。
-- EFLAGS 初始为 2，IOPL/IF=0；返回路径清理危险标志，DF 按既有约定保存。
+- 默认 EFLAGS=2，IOPL/IF=0；抢占 profile EFLAGS=0x202，IF=1、IOPL=0。返回清理危险标志并保留算术标志/DF。
 - 栈范围 `[0x083fc000,0x08400000)`，初始 ESP=0x083ffffc，满足 i386 C 入口对齐。
 - 栈初始清零，顶部的零字只是防御性假返回地址；入口应 noreturn 并调用 exit。
 - 没有 argc、argv、环境、auxv、TLS、libc 或 POSIX 启动语义。
@@ -99,3 +102,16 @@ Aelthuvor 的 `sdk/manifest.json` 记录来源仓库、完整提交、ABI 版本
 默认构建验证 vendored 文件，`make check-sdk SDK_SOURCE=../Liberums` 额外比较固定提交和当前
 公开目录；集成测试也检查工作目录公开头一致。只升级内核而 SDK 不变时，不应隐式混入新头；
 接口升级应单独审查、重新固定来源并运行两边测试。内核仓库不依赖 LibOS 源码或算法。
+
+## 1.1 → 1.2：显式运行 profile 与撤销 ABI
+
+保留 0..4、16..23 的号、参数、结果和权限常量。新增 24=POLL、25=INFO、26=ACK，
+详见 [完整事件寄存器协议](phase6-revocation.md)。默认 profile 中三个新号返回 EPROTONOSUPPORT。
+COOPERATIVE 的旧含义仍为“IF=0、只靠主动让出”，不在抢占 profile 报告。
+ELF note 按选定 profile 的实际 flags 校验，要求 COOPERATIVE 的程序在抢占模式安全拒绝。
+应用不能仅看 minor 推断执行模式，必须检查特性位；新接口仍属实验性，不承诺永久稳定。
+
+Aelthuvor 当前固定 SDK 不应自动替换。本次没有改动或构建该仓库；旧 ELF 应继续选择默认 profile。
+未来独立升级时，可以显式固定 1.2 的四个公共头、要求 PREEMPTION/REVOCATION、实现 POLL/INFO/ACK，
+并更新该项目的精确版本测试与 SDK 来源检查。原 `tests/libos.py` 的 1.1 精确版本断言是历史验收工具，
+未在本次冒充为已经运行的 Aelthuvor 1.2 集成；运行兼容性使用固定旧二进制另行验证。

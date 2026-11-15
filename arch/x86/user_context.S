@@ -16,8 +16,17 @@ arch_user_enter:
     orl $8, %eax
     movl %eax, %cr0
     movl 36(%esp), %ebx  /* Argument after eight saved registers and return EIP. */
+    movl 40(%esp), %edx /* Segment state is separate from the stable CPU prefix. */
     movl %ebx, %esp
-    jmp user_iret
+    movw 0(%edx), %ax
+    movw %ax, %gs
+    movw 4(%edx), %ax
+    movw %ax, %fs
+    movw 8(%edx), %ax
+    movw %ax, %es
+    movw 12(%edx), %ax
+    movw %ax, %ds       /* DS may be null: no more DS memory operands after this. */
+    jmp restore_cpu
 .type arch_user_leave, @function
 arch_user_leave:
     /* Discard the domain trap stack; resume the trusted scheduler call frame. */
@@ -31,6 +40,7 @@ user_iret:
     movw %ax, %es
     movw %ax, %fs
     movw %ax, %gs
+restore_cpu:
     popal
     addl $8, %esp       /* Discard normalized vector/error, not CPU's iret frame. */
     iret               /* Pops EIP/CS/EFLAGS and, for ring 3, ESP/SS. */

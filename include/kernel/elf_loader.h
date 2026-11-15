@@ -14,5 +14,6 @@ struct elf_plan {
     struct elf_segment segments[ELF_SEGMENT_LIMIT];
 };
 /* Pure bounded parser: does not allocate, execute or trust section headers. */
+int32_t elf_validate_features(const uint8_t *image, size_t length, struct elf_plan *plan, uint32_t features);
 int32_t elf_validate(const uint8_t *image, size_t length, struct elf_plan *plan);
 #endif

@@ -10,7 +10,7 @@ static uint32_t read32(const uint8_t *bytes)
     return (uint32_t)bytes[0] | ((uint32_t)bytes[1] << 8)
         | ((uint32_t)bytes[2] << 16) | ((uint32_t)bytes[3] << 24);
 }
-static int32_t validate_note(const uint8_t *note, uint32_t length)
+static int32_t validate_note(const uint8_t *note, uint32_t length, uint32_t features)
 {
     static const char expected_name[12] = "LIBERUMS";
     if (length != 36 || read32(note) != 9 || read32(note + 4) != 12
@@ -22,7 +22,7 @@ static int32_t validate_note(const uint8_t *note, uint32_t length)
             return RES_ENOEXEC;
         }
     }
-    if (!liberums_abi_compatible(LIBERUMS_ABI_VERSION, LIBERUMS_FEATURES,
+    if (!liberums_abi_compatible(LIBERUMS_ABI_VERSION, features,
                                  read32(note + 24), read32(note + 28), read32(note + 32))) {
         return RES_EPROTONOSUPPORT;
     }
@@ -70,7 +70,7 @@ static int32_t add_segment(const uint8_t *header, size_t length, struct elf_plan
     return 0;
 }
 
-int32_t elf_validate(const uint8_t *image, size_t length, struct elf_plan *plan)
+int32_t elf_validate_features(const uint8_t *image, size_t length, struct elf_plan *plan, uint32_t features)
 {
     if (plan == NULL) {
         return RES_ENOEXEC;
@@ -104,7 +104,7 @@ int32_t elf_validate(const uint8_t *image, size_t length, struct elf_plan *plan)
             if (++notes != 1 || offset > length || size > length - offset) {
                 error = RES_ENOEXEC;
             } else {
-                error = validate_note(image + offset, size);
+                error = validate_note(image + offset, size, features);
             }
         } else if (type != 0) {
             error = RES_ENOEXEC; /* No INTERP, DYNAMIC, TLS or other implicit features. */
@@ -130,4 +130,9 @@ int32_t elf_validate(const uint8_t *image, size_t length, struct elf_plan *plan)
 invalid:
     plan->segment_count = plan->page_count = plan->entry = 0;
     return error;
+}
+
+int32_t elf_validate(const uint8_t *image, size_t length, struct elf_plan *plan)
+{
+    return elf_validate_features(image, length, plan, LIBERUMS_FEATURES);
 }

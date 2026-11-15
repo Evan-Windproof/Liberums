@@ -3,12 +3,14 @@
 #include <kernel/domain.h>
 #include <kernel/physical_pages.h>
 #include <kernel/panic.h>
+#include <kernel/revoke.h>
 
 static struct resource resources[RESOURCE_CAPACITY];
 
 static bool owns(const struct resource *resource, const struct domain *owner)
 {
-    return resource->state == RESOURCE_OWNED && resource->cap.owner_id == owner->id
+    return (resource->state == RESOURCE_OWNED || resource->state == RESOURCE_REVOKE_PENDING)
+        && resource->cap.owner_id == owner->id
         && resource->cap.owner_epoch == owner->epoch;
 }
 
@@ -19,7 +21,7 @@ static int32_t resolve(struct domain *owner, struct resource_handle handle,
         return RES_ESTALE;
     }
     struct resource *resource = &resources[handle.index - 1];
-    if (resource->state != RESOURCE_OWNED) {
+    if (resource->state != RESOURCE_OWNED && resource->state != RESOURCE_REVOKE_PENDING) {
         return RES_ESTALE;
     }
     int32_t error = capability_check(&resource->cap, handle.generation,
@@ -104,6 +106,9 @@ int32_t resource_map(struct domain *owner, struct resource_handle handle,
     if (error != 0) {
         return error;
     }
+    if (resource->state == RESOURCE_REVOKE_PENDING) {
+        return RES_EBUSY;
+    }
     if ((rights != RESOURCE_READ && rights != (RESOURCE_READ | RESOURCE_WRITE))
         || !address_space_dynamic_address(address)) {
         return RES_EINVAL;
@@ -174,6 +179,8 @@ static void revoke_all(struct domain *owner, struct resource *resource)
 
 static void reclaim(struct domain *owner, struct resource *resource)
 {
+    revoke_cancel(owner, (struct resource_handle){(uint32_t)(resource - resources) + 1,
+                                                  resource->cap.generation});
     forget_inbox(owner, resource);
     resource->state = RESOURCE_RECLAIMING;
     revoke_all(owner, resource);
@@ -215,6 +222,9 @@ int32_t resource_transfer(struct domain *owner, struct resource_handle handle,
     if (error != 0) {
         return error;
     }
+    if (resource->state == RESOURCE_REVOKE_PENDING) {
+        return RES_EBUSY;
+    }
     struct domain *target = domain_lookup(target_id);
     if (target == NULL) {
         return RES_ESRCH;
@@ -237,6 +247,8 @@ int32_t resource_transfer(struct domain *owner, struct resource_handle handle,
     }
     /* Commit is non-failing: single CPU, IF=0, owner is trapped in this call.
      * All rejecting conditions above leave owner, PTEs and bytes unchanged. */
+    revoke_cancel(owner, (struct resource_handle){(uint32_t)(resource - resources) + 1,
+                                                  resource->cap.generation});
     forget_inbox(owner, resource);
     resource->state = RESOURCE_RECLAIMING;
     revoke_all(owner, resource);
@@ -274,4 +286,31 @@ void resource_cleanup(struct domain *owner)
     if (owner->resource_count != 0) {
         panic("domain resource count mismatch");
     }
+}
+
+int32_t resource_revoke_begin(struct domain *owner, struct resource_handle handle)
+{
+    struct resource *resource;
+    int32_t error = resolve(owner, handle, 0, &resource);
+    if (error != 0) {
+        return error;
+    }
+    if (resource->state != RESOURCE_OWNED) {
+        return RES_EBUSY;
+    }
+    resource->state = RESOURCE_REVOKE_PENDING;
+    return 0;
+}
+int32_t resource_revoke_complete(struct domain *owner, struct resource_handle handle)
+{
+    struct resource *resource;
+    int32_t error = resolve(owner, handle, 0, &resource);
+    if (error != 0) {
+        return error;
+    }
+    if (resource->state != RESOURCE_REVOKE_PENDING) {
+        return RES_ESTALE;
+    }
+    reclaim(owner, resource);
+    return 0;
 }

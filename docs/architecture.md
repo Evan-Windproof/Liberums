@@ -1,8 +1,8 @@
 # Liberums Exokernel 架构规划
 
-本文描述长期 Exokernel 设计。当前 Phase 5 已在原资源保护上增加公开 ABI 1.1 与受限外部 ELF32 加载，
-见 [Phase 5 概览](phase5-overview.md)。内核不依赖特定 LibOS 源码，Aelthuvor Phase 1 在独立仓库开发并完成集成。
-内核仍无抢占、SMP 或异步可见撤销；多页加载不扩大用户资源授权。
+本文描述长期 Exokernel 边界与当前实现。Phase 6 在外部 ELF/资源保护上增加公开 ABI 1.2、
+显式 PIT 抢占模式与普通资源页的可见撤销，见 [Phase 6 概览](phase6-overview.md)。
+默认合作兼容模式仍支持旧 ELF，不链接或修改 Aelthuvor。当前无 SMP、设备/DMA 撤销或完整 LibOS。
 
 ## 目标与安全模型
 
@@ -59,15 +59,15 @@ Secure binding 指“先验证授权，再建立后续可由硬件或廉价检�
 此后 MMU 执行页面级访问检查，避免每次普通访存都陷入内核。
 用户永远不能通过传入页表内容映射任意物理页。
 
-长期接口方向如下；当前 page 操作的实际寄存器 ABI 见 [Phase 4 安全绑定](phase4-secure-bindings.md)，事件/撤销接口尚未实现：
+长期接口方向如下；当前 page 操作的实际寄存器 ABI 见 [Phase 4 安全绑定](phase4-secure-bindings.md)，其中本阶段事件接口采用整数轮询：
 
 ```text
 page_claim()                         -> 本域的物理页句柄
 page_map(page_handle, va, rights)     -> 验证所有权后建立绑定
 page_unmap(va)                       -> 删除绑定并同步 TLB
 resource_release(handle)             -> 安全归还资源
-event_wait()/event_return(context)   -> 接收事件/提交经验证的上下文
-revoke_ack(handle, generation)       -> 回应撤销
+revoke_poll()/revoke_info(id, field) -> 查询本域待撤销事件
+revoke_ack(handle, generation, id)   -> 验证完整身份后回收
 ```
 
 当前 ABI 只传整数，不接收用户指针。未来事件或指针接口仍需独立的安全复制与生命周期设计。
@@ -85,7 +85,10 @@ owned -> revoke_pending（发出事件及截止时间）
       -> 超时/拒绝 -> 内核强制解除绑定 -> reclaimed
 ```
 
-内核事件应包含资源句柄、代数、原因和截止时间；ack 必须匹配当前撤销请求。
+Phase 6 内核事件包含资源句柄、代数、owner ID/epoch、原因、绝对 tick 期限与请求身份；ACK 匹配完整请求。
+每域两个记录，队满不提交资源状态变化。PENDING 禁止新绑定/转移，允许 unmap/release。
+到期在 IRQ 取得控制权后、可信调度栈上执行全别名撤除，重新激活 CR3 刷新 TLB，再清零交付。
+计数与请求号不回绕，耗尽安全失败。真实机制与范围见 [撤销设计](phase6-revocation.md)。
 撤销等待不能无限延长，事件通道也不能依赖正在撤销的唯一一页资源而无法工作。
 LibOS 可以选择驱逐缓存、迁移数据或终止自己的任务，但不能否决内核的最终保护动作。
 
@@ -110,11 +113,14 @@ Phase 5 已提供外部程序边界：独立的 ET_EXEC、公开的 ABI/ELF prof
 原单页内置路径继续保留为兼容性实验；加载失败的空间在激活前完整回滚。
 
 未来 LibOS 应以独立用户软件使用这些接口，不把堆、缓存、文件系统等策略迁入内核。
-撤销/抢占、通用 ELF 特性或额外参数接口需要独立设计与验收；当前没有开始 Phase 6。
+Phase 6 已实现单 CPU IRQ0、一 tick 轮转、有界事件/ACK/超时强制回收；默认模式不改变旧用户的 IF/顺序假设。
+通用 ELF、用户指针、APIC/SMP、设备撤销和更复杂的 CPU 仲裁需要独立设计。本次不开始 Phase 7。
 
 ## 参考
 
 - [Engler, Kaashoek, O'Toole: Exokernel: An Operating System Architecture for Application-Level Resource Management (SOSP 1995)](https://pdos.csail.mit.edu/papers/exokernel-sosp95.pdf)
+- [Intel SDM](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html)（中断、TSS、IRET、分页与 TLB）
+- Intel 8259A / 8254 数据手册（ICW、EOI、PIT channel 0 rate generator）
 - [GNU Multiboot v1 规范](https://www.gnu.org/software/grub/manual/multiboot/multiboot.html)
 
 参考架构思想和公开协议不代表已实现论文中的能力；每项保护机制都需要后续可执行测试。

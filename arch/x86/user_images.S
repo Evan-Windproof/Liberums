@@ -19,3 +19,9 @@ resource_fault_start:
 .incbin "build/resource_FAULT.bin"
 resource_fault_end:
 .section .note.GNU-stack, "", @progbits
+
+.section .rodata,"a"
+.global phase6_user_start, phase6_user_end
+phase6_user_start:
+.incbin "build/phase6-user.bin"
+phase6_user_end:

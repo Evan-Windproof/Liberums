@@ -1,5 +1,6 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 #include <arch/x86/idt.h>
+#include <arch/x86/irq.h>
 #include <kernel/panic.h>
 #include <kernel/domain.h>
 #include <kernel/syscall.h>
@@ -48,6 +49,11 @@ void idt_init(void)
     idt[128].offset_high = (uint16_t)(syscall_address >> 16);
     idt[128].selector = 0x08;
     idt[128].attributes = 0xee; /* Only this gate permits software INT from DPL 3. */
+    uintptr_t irq_address = (uintptr_t)timer_irq_entry;
+    idt[32].offset_low = (uint16_t)irq_address;
+    idt[32].offset_high = (uint16_t)(irq_address >> 16);
+    idt[32].selector = 0x08;
+    idt[32].attributes = 0x8e;
     const struct idt_pointer pointer = {sizeof(idt) - 1, (uintptr_t)idt};
     __asm__ volatile ("lidt %0" : : "m"(pointer) : "memory");
 }

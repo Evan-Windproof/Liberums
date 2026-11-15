@@ -6,7 +6,7 @@
 #define RESOURCE_DOMAIN_LIMIT LIBERUMS_RESOURCE_DOMAIN_LIMIT
 #define RESOURCE_BINDING_LIMIT LIBERUMS_RESOURCE_BINDING_LIMIT
 struct domain;
-enum resource_state { RESOURCE_FREE, RESOURCE_OWNED, RESOURCE_RECLAIMING };
+enum resource_state { RESOURCE_FREE, RESOURCE_OWNED, RESOURCE_RECLAIMING, RESOURCE_REVOKE_PENDING };
 struct resource_binding { uint32_t address, rights; };
 struct resource {
     enum resource_state state;
@@ -25,5 +25,8 @@ int32_t resource_query(struct domain *owner, struct resource_handle handle, uint
 int32_t resource_transfer(struct domain *owner, struct resource_handle handle,
                           uint32_t target_id, uint32_t rights);
 int32_t resource_receive(struct domain *owner, struct resource_handle *handle);
+/* Only revoke.c calls these guarded transitions; ordinary clients use capabilities. */
+int32_t resource_revoke_begin(struct domain *owner, struct resource_handle handle);
+int32_t resource_revoke_complete(struct domain *owner, struct resource_handle handle);
 void resource_cleanup(struct domain *owner);
 #endif

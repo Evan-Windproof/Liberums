@@ -21,8 +21,10 @@ C_SOURCES := kernel/main.c kernel/serial.c kernel/panic.c arch/x86/idt.c \
              kernel/memory_map.c kernel/boot_info.c kernel/physical_pages.c \
              arch/x86/paging.c kernel/selftest.c arch/x86/gdt.c kernel/domain.c kernel/syscall.c \
              kernel/capability.c kernel/resource.c tests/resource_pressure.c \
-             kernel/elf_loader.c kernel/external.c arch/x86/user_space.c tests/elf_pressure.c
-ASM_SOURCES := arch/x86/boot.S arch/x86/isr.S arch/x86/test_faults.S arch/x86/user_context.S arch/x86/user_images.S
+             kernel/elf_loader.c kernel/external.c arch/x86/user_space.c tests/elf_pressure.c \
+             arch/x86/pic.c arch/x86/pit.c kernel/tick.c kernel/timer.c kernel/scheduler.c \
+             kernel/revoke.c tests/phase6_runtime.c
+ASM_SOURCES := arch/x86/irq.S  arch/x86/boot.S arch/x86/isr.S arch/x86/test_faults.S arch/x86/user_context.S arch/x86/user_images.S
 OBJECTS := $(addprefix $(BUILD)/,$(C_SOURCES:.c=.o) $(ASM_SOURCES:.S=.o))
 ARCH_FLAGS := -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float
 KERNEL_CFLAGS := $(ARCH_FLAGS) -std=c11 -ffreestanding -fno-builtin \
@@ -117,6 +119,7 @@ test: $(KERNEL) test-memory $(BUILD)/elf-tests external-fixtures
 	$(PYTHON) tests/phase3.py --qemu "$(QEMU)" --gdb "$(GDB)"
 	$(PYTHON) tests/phase4.py --qemu "$(QEMU)" --gdb "$(GDB)"
 	$(PYTHON) tests/phase5.py --qemu "$(QEMU)" --gdb "$(GDB)"
+	$(PYTHON) tests/phase6.py --qemu "$(QEMU)" --gdb "$(GDB)"
 
 .PHONY: test-libos
 test-libos: $(KERNEL)
@@ -126,3 +129,24 @@ clean:
 	rm -rf $(BUILD)
 
 -include $(OBJECTS:.o=.d)
+
+$(BUILD)/phase6-entry.o: tests/fixtures/preempt/entry.S Makefile | $(BUILD)
+	$(CC) $(ARCH_FLAGS) -g3 -c $< -o $@
+$(BUILD)/phase6-program.o: tests/fixtures/preempt/program.c $(wildcard include/abi/*.h) Makefile | $(BUILD)
+	$(CC) -Iinclude $(KERNEL_CFLAGS) -Os -c $< -o $@
+$(BUILD)/phase6-user.elf: $(BUILD)/phase6-entry.o $(BUILD)/phase6-program.o user/linker.ld
+	$(LD) -m elf_i386 -nostdlib --build-id=none -T user/linker.ld $(filter %.o,$^) -o $@
+$(BUILD)/phase6-user.bin: $(BUILD)/phase6-user.elf
+	$(OBJCOPY) -O binary $< $@
+$(BUILD)/arch/x86/user_images.o: $(BUILD)/phase6-user.bin
+
+$(BUILD)/timer-tests: tests/timer_tests.c kernel/tick.c include/kernel/tick.h Makefile | $(BUILD)
+	$(HOST_CC) -std=c11 -Wall -Wextra -Werror -Wpedantic -g -fsanitize=address,undefined -Iinclude tests/timer_tests.c kernel/tick.c -o $@
+$(BUILD)/revoke-tests: tests/revoke_tests.c kernel/revoke.c kernel/resource.c kernel/capability.c kernel/tick.c $(wildcard include/kernel/*.h include/abi/*.h) Makefile | $(BUILD)
+	$(HOST_CC) -std=c11 -Wall -Wextra -Werror -Wpedantic -g -no-pie -fsanitize=address,undefined -Iinclude tests/revoke_tests.c kernel/capability.c kernel/tick.c -o $@
+.PHONY: test-phase6-native test-phase6
+test-phase6-native: $(BUILD)/timer-tests $(BUILD)/revoke-tests
+	./$(BUILD)/timer-tests
+	./$(BUILD)/revoke-tests
+test-phase6: $(KERNEL)
+	$(PYTHON) tests/phase6.py --qemu "$(QEMU)" --gdb "$(GDB)"

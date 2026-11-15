@@ -8,6 +8,8 @@
 #include <kernel/serial.h>
 #include <kernel/domain.h>
 #include <kernel/external.h>
+#include <kernel/timer.h>
+#include <kernel/phase6_test.h>
 
 static struct boot_context boot;
 extern char __kernel_start[], __kernel_end[];
@@ -54,10 +56,16 @@ _Noreturn void kernel_main(uint32_t boot_magic, uint32_t boot_info_address)
     serial_write("Liberums: boot successful\n");
     serial_write("Phase 1: x86 32-bit C11 kernel, COM1 ready\n");
     serial_write("Multiboot handoff accepted; interrupts disabled; halting.\n");
-    if (boot_has_option(boot.commandline, "external")) {
+    if (boot_has_option(boot.commandline, "preempt") || phase6_test_selected(boot.commandline)) {
+        timer_start();
+    }
+    if (phase6_test_selected(boot.commandline)) {
+        phase6_test_run(boot.commandline);
+    } else if (boot_has_option(boot.commandline, "external")) {
         external_domains_run(&boot);
     } else {
         domains_run(boot.commandline);
     }
+    timer_stop();
     kernel_stop();
 }

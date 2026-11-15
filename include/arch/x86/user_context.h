@@ -9,6 +9,7 @@ struct user_context {
 };
 _Static_assert(sizeof(struct user_context) == 60, "outer privilege frame size");
 /* Returns to the kernel caller only via arch_user_leave, never via a user ret. */
-void arch_user_enter(const struct user_context *context);
+struct segment_context;
+void arch_user_enter(const struct user_context *context, const struct segment_context *segments);
 _Noreturn void arch_user_leave(void);
 #endif

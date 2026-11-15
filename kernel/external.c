@@ -6,6 +6,7 @@
 #include <kernel/panic.h>
 #include <kernel/serial.h>
 #include <arch/x86/gdt.h>
+#include <kernel/timer.h>
 
 static struct elf_plan external_plan;
 static int32_t external_load_result;
@@ -26,7 +27,7 @@ void external_domains_run(const struct boot_context *boot)
     int32_t validation = RES_ENOEXEC;
     if (boot->module_count == 1) {
         image = (const void *)(uintptr_t)boot->modules[0].begin;
-        validation = elf_validate(image, boot->modules[0].end - boot->modules[0].begin, &external_plan);
+        validation = elf_validate_features(image, boot->modules[0].end - boot->modules[0].begin, &external_plan, abi_features());
     }
     gdt_init();
     for (uint32_t round = 0; round < 2; ++round) {

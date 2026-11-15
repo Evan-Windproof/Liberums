@@ -29,3 +29,6 @@ $(OUT)/%.elf: $(OUT)/%.o $(OUT)/padding.o linker.ld
 	$(LD) -m elf_i386 -nostdlib --build-id=none -T linker.ld $(filter %.o,$^) -o $@
 clean:
 	rm -rf $(OUT)
+$(OUT)/preempt.o: preempt.c $(wildcard $(SDK)/abi/*.h) Makefile | $(OUT)
+	$(CC) $(CFLAGS) -I$(SDK) -c $< -o $@
+all: $(OUT)/preempt.elf
