@@ -4,8 +4,8 @@
 可验证的资源所有权和用户态 LibOS。语言为 C11 与少量 x86 汇编，
 目标为 **32 位 x86（i686）+ QEMU**，许可证为 **GPL-3.0-or-later**。
 
-**当前只完成 Phase 1：可启动的内核基础。尚无用户态、资源隔离、secure bindings、
-撤销机制或 LibOS，不能将它视为已具备隔离能力的 Exokernel。**
+**当前完成 Phase 2：异常处理、内存图、物理页追踪与基础分页保护。尚无用户态、
+跨域资源隔离、secure bindings、撤销机制或 LibOS，不能将它视为完整 Exokernel。**
 实现代码为本项目编写；引导遵循公开的 Multiboot v1 协议。
 
 ## 目录结构
@@ -14,19 +14,28 @@
 Liberums/
 ├── arch/x86/
 │   ├── boot.S          # Multiboot 头、GDT、BSS、栈及 C 入口调用
-│   └── linker.ld       # ELF32 布局，加载基址 1 MiB
+│   ├── linker.ld       # ELF32 布局与页对齐只读区
+│   ├── idt.c / isr.S   # CPU 异常现场与诊断
+│   ├── paging.c        # supervisor identity mapping、PG/WP、TLB
+│   └── test_faults.S   # 显式诊断选项的故障指令
 ├── include/
 │   ├── arch/x86/io.h   # x86 端口 I/O 原语
-│   └── kernel/serial.h # 早期诊断输出接口
+│   └── kernel/        # 串口、内存图、页追踪、引导数据、panic 等接口
 ├── kernel/
-│   ├── main.c         # 验证引导参数、输出成功信息、停机
-│   └── serial.c       # COM1，115200 baud / 8N1，轮询发送
+│   ├── main.c         # 初始化编排与运行时检查
+│   ├── serial.c       # COM1，115200 baud / 8N1，轮询发送
+│   ├── boot_info.c / memory_map.c # 有界引导信息与地图解析
+│   ├── physical_pages.c # 页状态与早期取页/归还
+│   └── panic.c / selftest.c # 停止处理与显式诊断
 ├── tests/
 │   ├── entry.gdb      # 汇编/C 入口及机器状态断言
-│   └── phase1.py      # ELF、实际启动、实际 GDB 自动验收
+│   ├── phase1.py      # 原 ELF、启动、GDB 兼容验收
+│   ├── memory_tests.c # 宿主 ASan/UBSan 边界与状态测试
+│   └── phase2.py / paging.gdb # 分页、异常与损坏输入验收
 ├── docs/
 │   ├── architecture.md # 内核/LibOS 边界与后续资源保护设计
-│   └── phase1-validation.md # 本次实际验收记录与限制
+│   ├── phase1-validation.md # 历史验收记录
+│   └── phase2-*.md    # 概览、模块、内存原理与实际验收
 ├── Makefile
 ├── LICENSE
 └── build/             # 生成的 ELF、对象、链接映射、测试日志（Git 忽略）
@@ -39,6 +48,7 @@ Liberums/
 - GNU Make、支持 `-m32` 的 GCC、支持 `elf_i386` 的 GNU Binutils（含 `nm`）。
 - `qemu-system-i386`，使用 TCG 软件模拟，不依赖 KVM 或宿主机 root 权限。
 - 支持 i386 调试及 Python 的 GDB；Python 3 用于自动验收。
+- 宿主 GCC 和 AddressSanitizer/UBSan 运行库，用于测试真实的地图解析与页追踪 C 模块。
 
 Debian/Ubuntu 常规系统可安装：
 
@@ -76,14 +86,16 @@ make clean          # 删除 build/，不删除源码或外部工具
 也可指定工具路径，例如 `make run QEMU=/path/to/qemu-system-i386`。
 `make debug GDB_PORT=1235` 可换用空闲端口。
 
-正常串口输出为：
+正常串口会先输出 IDT、内存图、可用页数和 CR0 的阶段信息，然后输出：
 
 ```text
+Phase 2: protected memory foundations ready
 Liberums: boot successful
 Phase 1: x86 32-bit C11 kernel, COM1 ready
 Multiboot handoff accepted; interrupts disabled; halting.
 ```
 
+其中三行 Phase 1 文本保留为兼容性输出，不表示分页仍然关闭。
 随后内核停留在 `cli; hlt` 循环，这是预期结果；没有 shell 或用户任务。
 前台运行时按 **Ctrl+C** 退出 QEMU。`make debug` 在连接 GDB 并继续运行之前不会输出。
 
@@ -95,12 +107,13 @@ Multiboot handoff accepted; interrupts disabled; halting.
    通过 EAX 传递 `0x2badb002`、EBX 传递 Multiboot 信息结构地址，跳到 `_start`。
 3. `_start` 禁用中断、清方向标志，自建平坦 ring 0 GDT 并重新加载段寄存器，
    清零 BSS，建立 16 KiB、16 字节对齐的内核栈，按 i386 C 调用约定进入 `kernel_main`。
-4. C 入口初始化 COM1，检查 magic 与信息指针非空，输出诊断信息，然后停机。
-   **尚未解析内存图，也未据此分配资源。**
+4. C 入口依次初始化 COM1 和 IDT，验证并解析 Multiboot 内存图，保留内核与引导数据，
+   建立物理页状态和初始页表，设置 CR0.PG/WP，再检查状态、输出信息并停机。
 
-没有依赖加载器遗留的栈或 GDT。当前没有 IDT，整个阶段保持可屏蔽中断关闭；
-异常和 NMI 尚无处理能力。ELF 段具有独立 R/X、R、R/W 标志，
-但分页关闭时这些标志不构成硬件内存保护。
+没有依赖加载器遗留的栈或 GDT。当前仍保持外部可屏蔽中断关闭，异常经 IDT 报告后停止，
+没有异常恢复、独立故障栈或调度。映射最多低 64 MiB 的 RAM 和必要启动数据，页零不映射。
+实际 PTE 与 CR0.WP 保护内核代码和只读数据；普通 32 位分页没有 NX，不能宣称完整 W^X。
+ELF 属性自身仍不等于硬件页面权限。
 
 ## GDB 入口验证
 
@@ -131,20 +144,28 @@ quit
 自动执行相同的入口验证与串口验收：
 
 ```sh
-make test
+make test                 # 宿主测试 + Phase 1 兼容性 + 全部 Phase 2 验收
+make test-memory          # 可单独运行宿主内存测试
 # 可单独执行某项（需先 make）：
 python3 tests/phase1.py --mode boot
 python3 tests/phase1.py --mode gdb
+python3 tests/phase2.py
 ```
 
-测试会检查 ELF 类型、Multiboot 头位置与校验和、链接符号，实际调用 `make run`
+Phase 1 兼容性测试仍检查 ELF 类型、Multiboot 头位置与校验和、链接符号，实际调用 `make run`
 核对三行串口输出，再调用 `make debug`，使用硬件断点命中 `_start` 和 `kernel_main`，
 验证保护模式、关闭分页、中断/方向标志、段寄存器、栈及 C 参数，最后验证继续启动。
 GDB 使用临时回环端口。缺少工具、超时或断言失败均返回非零，不会记作通过或跳过。
 测试结束只终止自己启动的进程组。
 
 日志为 `build/boot-test.log`、`build/gdb-test.log` 和 `build/debug-serial.log`；
-`make clean` 会删除它们。实际测试结果见 [Phase 1 验收记录](docs/phase1-validation.md)。
+`make clean` 会删除它们。Phase 2 的独立 guest 还生成 `build/paging-*`、`build/fault-*`、
+`build/reject-*` 等日志。完整结果见 [Phase 2 验收记录](docs/phase2-validation.md)，
+旧结果保留在 [Phase 1 验收记录](docs/phase1-validation.md)。
+
+入门阅读顺序：[Phase 2 概览](docs/phase2-overview.md) → [模块说明](docs/phase2-modules.md)
+→ [内存原理](docs/phase2-memory.md)。手动故障测试可执行
+`make run QEMU_APPEND=selftest=ro-write`，观察 #PF 后停止；普通 `make run` 不执行破坏性测试。
 
 ## Exokernel 边界与下一步
 
@@ -154,7 +175,8 @@ GDB 使用临时回环端口。缺少工具、超时或断言失败均返回非�
 早期 COM1 仅为可信内核诊断通道，不是把通用设备管理策略放进内核的先例。
 
 完整设计与下一阶段建议见 [架构规划](docs/architecture.md)。
-Phase 1 到此结束；资源隔离和用户态属于之后独立验收的工作。
+Phase 2 到此结束；下一步建议为 TSS/特权级栈、ring 3 陷阱路径和最小跨域保护实验。
+当前页状态不是域所有权，早期取页接口不面向不可信调用者。
 
 ## 许可证
 

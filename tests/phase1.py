@@ -53,9 +53,15 @@ def check_elf():
 
 
 @contextmanager
-def emulator(target, qemu, port=None):
+def emulator(target, qemu, port=None, append=None, label=None, initrd=None):
     log_path = BUILD / ("boot-test.log" if target == "run" else "debug-serial.log")
+    if label is not None:
+        log_path = BUILD / (label + "-serial.log")
     command = ["make", "--no-print-directory", target, "QEMU=" + qemu]
+    if initrd is not None:
+        command.append("QEMU_INITRD=" + str(initrd))
+    if append is not None:
+        command.append("QEMU_APPEND=" + append)
     if port is not None:
         command.append(f"GDB_PORT={port}")
     with log_path.open("w") as log:

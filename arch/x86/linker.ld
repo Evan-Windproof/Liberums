@@ -17,6 +17,8 @@ SECTIONS
     .multiboot ALIGN(4) : { KEEP(*(.multiboot)) } :text
     .text ALIGN(16) : { *(.text.boot) *(.text .text.*) } :text
     .rodata ALIGN(4K) : { *(.rodata .rodata.*) } :rodata
+    . = ALIGN(4K);
+    __kernel_readonly_end = .;
     .data ALIGN(4K) : { *(.data .data.*) } :data
     .bss ALIGN(16) (NOLOAD) :
     {
