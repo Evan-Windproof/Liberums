@@ -4,8 +4,8 @@
 可验证的资源所有权和用户态 LibOS。语言为 C11 与少量 x86 汇编，
 目标为 **32 位 x86（i686）+ QEMU**，许可证为 **GPL-3.0-or-later**。
 
-**当前完成 Phase 3：两个真实 Ring 3 用户域、独立地址空间、受控系统调用和用户故障隔离。
-尚无时钟抢占、公平 CPU 分配、secure bindings、可见撤销或 LibOS，不能将它视为完整 Exokernel。**
+**当前完成 Phase 4：在两个 Ring 3 域上实现物理页独占所有权、完整代数句柄、权限检查、
+安全页绑定与同步所有权转移。尚无时钟抢占、公平分配、异步可见撤销或 LibOS，不是完整 Exokernel。**
 实现代码为本项目编写；引导遵循公开的 Multiboot v1 协议。
 
 ## 目录结构
@@ -28,19 +28,22 @@ Liberums/
 │   ├── boot_info.c / memory_map.c # 有界引导信息与地图解析
 │   ├── physical_pages.c # 页状态与早期取页/归还
 │   ├── panic.c / selftest.c # 停止处理与显式诊断
-│   └── domain.c / syscall.c # 域生命周期与三个受控调用
+│   ├── domain.c / syscall.c # 域生命周期与标量系统调用
+│   └── resource.c / capability.c # 所有权、绑定生命周期、代数与权限
 ├── tests/
 │   ├── entry.gdb      # 汇编/C 入口及机器状态断言
 │   ├── phase1.py      # 原 ELF、启动、GDB 兼容验收
 │   ├── memory_tests.c # 宿主 ASan/UBSan 边界与状态测试
 │   ├── phase2.py / paging.gdb # 原分页/异常/坏输入验收
-│   └── phase3.py      # Ring 3、双向隔离、TSS/CR3 与回收
-├── user/              # 两个独立链接的 C 测试映像、寄存器/故障汇编
+│   ├── phase3.py      # Ring 3、双向隔离、TSS/CR3 与回收
+│   └── phase4.py / capability_tests.c # 资源/转移硬件验收与宿主边界检查
+├── user/              # 原 A/B 映像及分组的资源测试映像，每个仍限制一页
 ├── docs/
 │   ├── architecture.md # 内核/LibOS 边界与后续资源保护设计
 │   ├── phase1-validation.md # 历史验收记录
 │   ├── phase2-*.md    # 概览、模块、内存原理与历史验收
-│   └── phase3-*.md    # 用户域、特权级、地址空间与实际验收
+│   ├── phase3-*.md    # 用户域、特权级、地址空间与历史验收
+│   └── phase4-*.md    # 所有权、绑定、接口、模块与实际验收
 ├── Makefile
 ├── LICENSE
 └── build/             # 生成的 ELF、对象、链接映射、测试日志（Git 忽略）
@@ -132,7 +135,7 @@ Ring 0 异常无法恢复时继续 Panic；没有独立紧急故障栈。内核�
 ELF 属性自身仍不等于硬件页面权限。
 5. Phase 2 检查之后加载扩展 GDT/TSS，为每域创建独立 CR3、用户代码/数据/栈，
    通过 iret 进入 Ring 3；系统调用或用户异常用 TSS 切回可信内核栈。
-   只有三个标量调用，无用户指针接口；按固定顺序合作式切换，没有抢占。
+   原三个调用继续保留，并增加八个资源标量调用，没有用户指针接口；按固定顺序合作式切换，没有抢占。
 
 ## GDB 入口验证
 
@@ -163,13 +166,14 @@ quit
 自动执行相同的入口验证与串口验收：
 
 ```sh
-make test                 # 宿主测试 + Phase 1/2 回归 + 全部 Phase 3 验收
-make test-memory          # 可单独运行宿主内存测试
+make test                 # 宿主测试 + Phase 1/2/3 回归 + 全部 Phase 4 验收
+make test-memory          # 可单独运行宿主内存及 capability 测试
 # 可单独执行某项（需先 make）：
 python3 tests/phase1.py --mode boot
 python3 tests/phase1.py --mode gdb
 python3 tests/phase2.py
 python3 tests/phase3.py
+python3 tests/phase4.py
 ```
 
 Phase 1 兼容性测试仍检查 ELF 类型、Multiboot 头位置与校验和、链接符号，实际调用 `make run`
@@ -194,6 +198,25 @@ Phase 3 教学文档：[概览](docs/phase3-overview.md)、[模块](docs/phase3-
 安全实验：`make run QEMU_APPEND=domain-test=cross-read` 会让 A 故障、B 正常结束；
 追加 `domain-reverse` 可反向测试。普通启动不执行破坏性测试。
 
+Phase 4 入门：[概览](docs/phase4-overview.md)、[资源所有权](docs/phase4-resource-ownership.md)、
+[安全绑定与完整 ABI](docs/phase4-secure-bindings.md)、[模块](docs/phase4-modules.md)、
+[实际验收](docs/phase4-validation.md)。
+
+每域在原六页基础外最多取得 4 页动态资源，可选择 PFN，并映射到
+`[0x09000000, 0x09010000)` 中的页对齐 VA。句柄为 index + 完整 32 位 generation，
+授权再核对可信域 ID/epoch/rights；知道另一个域的句柄或 PFN 不会获得权限。
+release 撤销全部别名并清零；独占转移先撤销旧域映射、同步 TLB、清零，再交付新授权。
+
+```sh
+python3 tests/phase4.py --mode basic       # 含已知敌对句柄的注入，不改所有权/PTE
+python3 tests/phase4.py --mode transfer    # 权限缩减、失败回滚、全别名撤销及零泄漏
+make run QEMU_APPEND=resource-test=unmap-fault
+```
+
+basic/transfer 的完整攻击验证和 generation 边界验证需要脚本的 GDB 测试输入。
+普通 `make run` 继续原正常行为，不自动执行破坏性测试。日志为 `build/phase4-*-serial.log`
+和 `*-gdb.log`，完整测试输出为 `build/test.log`，生成物不提交。
+
 ## Exokernel 边界与下一步
 
 内核未来负责保护机制：资源身份、所有权、授权检查、受保护映射、异常隔离、
@@ -202,8 +225,8 @@ Phase 3 教学文档：[概览](docs/phase3-overview.md)、[模块](docs/phase3-
 早期 COM1 仅为可信内核诊断通道，不是把通用设备管理策略放进内核的先例。
 
 完整设计与下一阶段建议见 [架构规划](docs/architecture.md)。
-Phase 3 到此结束。当前六页列表只是内核内部的生命周期记录，不能等同于可委托的资源权利。
-下一阶段再设计 Resource Ownership 与 Secure Bindings；当前没有提供用户资源分配/映射接口。
+Phase 4 到此结束。当前授权只覆盖受限的物理页独占模型，不等于通用能力系统或完整 Exokernel。
+下一阶段可研究可见撤销通知/确认、策略层实验和抢占前提；本阶段没有继续实现。
 合作式执行下恶意用户可无限占用 CPU，没有公平性或强制 CPU 撤销保证。
 
 ## 许可证

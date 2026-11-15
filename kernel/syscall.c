@@ -3,6 +3,7 @@
 #include <kernel/domain.h>
 #include <kernel/serial.h>
 #include <kernel/user_abi.h>
+#include <kernel/resource.h>
 
 void syscall_dispatch(struct exception_frame *frame)
 {
@@ -25,6 +26,42 @@ void syscall_dispatch(struct exception_frame *frame)
             ++domain->log_count;
             frame->eax = 0;
         }
+        break;
+    case SYS_PAGE_CLAIM:
+    case SYS_PAGE_SPECIFIC:
+    case SYS_PAGE_RECEIVE: {
+        struct resource_handle handle;
+        int32_t error;
+        if (frame->eax == SYS_PAGE_RECEIVE) {
+            error = resource_receive(domain, &handle);
+        } else {
+            bool specific = frame->eax == SYS_PAGE_SPECIFIC;
+            error = resource_claim(domain, specific ? frame->ecx : frame->ebx,
+                                    specific, frame->ebx, &handle);
+        }
+        frame->eax = error == 0 ? handle.index : (uint32_t)error;
+        frame->edx = error == 0 ? handle.generation : 0;
+        break;
+    }
+    case SYS_PAGE_MAP:
+        frame->eax = resource_map(domain, (struct resource_handle){frame->ebx, frame->ecx},
+                                  frame->edx, frame->esi);
+        break;
+    case SYS_PAGE_UNMAP:
+        frame->eax = resource_unmap(domain, frame->ebx);
+        break;
+    case SYS_PAGE_RELEASE:
+        frame->eax = resource_release(domain, (struct resource_handle){frame->ebx, frame->ecx});
+        break;
+    case SYS_PAGE_QUERY: {
+        uint32_t rights = 0;
+        frame->eax = resource_query(domain, (struct resource_handle){frame->ebx, frame->ecx}, &rights);
+        frame->edx = rights;
+        break;
+    }
+    case SYS_PAGE_TRANSFER:
+        frame->eax = resource_transfer(domain, (struct resource_handle){frame->ebx, frame->ecx},
+                                       frame->edx, frame->esi);
         break;
     default:
         frame->eax = (uint32_t)-38; /* ENOSYS, with no access to internal addresses. */

@@ -13,6 +13,7 @@ bool physical_pages_init(const struct memory_map *map,
                          uint32_t kernel_begin, uint32_t kernel_end);
 enum physical_page_state physical_page_state(uint32_t address);
 bool physical_page_alloc(uint32_t *address);
+bool physical_page_alloc_specific(uint32_t address);
 bool physical_page_free(uint32_t address);
 uint32_t physical_pages_free_count(void);
 #endif

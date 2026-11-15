@@ -90,6 +90,15 @@ bool physical_page_alloc(uint32_t *address)
     return false;
 }
 
+bool physical_page_alloc_specific(uint32_t address)
+{
+    if ((address & (PAGE_SIZE - 1)) != 0 || physical_page_state(address) != PAGE_FREE) {
+        return false;
+    }
+    states[address / PAGE_SIZE] = PAGE_ALLOCATED;
+    return true;
+}
+
 bool physical_page_free(uint32_t address)
 {
     if ((address & (PAGE_SIZE - 1)) != 0 || physical_page_state(address) != PAGE_ALLOCATED) {

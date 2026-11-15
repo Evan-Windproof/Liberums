@@ -3,6 +3,7 @@
 #define LIBERUMS_USER_API_H
 #include <stdint.h>
 #include <kernel/user_abi.h>
+#include <kernel/resource_abi.h>
 static inline int32_t user_call(uint32_t number, uint32_t argument)
 {
     __asm__ volatile ("int $0x80" : "+a"(number) : "b"(argument) : "memory", "cc");
@@ -17,4 +18,7 @@ void user_checkpoint(void);
 void user_fault(uint32_t mode, uint32_t target);
 uint32_t user_register_test(void);
 _Noreturn void user_program(uint32_t id);
+_Noreturn void resource_program(uint32_t id, uint32_t mode);
+void resource_fault_read(uint32_t address);
+void resource_fault_write(uint32_t address);
 #endif

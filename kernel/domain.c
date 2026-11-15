@@ -6,12 +6,17 @@
 #include <kernel/serial.h>
 #include <kernel/user_abi.h>
 #include <kernel/selftest.h>
+#include <kernel/resource.h>
+#include <kernel/resource_test.h>
 #include <arch/x86/gdt.h>
 
 static struct domain domains[2];
 static struct domain *current_domain;
 static uint32_t free_before_domains, completed_rounds;
 extern const uint8_t user_a_start[], user_a_end[], user_b_start[], user_b_end[];
+extern const uint8_t resource_basic_start[], resource_basic_end[];
+extern const uint8_t resource_transfer_start[], resource_transfer_end[];
+extern const uint8_t resource_fault_start[], resource_fault_end[];
 
 /* Test checkpoints deliberately contain no success logic. GDB inspects state here. */
 __attribute__((noinline)) void domains_prepared(void)
@@ -21,6 +26,15 @@ __attribute__((noinline)) void domains_prepared(void)
 __attribute__((noinline)) void domains_reaped(void)
 {
     __asm__ volatile ("" : : : "memory");
+}
+
+struct domain *domain_lookup(uint32_t id)
+{
+    if (id < 1 || id > 2) {
+        return NULL;
+    }
+    struct domain *domain = &domains[id - 1];
+    return domain->state == DOMAIN_READY || domain->state == DOMAIN_RUNNING ? domain : NULL;
 }
 
 struct domain *domain_from_trap(struct exception_frame *frame)
@@ -92,12 +106,30 @@ _Noreturn void domain_fault(struct exception_frame *frame, uint32_t address)
     arch_user_leave(); /* Abandon the faulting instruction, never skip/retry it. */
 }
 
-static bool prepare_domain(struct domain *domain, uint32_t id, enum user_test_mode mode)
+static bool prepare_domain(struct domain *domain, uint32_t id, enum user_test_mode mode, enum resource_test_mode resource_mode)
 {
     const uint8_t *image = id == 1 ? user_a_start : user_b_start;
     uint32_t length = id == 1 ? (uintptr_t)user_a_end - (uintptr_t)image
                               : (uintptr_t)user_b_end - (uintptr_t)image;
+    if (resource_mode != RESOURCE_TEST_NONE) {
+        const uint8_t *end;
+        if (resource_mode == RESOURCE_TEST_BASIC) {
+            image = resource_basic_start;
+            end = resource_basic_end;
+        } else if (resource_mode == RESOURCE_TEST_TRANSFER || resource_mode == RESOURCE_TEST_TRANSFER_FAULT) {
+            image = resource_transfer_start;
+            end = resource_transfer_end;
+        } else {
+            image = resource_fault_start;
+            end = resource_fault_end;
+        }
+        length = (uintptr_t)end - (uintptr_t)image;
+    }
     uint32_t probe = id == 1 ? USER_PROBE_A : USER_PROBE_B;
+    if (domain->epoch == UINT32_MAX || domain->resource_count != 0 || domain->inbox.index != 0) {
+        panic("domain epoch exhausted or resources leaked");
+    }
+    ++domain->epoch;
     domain->id = id;
     if (!address_space_create(&domain->space, image, length, probe)) {
         return false;
@@ -118,6 +150,8 @@ static bool prepare_domain(struct domain *domain, uint32_t id, enum user_test_mo
     uint32_t *data = (void *)(uintptr_t)domain->space.pages[4];
     data[0] = id == 1 ? 0xaaaaaaaa : 0xbbbbbbbb;
     data[1] = mode;
+    data[6] = resource_mode;
+    data[7] = resource_mode != RESOURCE_TEST_NONE ? domain->epoch : 0;
     data[2] = id == 1 ? USER_PROBE_B : USER_PROBE_A;
     data[3] = probe;
     /* These scalar addresses are supplied only for controlled denial experiments. */
@@ -150,14 +184,15 @@ void domains_run(const char *commandline)
         selftest_address_space_failure();
     }
     enum user_test_mode mode = selected_mode(commandline);
+    enum resource_test_mode resource_mode = resource_test_select(commandline);
     bool reverse = boot_has_option(commandline, "domain-reverse");
     /* Recreate both domains twice, exercising teardown, zeroing and reuse. */
     for (uint32_t round = 0; round < 2; ++round) {
         free_before_domains = physical_pages_free_count();
-        if (!prepare_domain(&domains[0], 1, reverse ? USER_NORMAL : mode)) {
+        if (!prepare_domain(&domains[0], 1, reverse ? USER_NORMAL : mode, resource_mode)) {
             panic("first domain creation failed");
         }
-        if (!prepare_domain(&domains[1], 2, reverse ? mode : USER_NORMAL)) {
+        if (!prepare_domain(&domains[1], 2, reverse ? mode : USER_NORMAL, resource_mode)) {
             address_space_destroy(&domains[0].space);
             domains[0].state = DOMAIN_UNUSED;
             panic("second domain creation failed");
@@ -167,6 +202,7 @@ void domains_run(const char *commandline)
         a_data[5] = domains[1].space.pages[4];
         b_data[5] = domains[0].space.pages[4];
         domains_prepared();
+        resource_test_pressure_begin(resource_mode);
         bool runnable;
         do {
             runnable = false;
@@ -184,6 +220,10 @@ void domains_run(const char *commandline)
                 /* Back on the boot kernel stack; never free the active CR3 or trap stack. */
                 address_space_kernel();
                 current_domain = NULL;
+                resource_test_pressure_end();
+                if (domain->state == DOMAIN_EXITED || domain->state == DOMAIN_FAULTED) {
+                    resource_cleanup(domain);
+                }
             }
         } while (runnable);
         for (uint32_t i = 0; i < 2; ++i) {
@@ -200,4 +240,7 @@ void domains_run(const char *commandline)
         serial_write("\nDomains: round completed, all pages reclaimed\n");
     }
     serial_write("Phase 3: user domains completed\n");
+    if (resource_mode != RESOURCE_TEST_NONE) {
+        serial_write("Phase 4: resource experiment completed\n");
+    }
 }

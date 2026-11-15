@@ -3,6 +3,7 @@
 #include <kernel/physical_pages.h>
 #include <kernel/panic.h>
 #include <kernel/user_abi.h>
+#include <kernel/resource_abi.h>
 
 #define TABLE_ENTRIES 1024
 #define TABLE_COUNT (PHYSICAL_LIMIT / (PAGE_SIZE * TABLE_ENTRIES))
@@ -104,6 +105,9 @@ void address_space_destroy(struct address_space *space)
     if (space == NULL || space->count > USER_SPACE_PAGES) {
         panic("invalid address space teardown");
     }
+    if (space->dynamic_table != 0) {
+        panic("destroying address space with resource bindings");
+    }
     uint32_t current_cr3;
     __asm__ volatile ("mov %%cr3, %0" : "=r"(current_cr3));
     if (space->count != 0 && current_cr3 == space->pages[0]) {
@@ -155,5 +159,85 @@ bool address_space_create(struct address_space *space, const uint8_t *image,
         code[i] = image[i];
     }
     space->live = true;
+    return true;
+}
+
+bool address_space_dynamic_address(uint32_t address)
+{
+    return address >= RESOURCE_WINDOW && address < RESOURCE_WINDOW_END
+        && (address & (PAGE_SIZE - 1)) == 0;
+}
+
+static void flush_dynamic(struct address_space *space, uint32_t address, bool removed_table)
+{
+    uint32_t current;
+    __asm__ volatile ("mov %%cr3, %0" : "=r"(current));
+    if (current == space->pages[0]) {
+        if (removed_table) {
+            /* Also discard paging-structure caches before releasing the table page. */
+            __asm__ volatile ("mov %0, %%cr3" : : "r"(current) : "memory");
+        } else {
+            __asm__ volatile ("invlpg (%0)" : : "r"(address) : "memory");
+        }
+    }
+    /* Inactive spaces cannot execute; CR3 reload flushes them before next entry. */
+}
+
+int32_t address_space_bind(struct address_space *space, uint32_t address, uint32_t physical, bool writable)
+{
+    if (!space->live || !address_space_dynamic_address(address)
+        || (physical & (PAGE_SIZE - 1)) != 0 || physical_page_state(physical) != PAGE_ALLOCATED) {
+        return RES_EINVAL;
+    }
+    uint32_t *directory = (void *)(uintptr_t)space->pages[0];
+    if (space->dynamic_table == 0) {
+        uint32_t table;
+        if (!physical_page_alloc(&table)) {
+            return RES_ENOMEM;
+        }
+        clear_page(table);
+        space->dynamic_table = table;
+        directory[RESOURCE_WINDOW >> 22] = table | 7;
+    }
+    uint32_t *table = (void *)(uintptr_t)space->dynamic_table;
+    uint32_t index = (address - RESOURCE_WINDOW) / PAGE_SIZE;
+    if (table[index] != 0) {
+        return RES_EBUSY;
+    }
+    table[index] = physical | 5 | (writable ? 2 : 0);
+    flush_dynamic(space, address, false);
+    return 0;
+}
+
+bool address_space_unbind(struct address_space *space, uint32_t address, uint32_t physical)
+{
+    if (!space->live || !address_space_dynamic_address(address) || space->dynamic_table == 0) {
+        return false;
+    }
+    uint32_t *table = (void *)(uintptr_t)space->dynamic_table;
+    uint32_t index = (address - RESOURCE_WINDOW) / PAGE_SIZE;
+    if ((table[index] & 0xfffff005) != (physical | 5)) {
+        return false;
+    }
+    table[index] = 0;
+    bool empty = true;
+    for (uint32_t i = 0; i < TABLE_ENTRIES; ++i) {
+        if (table[i] != 0) {
+            empty = false;
+            break;
+        }
+    }
+    if (empty) {
+        uint32_t *directory = (void *)(uintptr_t)space->pages[0];
+        directory[RESOURCE_WINDOW >> 22] = 0;
+    }
+    flush_dynamic(space, address, empty);
+    if (empty) {
+        clear_page(space->dynamic_table);
+        if (!physical_page_free(space->dynamic_table)) {
+            panic("dynamic page table release failed");
+        }
+        space->dynamic_table = 0;
+    }
     return true;
 }
