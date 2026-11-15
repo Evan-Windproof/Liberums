@@ -57,6 +57,7 @@ bool boot_info_read(uint32_t magic, uint32_t address, struct boot_context *boot)
         return false;
     }
     boot->map.count = 0;
+    boot->module_count = 0;
     boot->reserved_count = 0;
     boot->commandline[0] = '\0';
     if (magic != UINT32_C(0x2badb002) || (address & 3) != 0
@@ -99,6 +100,7 @@ bool boot_info_read(uint32_t magic, uint32_t address, struct boot_context *boot)
                     || (modules[i].string != 0 && !read_string(boot, modules[i].string, NULL))) {
                     return false;
                 }
+                boot->modules[boot->module_count++] = (struct physical_range){modules[i].begin, modules[i].end};
             }
         }
     }

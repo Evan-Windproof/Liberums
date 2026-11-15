@@ -4,7 +4,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <kernel/resource_abi.h>
-struct resource_handle { uint32_t index, generation; };
 struct capability {
     uint32_t generation; /* Full 32 bits, never wrap. */
     uint32_t owner_id, owner_epoch; /* Epoch distinguishes reused domain slots. */

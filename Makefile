@@ -19,7 +19,8 @@ KERNEL := $(BUILD)/liberums.elf
 C_SOURCES := kernel/main.c kernel/serial.c kernel/panic.c arch/x86/idt.c \
              kernel/memory_map.c kernel/boot_info.c kernel/physical_pages.c \
              arch/x86/paging.c kernel/selftest.c arch/x86/gdt.c kernel/domain.c kernel/syscall.c \
-             kernel/capability.c kernel/resource.c tests/resource_pressure.c
+             kernel/capability.c kernel/resource.c tests/resource_pressure.c \
+             kernel/elf_loader.c kernel/external.c arch/x86/user_space.c tests/elf_pressure.c
 ASM_SOURCES := arch/x86/boot.S arch/x86/isr.S arch/x86/test_faults.S arch/x86/user_context.S arch/x86/user_images.S
 OBJECTS := $(addprefix $(BUILD)/,$(C_SOURCES:.c=.o) $(ASM_SOURCES:.S=.o))
 ARCH_FLAGS := -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float
@@ -45,7 +46,7 @@ $(BUILD)/%.o: %.c Makefile
 	mkdir -p $(dir $@)
 	$(CC) -Iinclude $(CPPFLAGS) $(KERNEL_CFLAGS) $(CFLAGS) -MMD -MP -c $< -o $@
 
-$(BUILD)/user/%.o: user/%.c user/api.h include/kernel/user_abi.h include/kernel/resource_abi.h Makefile
+$(BUILD)/user/%.o: user/%.c user/api.h include/kernel/user_abi.h include/kernel/resource_abi.h $(wildcard include/abi/*.h) Makefile
 	mkdir -p $(dir $@)
 	$(CC) -Iinclude $(KERNEL_CFLAGS) -c $< -o $@
 
@@ -63,7 +64,7 @@ $(BUILD)/user/resource_BASIC.o: RESOURCE_VARIANT = -DRESOURCE_IMAGE_BASIC
 $(BUILD)/user/resource_TRANSFER.o: RESOURCE_VARIANT = -DRESOURCE_IMAGE_TRANSFER
 $(BUILD)/user/resource_FAULT.o: RESOURCE_VARIANT = -DRESOURCE_IMAGE_FAULT
 
-$(addprefix $(BUILD)/user/resource_,BASIC.o TRANSFER.o FAULT.o): user/resource_test.c user/api.h include/kernel/resource_abi.h include/kernel/capability.h Makefile
+$(addprefix $(BUILD)/user/resource_,BASIC.o TRANSFER.o FAULT.o): user/resource_test.c user/api.h include/kernel/resource_abi.h include/kernel/capability.h $(wildcard include/abi/*.h) Makefile
 	mkdir -p $(dir $@)
 	$(CC) -Iinclude $(KERNEL_CFLAGS) -Os $(RESOURCE_VARIANT) -c $< -o $@
 
@@ -93,19 +94,28 @@ $(BUILD)/memory-tests: tests/memory_tests.c kernel/memory_map.c kernel/physical_
 		-fsanitize=address,undefined -fno-omit-frame-pointer -Iinclude \
 		tests/memory_tests.c kernel/memory_map.c kernel/physical_pages.c -o $@
 
-$(BUILD)/capability-tests: tests/capability_tests.c kernel/capability.c include/kernel/capability.h include/kernel/resource_abi.h Makefile | $(BUILD)
+$(BUILD)/capability-tests: tests/capability_tests.c kernel/capability.c include/kernel/capability.h include/kernel/resource_abi.h $(wildcard include/abi/*.h) Makefile | $(BUILD)
 	$(HOST_CC) -std=c11 -Wall -Wextra -Werror -Wpedantic -g -fsanitize=address,undefined \
 		-Iinclude tests/capability_tests.c kernel/capability.c -o $@
+
+$(BUILD)/elf-tests: tests/elf_tests.c kernel/elf_loader.c include/kernel/elf_loader.h $(wildcard include/abi/*.h) Makefile | $(BUILD)
+	$(HOST_CC) -std=c11 -Wall -Wextra -Werror -Wpedantic -g -fsanitize=address,undefined \
+		-Iinclude tests/elf_tests.c kernel/elf_loader.c -o $@
+
+.PHONY: external-fixtures
+external-fixtures:
+	$(MAKE) -C tests/fixtures/external_user SDK="$(abspath include)" OUT="$(abspath $(BUILD)/external)" CC="$(CC)" LD="$(LD)"
 
 test-memory: $(BUILD)/memory-tests $(BUILD)/capability-tests
 	./$(BUILD)/memory-tests
 	./$(BUILD)/capability-tests
 
-test: $(KERNEL) test-memory
+test: $(KERNEL) test-memory $(BUILD)/elf-tests external-fixtures
 	$(PYTHON) tests/phase1.py --qemu "$(QEMU)" --gdb "$(GDB)"
 	$(PYTHON) tests/phase2.py --qemu "$(QEMU)" --gdb "$(GDB)"
 	$(PYTHON) tests/phase3.py --qemu "$(QEMU)" --gdb "$(GDB)"
 	$(PYTHON) tests/phase4.py --qemu "$(QEMU)" --gdb "$(GDB)"
+	$(PYTHON) tests/phase5.py --qemu "$(QEMU)" --gdb "$(GDB)"
 
 clean:
 	rm -rf $(BUILD)

@@ -27,6 +27,10 @@ void syscall_dispatch(struct exception_frame *frame)
             frame->eax = 0;
         }
         break;
+    case SYS_ABI_QUERY:
+        frame->eax = LIBERUMS_ABI_VERSION;
+        frame->edx = LIBERUMS_FEATURES;
+        break;
     case SYS_PAGE_CLAIM:
     case SYS_PAGE_SPECIFIC:
     case SYS_PAGE_RECEIVE: {

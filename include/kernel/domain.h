@@ -20,6 +20,10 @@ struct domain {
     uint8_t kernel_stack[8192] __attribute__((aligned(16)));
 };
 struct domain *domain_lookup(uint32_t id);
+struct domain *domain_slot(uint32_t id);
+void domain_initialize(struct domain *domain, uint32_t id, uint32_t entry, uint32_t stack_top);
+bool domain_prepare_peer(struct domain *domain, uint32_t id);
+void domain_schedule(void);
 void domains_run(const char *commandline);
 struct domain *domain_from_trap(struct exception_frame *frame);
 _Noreturn void domain_yield(struct exception_frame *frame);

@@ -7,6 +7,7 @@
 #include <kernel/selftest.h>
 #include <kernel/serial.h>
 #include <kernel/domain.h>
+#include <kernel/external.h>
 
 static struct boot_context boot;
 extern char __kernel_start[], __kernel_end[];
@@ -53,6 +54,10 @@ _Noreturn void kernel_main(uint32_t boot_magic, uint32_t boot_info_address)
     serial_write("Liberums: boot successful\n");
     serial_write("Phase 1: x86 32-bit C11 kernel, COM1 ready\n");
     serial_write("Multiboot handoff accepted; interrupts disabled; halting.\n");
-    domains_run(boot.commandline);
+    if (boot_has_option(boot.commandline, "external")) {
+        external_domains_run(&boot);
+    } else {
+        domains_run(boot.commandline);
+    }
     kernel_stop();
 }

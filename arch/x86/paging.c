@@ -94,7 +94,8 @@ void address_space_kernel(void)
 
 void address_space_activate(const struct address_space *space)
 {
-    if (!space->live || space->count != USER_SPACE_PAGES) {
+    if (!space->live || (space->external ? space->count < 3 || space->count > ADDRESS_SPACE_PAGE_LIMIT
+                                        : space->count != USER_SPACE_PAGES)) {
         panic("activating dead address space");
     }
     __asm__ volatile ("mov %0, %%cr3" : : "r"(space->pages[0]) : "memory");
@@ -102,7 +103,7 @@ void address_space_activate(const struct address_space *space)
 
 void address_space_destroy(struct address_space *space)
 {
-    if (space == NULL || space->count > USER_SPACE_PAGES) {
+    if (space == NULL || space->count > ADDRESS_SPACE_PAGE_LIMIT) {
         panic("invalid address space teardown");
     }
     if (space->dynamic_table != 0) {
@@ -125,6 +126,7 @@ void address_space_destroy(struct address_space *space)
     }
     space->live = false;
     space->count = 0;
+    space->external = false;
 }
 
 bool address_space_create(struct address_space *space, const uint8_t *image,
@@ -240,4 +242,11 @@ bool address_space_unbind(struct address_space *space, uint32_t address, uint32_
         space->dynamic_table = 0;
     }
     return true;
+}
+
+void paging_copy_kernel(uint32_t *directory)
+{
+    for (uint32_t i = 0; i < TABLE_COUNT; ++i) {
+        directory[i] = page_directory[i];
+    }
 }

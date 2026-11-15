@@ -4,8 +4,8 @@
 可验证的资源所有权和用户态 LibOS。语言为 C11 与少量 x86 汇编，
 目标为 **32 位 x86（i686）+ QEMU**，许可证为 **GPL-3.0-or-later**。
 
-**当前完成 Phase 4：在两个 Ring 3 域上实现物理页独占所有权、完整代数句柄、权限检查、
-安全页绑定与同步所有权转移。尚无时钟抢占、公平分配、异步可见撤销或 LibOS，不是完整 Exokernel。**
+**当前完成 Phase 5：提供公开 ABI 1.0，支持从 Multiboot 模块加载独立编译的 ELF32，
+以真实 Ring 3 运行多页程序并使用 Phase 4 资源接口。尚无 LibOS、抢占或异步撤销，不是完整 Exokernel。**
 实现代码为本项目编写；引导遵循公开的 Multiboot v1 协议。
 
 ## 目录结构
@@ -18,8 +18,10 @@ Liberums/
 │   ├── idt.c / isr.S   # CPU 异常现场与诊断
 │   ├── paging.c        # supervisor identity mapping、PG/WP、TLB
 │   ├── test_faults.S   # Ring 0 故障诊断
-│   └── gdt.c / user_context.S / user_images.S # TSS、iret 与内置用户映像
+│   ├── gdt.c / user_context.S / user_images.S # TSS、iret 与内置用户映像
+│   └── user_space.c   # 外部映像/栈的独立多页构造与回滚
 ├── include/
+│   ├── abi/           # 独立 SDK：版本、调用、资源、ELF profile
 │   ├── arch/x86/io.h   # x86 端口 I/O 原语
 │   └── kernel/        # 串口、内存图、页追踪、引导数据、panic 等接口
 ├── kernel/
@@ -29,27 +31,30 @@ Liberums/
 │   ├── physical_pages.c # 页状态与早期取页/归还
 │   ├── panic.c / selftest.c # 停止处理与显式诊断
 │   ├── domain.c / syscall.c # 域生命周期与标量系统调用
-│   └── resource.c / capability.c # 所有权、绑定生命周期、代数与权限
+│   ├── resource.c / capability.c # 所有权、绑定生命周期、代数与权限
+│   └── elf_loader.c / external.c # 有界 ELF 校验与外部执行编排
 ├── tests/
 │   ├── entry.gdb      # 汇编/C 入口及机器状态断言
 │   ├── phase1.py      # 原 ELF、启动、GDB 兼容验收
 │   ├── memory_tests.c # 宿主 ASan/UBSan 边界与状态测试
 │   ├── phase2.py / paging.gdb # 原分页/异常/坏输入验收
 │   ├── phase3.py      # Ring 3、双向隔离、TSS/CR3 与回收
-│   └── phase4.py / capability_tests.c # 资源/转移硬件验收与宿主边界检查
+│   ├── phase4.py / capability_tests.c # 资源/转移硬件验收与宿主边界检查
+│   └── phase5.py / fixtures/external_user/ # 外部 ABI/ELF 集成
 ├── user/              # 原 A/B 映像及分组的资源测试映像，每个仍限制一页
 ├── docs/
 │   ├── architecture.md # 内核/LibOS 边界与后续资源保护设计
 │   ├── phase1-validation.md # 历史验收记录
 │   ├── phase2-*.md    # 概览、模块、内存原理与历史验收
 │   ├── phase3-*.md    # 用户域、特权级、地址空间与历史验收
-│   └── phase4-*.md    # 所有权、绑定、接口、模块与实际验收
+│   ├── phase4-*.md    # 所有权、绑定、接口、模块与历史验收
+│   └── phase5-*.md    # 公开 ABI、ELF 装载、模块与实际验收
 ├── Makefile
 ├── LICENSE
 └── build/             # 生成的 ELF、对象、链接映射、测试日志（Git 忽略）
 ```
 
-用户测试映像位于 `user/`；未来 LibOS 放入 `libos/`，本阶段没有实现 LibOS。
+内置测试映像位于 `user/`。未来 Aelthuvor 是独立仓库；Liberums 不包含或依赖其源码，本阶段没有实现 LibOS。
 
 ## 工具要求
 
@@ -166,7 +171,7 @@ quit
 自动执行相同的入口验证与串口验收：
 
 ```sh
-make test                 # 宿主测试 + Phase 1/2/3 回归 + 全部 Phase 4 验收
+make test                 # 宿主测试 + Phase 1/2/3/4 回归 + 全部 Phase 5 验收
 make test-memory          # 可单独运行宿主内存及 capability 测试
 # 可单独执行某项（需先 make）：
 python3 tests/phase1.py --mode boot
@@ -174,6 +179,7 @@ python3 tests/phase1.py --mode gdb
 python3 tests/phase2.py
 python3 tests/phase3.py
 python3 tests/phase4.py
+python3 tests/phase5.py
 ```
 
 Phase 1 兼容性测试仍检查 ELF 类型、Multiboot 头位置与校验和、链接符号，实际调用 `make run`
@@ -217,6 +223,23 @@ basic/transfer 的完整攻击验证和 generation 边界验证需要脚本的 G
 普通 `make run` 继续原正常行为，不自动执行破坏性测试。日志为 `build/phase4-*-serial.log`
 和 `*-gdb.log`，完整测试输出为 `build/test.log`，生成物不提交。
 
+## 外部 ELF32 与公开 ABI
+
+```sh
+make external-fixtures
+make run QEMU_APPEND=external QEMU_INITRD=build/external/normal.elf
+make debug QEMU_APPEND=external QEMU_INITRD=build/external/normal.elf
+python3 tests/phase5.py
+```
+
+只有显式 external token 才加载恰好一个模块；默认 make run 继续原正常流程。
+独立程序只需 `include/abi/`：ABI 1.0、查询号 3、Feature Flags，以及保留原调用号的资源 API。
+外部程序可有多个代码/只读/数据/BSS 页和四页零栈；旧单页断言与六页路径继续独立验证。
+
+教学文档：[概览](docs/phase5-overview.md)、[公开 ABI/接入规范](docs/phase5-abi.md)、
+[ELF profile](docs/phase5-elf-loader.md)、[模块](docs/phase5-modules.md)、
+[实际验收](docs/phase5-validation.md)。没有动态链接器、文件系统或 Aelthuvor 实现。
+
 ## Exokernel 边界与下一步
 
 内核未来负责保护机制：资源身份、所有权、授权检查、受保护映射、异常隔离、
@@ -225,8 +248,8 @@ basic/transfer 的完整攻击验证和 generation 边界验证需要脚本的 G
 早期 COM1 仅为可信内核诊断通道，不是把通用设备管理策略放进内核的先例。
 
 完整设计与下一阶段建议见 [架构规划](docs/architecture.md)。
-Phase 4 到此结束。当前授权只覆盖受限的物理页独占模型，不等于通用能力系统或完整 Exokernel。
-下一阶段可研究可见撤销通知/确认、策略层实验和抢占前提；本阶段没有继续实现。
+Phase 5 到此结束。外部加载不等于实现 LibOS，也不扩大资源授权模型。
+后续独立 LibOS 可依据公开 ABI 开展管理策略实验；本次没有进入下一阶段或修改其他仓库。
 合作式执行下恶意用户可无限占用 CPU，没有公平性或强制 CPU 撤销保证。
 
 ## 许可证

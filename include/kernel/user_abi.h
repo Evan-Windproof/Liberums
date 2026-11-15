@@ -7,9 +7,7 @@
 #define USER_STACK_TOP 0x08003000u
 #define USER_PROBE_A 0x08400000u
 #define USER_PROBE_B 0x08800000u
-#define SYS_YIELD 0u
-#define SYS_EXIT 1u
-#define SYS_LOG_CHAR 2u
+#include <abi/syscall.h>
 /* Explicit diagnostic scenarios; no user-visible physical mapping API. */
 enum user_test_mode {
     USER_NORMAL, USER_KERNEL_READ, USER_KERNEL_WRITE, USER_CROSS_READ,

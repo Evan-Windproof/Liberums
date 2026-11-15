@@ -10,6 +10,8 @@ struct boot_context {
     struct physical_range reserved[BOOT_RANGE_MAX];
     size_t reserved_count;
     char commandline[BOOT_STRING_MAX];
+    struct physical_range modules[8];
+    uint32_t module_count;
 };
 
 /* Called only before paging, with loader-supplied physical addresses. */

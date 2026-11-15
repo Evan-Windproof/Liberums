@@ -106,6 +106,37 @@ _Noreturn void domain_fault(struct exception_frame *frame, uint32_t address)
     arch_user_leave(); /* Abandon the faulting instruction, never skip/retry it. */
 }
 
+struct domain *domain_slot(uint32_t id)
+{
+    if (id < 1 || id > 2) {
+        panic("invalid internal domain slot");
+    }
+    return &domains[id - 1];
+}
+
+void domain_initialize(struct domain *domain, uint32_t id, uint32_t entry, uint32_t stack_top)
+{
+    if (domain->epoch == UINT32_MAX || domain->resource_count != 0 || domain->inbox.index != 0) {
+        panic("domain epoch exhausted or resources leaked");
+    }
+    ++domain->epoch;
+    domain->id = id;
+    uint8_t *bytes = (void *)&domain->context;
+    for (uint32_t i = 0; i < sizeof(domain->context); ++i) {
+        bytes[i] = 0;
+    }
+    domain->context.cpu.eip = entry;
+    domain->context.cpu.cs = USER_CODE_SELECTOR;
+    domain->context.cpu.eflags = 2; /* IF=0, IOPL=0; cooperative execution only. */
+    domain->context.user_ss = USER_DATA_SELECTOR;
+    domain->context.user_esp = stack_top - 4; /* i386 function-entry alignment. */
+    domain->exit_status = domain->fault_vector = domain->fault_error = 0;
+    domain->fault_eip = domain->fault_address = 0;
+    domain->syscalls = domain->yields = domain->log_count = 0;
+    domain->last_kernel_frame = 0;
+    domain->state = DOMAIN_READY;
+}
+
 static bool prepare_domain(struct domain *domain, uint32_t id, enum user_test_mode mode, enum resource_test_mode resource_mode)
 {
     const uint8_t *image = id == 1 ? user_a_start : user_b_start;
@@ -126,27 +157,10 @@ static bool prepare_domain(struct domain *domain, uint32_t id, enum user_test_mo
         length = (uintptr_t)end - (uintptr_t)image;
     }
     uint32_t probe = id == 1 ? USER_PROBE_A : USER_PROBE_B;
-    if (domain->epoch == UINT32_MAX || domain->resource_count != 0 || domain->inbox.index != 0) {
-        panic("domain epoch exhausted or resources leaked");
-    }
-    ++domain->epoch;
-    domain->id = id;
     if (!address_space_create(&domain->space, image, length, probe)) {
         return false;
     }
-    uint8_t *bytes = (void *)&domain->context;
-    for (uint32_t i = 0; i < sizeof(domain->context); ++i) {
-        bytes[i] = 0;
-    }
-    domain->context.cpu.eip = USER_CODE;
-    domain->context.cpu.cs = USER_CODE_SELECTOR;
-    domain->context.cpu.eflags = 2; /* IF=0, IOPL=0; cooperative execution only. */
-    domain->context.user_ss = USER_DATA_SELECTOR;
-    domain->context.user_esp = USER_STACK_TOP - 4; /* i386 function-entry alignment. */
-    domain->exit_status = domain->fault_vector = domain->fault_error = 0;
-    domain->fault_eip = domain->fault_address = 0;
-    domain->syscalls = domain->yields = domain->log_count = 0;
-    domain->last_kernel_frame = 0;
+    domain_initialize(domain, id, USER_CODE, USER_STACK_TOP);
     uint32_t *data = (void *)(uintptr_t)domain->space.pages[4];
     data[0] = id == 1 ? 0xaaaaaaaa : 0xbbbbbbbb;
     data[1] = mode;
@@ -158,6 +172,11 @@ static bool prepare_domain(struct domain *domain, uint32_t id, enum user_test_mo
     data[4] = domain->space.pages[0];
     domain->state = DOMAIN_READY;
     return true;
+}
+
+bool domain_prepare_peer(struct domain *domain, uint32_t id)
+{
+    return prepare_domain(domain, id, USER_NORMAL, RESOURCE_TEST_NONE);
 }
 
 static enum user_test_mode selected_mode(const char *args)
@@ -175,6 +194,33 @@ static enum user_test_mode selected_mode(const char *args)
         }
     }
     return USER_NORMAL;
+}
+
+void domain_schedule(void)
+{
+    bool runnable;
+    do {
+        runnable = false;
+        for (uint32_t i = 0; i < 2; ++i) {
+            struct domain *domain = &domains[i];
+            if (domain->state != DOMAIN_READY) {
+                continue;
+            }
+            runnable = true;
+            current_domain = domain;
+            domain->state = DOMAIN_RUNNING;
+            tss_set_kernel_stack((uintptr_t)domain->kernel_stack + sizeof(domain->kernel_stack));
+            address_space_activate(&domain->space);
+            arch_user_enter(&domain->context);
+            /* Back on the boot kernel stack; never free the active CR3 or trap stack. */
+            address_space_kernel();
+            current_domain = NULL;
+            resource_test_pressure_end();
+            if (domain->state == DOMAIN_EXITED || domain->state == DOMAIN_FAULTED) {
+                resource_cleanup(domain);
+            }
+        }
+    } while (runnable);
 }
 
 void domains_run(const char *commandline)
@@ -203,29 +249,7 @@ void domains_run(const char *commandline)
         b_data[5] = domains[0].space.pages[4];
         domains_prepared();
         resource_test_pressure_begin(resource_mode);
-        bool runnable;
-        do {
-            runnable = false;
-            for (uint32_t i = 0; i < 2; ++i) {
-                struct domain *domain = &domains[i];
-                if (domain->state != DOMAIN_READY) {
-                    continue;
-                }
-                runnable = true;
-                current_domain = domain;
-                domain->state = DOMAIN_RUNNING;
-                tss_set_kernel_stack((uintptr_t)domain->kernel_stack + sizeof(domain->kernel_stack));
-                address_space_activate(&domain->space);
-                arch_user_enter(&domain->context);
-                /* Back on the boot kernel stack; never free the active CR3 or trap stack. */
-                address_space_kernel();
-                current_domain = NULL;
-                resource_test_pressure_end();
-                if (domain->state == DOMAIN_EXITED || domain->state == DOMAIN_FAULTED) {
-                    resource_cleanup(domain);
-                }
-            }
-        } while (runnable);
+        domain_schedule();
         for (uint32_t i = 0; i < 2; ++i) {
             if (domains[i].state != DOMAIN_EXITED && domains[i].state != DOMAIN_FAULTED) {
                 panic("domain scheduler state corruption");

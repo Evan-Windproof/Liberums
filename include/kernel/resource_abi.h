@@ -1,33 +1,7 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 #ifndef LIBERUMS_RESOURCE_ABI_H
 #define LIBERUMS_RESOURCE_ABI_H
-#define SYS_PAGE_CLAIM 16u
-#define SYS_PAGE_SPECIFIC 17u
-#define SYS_PAGE_MAP 18u
-#define SYS_PAGE_UNMAP 19u
-#define SYS_PAGE_RELEASE 20u
-#define SYS_PAGE_QUERY 21u
-#define SYS_PAGE_TRANSFER 22u
-#define SYS_PAGE_RECEIVE 23u
-#define RESOURCE_READ 1u
-#define RESOURCE_WRITE 2u
-#define RESOURCE_MAP 4u
-#define RESOURCE_RELEASE 8u
-#define RESOURCE_TRANSFER 16u
-#define RESOURCE_QUERY 32u
-#define RESOURCE_ALL 63u
-#define RESOURCE_WINDOW 0x09000000u
-#define RESOURCE_WINDOW_END 0x09010000u
-#define RES_EPERM (-1)
-#define RES_ENOENT (-2)
-#define RES_ESRCH (-3)
-#define RES_EAGAIN (-11)
-#define RES_ENOMEM (-12)
-#define RES_EBUSY (-16)
-#define RES_EINVAL (-22)
-#define RES_ENOSPC (-28)
-#define RES_EOVERFLOW (-75)
-#define RES_ESTALE (-116)
+#include <abi/resource.h>
 /* Values select trusted diagnostic programs, never change resource authority. */
 enum resource_test_mode {
     RESOURCE_TEST_NONE, RESOURCE_TEST_BASIC, RESOURCE_TEST_TRANSFER,
