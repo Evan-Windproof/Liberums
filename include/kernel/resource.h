@@ -29,4 +29,5 @@ int32_t resource_receive(struct domain *owner, struct resource_handle *handle);
 int32_t resource_revoke_begin(struct domain *owner, struct resource_handle handle);
 int32_t resource_revoke_complete(struct domain *owner, struct resource_handle handle);
 void resource_cleanup(struct domain *owner);
+bool resource_domain_busy(const struct domain *owner);
 #endif

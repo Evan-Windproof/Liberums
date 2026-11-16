@@ -1,0 +1,30 @@
+make -C tests/fixtures/external_user SDK="/workspace/Liberums/include" OUT="/workspace/Liberums/build/external" CC="gcc" LD="ld"
+make[1]: Entering directory '/workspace/Liberums/tests/fixtures/external_user'
+make[1]: Nothing to be done for 'all'.
+make[1]: Leaving directory '/workspace/Liberums/tests/fixtures/external_user'
+make -C tests/fixtures/domains8 SDK="/workspace/Liberums/include" OUT="/workspace/Liberums/build/phase8" CROSS_COMPILE=""
+make[1]: Entering directory '/workspace/Liberums/tests/fixtures/domains8'
+make[1]: Nothing to be done for 'all'.
+make[1]: Leaving directory '/workspace/Liberums/tests/fixtures/domains8'
+./build/domain-pool-tests
+PASS: pool capacity/ID, rollback, live-slot exclusion, 64 reuses, stack/context cleanup, retained authority and epoch exhaustion
+python3 tests/phase8.py --qemu "qemu-system-i386" --gdb "gdb"
+PASS: Phase 8 modules-2
+PASS: Phase 8 modules-3
+PASS: Phase 8 modules-4
+PASS: Phase 8 modules-5
+PASS: Phase 8 modules-8
+PASS: Phase 8 invalid-middle
+PASS: Phase 8 abi-middle
+PASS: Phase 8 partial-oom
+PASS: Phase 8 oom-five-pages
+PASS: Phase 8 transfer-isolation
+PASS: Phase 8 inbox-exit-reuse
+PASS: Phase 8 reuse-24
+PASS: Phase 8 registers-four
+PASS: Phase 8 revoke-reuse
+PASS: Phase 8 revoke-eight
+PASS: Phase 8 device-lifetimes
+PASS: Phase 8 exclusive-vga
+PASS: Phase 8 exclusive-keyboard
+PASS: Phase 8 19 actual QEMU guests; 18 GDB audits

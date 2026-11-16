@@ -36,7 +36,7 @@ _Noreturn void kernel_main(uint32_t boot_magic, uint32_t boot_info_address)
         panic("invalid or unsupported Multiboot memory information");
     }
     struct external_config external = external_config_read(boot.commandline);
-    diagnostics_init(boot.commandline);
+    diagnostics_init(&boot);
     serial_write("Memory map: accepted regions=");
     serial_hex((uint32_t)boot.map.count);
     serial_write("\n");

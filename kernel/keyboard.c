@@ -177,3 +177,9 @@ void keyboard_diagnostic(void)
     keyboard_diagnostic_done();
     serial_write("Keyboard IRQ1 diagnostic completed\n");
 }
+
+bool keyboard_domain_busy(const struct domain *owner)
+{
+    return (keyboard.grant_id!=0 && keyboard.grant_id==owner->id && keyboard.grant_epoch==owner->epoch)
+        || (keyboard.active && keyboard.cap.owner_id==owner->id && keyboard.cap.owner_epoch==owner->epoch);
+}

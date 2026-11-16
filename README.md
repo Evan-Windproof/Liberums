@@ -4,7 +4,11 @@
 可验证的资源所有权和用户态 LibOS。语言为 C11 与少量 x86 汇编，
 目标为 **32 位 x86（i686）+ QEMU**，许可证为 **GPL-3.0-or-later**。
 
-**当前完成 Phase 6：公开 ABI 1.2，外部 ELF32、真实 Ring 3、PIT 硬件抢占和普通资源页的可见撤销。**
+**当前完成 Phase 8：有界动态四域、多个独立 ELF32、IRQ0 轮转、资源隔离与安全复用。**
+公开 ABI 1.2 保持；Phase 7.1～7.3 的用户态 VGA/键盘 Console 与独占设备授权继续保留。
+动态域采用独立 CR3/栈，复用前回收设备、Capability、撤销事件和 RAM，推进 Epoch。
+见 [Phase 8 概览](docs/phase8-overview.md)、[教学模块图](docs/phase8-modules.md) 和
+[实际 QEMU/GDB 验收](docs/phase8-validation.md)。
 默认保留 Phase 1～5 的合作兼容模式；显式 `preempt` 开放定时器，非合作用户不能阻止其他 READY 域运行。
 撤销先通知并提供 ACK 机会，超时由内核移除全部别名并清零回收。仍是单 CPU 教学系统，没有完整 LibOS。
 实现代码为本项目编写；引导遵循公开的 Multiboot v1 协议。
@@ -33,6 +37,7 @@ Liberums/
 │   ├── physical_pages.c # 页状态与早期取页/归还
 │   ├── panic.c / selftest.c # 停止处理与显式诊断
 │   ├── domain.c / syscall.c # 域生命周期与标量系统调用
+│   ├── domain_pool.c / multi_external.c # 有界动态槽位、多模块安全创建与回收
 │   ├── resource.c / capability.c # 所有权、绑定生命周期、代数与权限
 │   ├── timer.c / tick.c / scheduler.c # 单调 tick 与最小轮转
 │   ├── revoke.c       # 有界事件、期限、ACK 与强制回收
@@ -61,6 +66,11 @@ Liberums/
 ```
 
 内置测试映像位于 `user/`。Aelthuvor 是独立仓库；Liberums 不包含其源码，也不链接其实现。测试仅通过外部 ELF 对接。
+
+新增 `make run-multi` 可同时装载两个独立测试 ELF；通过逗号分隔的 `MULTI_ELFS` 可指定最多八个
+Multiboot 模块，其中最多四域同时建立。默认无设备权限且无窗口；旧 run 系列行为保留。
+`make test-phase8` 单独执行动态域验收，`make test` 包含全部历史与本阶段回归。
+公开每域资源配额仍为四页，没有新增用户 spawn、fork/exec 或应用管理服务。
 
 ## 工具要求
 

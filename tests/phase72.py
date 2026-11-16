@@ -19,7 +19,11 @@ class QMP:
     def __init__(self, endpoint):
         self.sock=socket.socket(socket.AF_UNIX)
         self.sock.settimeout(5)
-        self.sock.connect(endpoint)
+        try:
+            self.sock.connect(endpoint)
+        except OSError:
+            self.sock.close()
+            raise
         self.stream=self.sock.makefile('rwb',buffering=0)
         require('QMP' in json.loads(self.stream.readline()),'QMP greeting missing')
         self.call('qmp_capabilities')
@@ -48,11 +52,15 @@ def injector(endpoint):
         qmp=None
         try:
             deadline=time.monotonic()+5
-            while not os.path.exists(endpoint):
+            while True:
                 if done.is_set(): return
-                if time.monotonic()>deadline: raise RuntimeError('QMP socket did not appear')
-                time.sleep(.001)
-            qmp=QMP(endpoint)
+                if time.monotonic()>deadline: raise RuntimeError('QMP socket did not become ready')
+                try:
+                    qmp=QMP(endpoint)
+                    break
+                except (FileNotFoundError,ConnectionRefusedError):
+                    # The Unix path can exist before QEMU has called listen().
+                    time.sleep(.001)
             while not done.is_set():
                 try: connection,_=server.accept()
                 except socket.timeout: continue
@@ -167,6 +175,8 @@ generations=[]
 expected=ACTION_LIST
 start_bytes=0
 last_data_pages=[]
+last_observation=None
+last_sequence=0
 def c(field): return v('((struct console*)0x08001100)->'+field)
 def data(i,word): return words(d(i,'space.pages[4]')+word*4,1)[0]
 def write_data(word,value):
@@ -181,10 +191,15 @@ def irq_entry():
     # Avoid the first IRQ instruction: GDB/TCG can report that PC twice when
     # interrupt entry coincides with stepping over another hardware breakpoint.
     sp=v('$esp')+4
-    check(v('keyboard_irqs')==seen['irq'],'duplicate or missed IRQ1 capture')
     cpu=words(sp,3)
     outer=words(sp,5) if cpu[1]&3 else cpu
     segments=tuple(v('$'+r) for r in ('ds','es','fs','gs'))
+    snapshot=(sp,outer,regs,segments,v('$cr3'))
+    ordinal=v('keyboard_irqs')
+    if ordinal==seen['irq']-1:
+        check(snapshot==raw_frame,'duplicate IRQ1 stop changed original frame')
+        return
+    check(ordinal==seen['irq'],'missed IRQ1 capture: actual=%d expected=%d'%(ordinal,seen['irq']))
     check(v('$cs')==8 and v('$eflags')&0x200==0,'IRQ1 entry not protected IF=0')
     if cpu[1]&3:
         check(cpu[1]==0x1b and outer[4]==0x23,'IRQ1 did not enter from Ring3')
@@ -194,7 +209,7 @@ def irq_entry():
             check(regs==tuple(j*0x11111111 for j in (1,2,3,4,5,6,7)),'peer GP sentinel corrupted by IRQ0/IRQ1')
             check(cpu[2]&0x401==0x401,'peer CF/DF lost')
             seen['peer_irq']+=1
-    raw_frame=(sp,outer,regs,segments,v('$cr3'))
+    raw_frame=snapshot
     seen['irq']+=1
 def irq_return():
     check(raw_frame is not None,'missing raw IRQ1 frame')
@@ -202,7 +217,10 @@ def irq_return():
     check(v('$esp')==sp and words(sp,len(cpu))==cpu,'IRQ1 iret frame/ESP changed')
     check(tuple(v('$'+r) for r in ('eax','ebx','ecx','edx','esi','edi','ebp'))==regs,'IRQ1 GP registers changed')
     check(tuple(v('$'+r) for r in ('ds','es','fs','gs'))==segments and v('$cr3')==cr3,'IRQ1 segments/CR3 changed')
-    check(v('keyboard_irqs')==v('keyboard_eois')==seen['returned']+1,'IRQ1 missing/duplicated dispatch or EOI')
+    ordinal=v('keyboard_irqs')
+    check(ordinal==v('keyboard_eois'),'IRQ1 missing EOI')
+    if ordinal==seen['returned']: return
+    check(ordinal==seen['returned']+1,'IRQ1 missed return')
     check(v('keyboard.count')<=64,'queue exceeded bound')
     seen['returned']+=1
     if mode==8 and v('keyboard_bytes')-start_bytes>=80 and v('keyboard.overflow'):
@@ -215,10 +233,17 @@ def send_next():
     else:
         write_data(9,1 if mode in (0,8) else mode)
 def checkpoint():
-    global index,raw_index,start_bytes,last_data_pages,peer_marker
+    global index,raw_index,start_bytes,last_data_pages,peer_marker,last_sequence,last_observation
     check(v('$cs')==0x1b and v('$ss')==0x23 and v('$cr3')==d(0,'space.pages[0]'),'editor not real Ring3')
     check(v('$eflags')&0x3200==0x200,'interactive IF/IOPL unsafe')
     stage=data(0,2)
+    sequence=data(0,10)
+    observation=(stage,data(0,6),data(0,7))
+    if sequence==last_sequence:
+        check(observation==last_observation,'duplicate user stop changed observation')
+        return
+    check(sequence==last_sequence+1,'missed actual user poll observation')
+    last_sequence=sequence;last_observation=observation
     if stage==1:
         index=raw_index=0
         peer_marker=0
@@ -261,6 +286,7 @@ def checkpoint():
         check(framebuffer().strip()=='>','clear command did not clear actual VGA cells')
     index+=1;send_next()
 def reaped():
+    global last_sequence,last_observation
     check(v('keyboard.enabled')==0 and v('keyboard.active')==0 and v('keyboard.grant_id')==0,'keyboard authority survived exit')
     check(v('keyboard.count')==0 and not any(bytes(gdb.selected_inferior().read_memory(v('&keyboard.bytes'),64))),'queued keystrokes survived exit')
     check(v('vga_device.active')==0 and d(0,'space.device_table')==0,'VGA mapping survived exit')
@@ -280,6 +306,7 @@ def reaped():
     master=re.search(r'pic0: irr=([0-9a-f]+) imr=([0-9a-f]+) isr=([0-9a-f]+)',pic)
     check(master and int(master[2],16)==0xfe and int(master[3],16)&2==0,'IRQ1 mask/EOI damaged IRQ0')
     seen['reaped']+=1
+    last_sequence=0;last_observation=None
     check(v('phase72_rounds')==seen['reaped'],'lifetime count mismatch')
     print('REAPED: epoch=%d IRQ0=%d peer preemptions=%d IRQ1=%d EOI=%d PIC imr=%s isr=%s' %
           (d(0,'epoch'),v('irq_count'),d(1,'preemptions'),v('keyboard_irqs'),v('keyboard_eois'),master[2],master[3]))

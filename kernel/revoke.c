@@ -6,7 +6,7 @@
 #include <kernel/tick.h>
 #include <kernel/panic.h>
 /* Capacity is a protocol bound, independent of the page being reclaimed. */
-static struct revoke_event events[2 * REVOKE_EVENTS_PER_DOMAIN];
+static struct revoke_event events[DOMAIN_CAPACITY * REVOKE_EVENTS_PER_DOMAIN];
 static uint32_t last_request_id;
 static uint32_t acknowledged, forced, cancelled;
 static bool for_owner(const struct revoke_event *event, const struct domain *owner)
@@ -15,7 +15,7 @@ static bool for_owner(const struct revoke_event *event, const struct domain *own
 }
 static struct revoke_event *find(struct domain *owner, uint32_t request)
 {
-    for (uint32_t i = 0; i < 2 * REVOKE_EVENTS_PER_DOMAIN; ++i) {
+    for (uint32_t i = 0; i < DOMAIN_CAPACITY * REVOKE_EVENTS_PER_DOMAIN; ++i) {
         if (for_owner(&events[i], owner) && events[i].request_id == request) {
             return &events[i];
         }
@@ -41,9 +41,9 @@ int32_t revoke_request(struct domain *owner, struct resource_handle handle,
     }
     uint32_t count = 0;
     struct revoke_event *slot = NULL;
-    for (uint32_t i = 0; i < 2 * REVOKE_EVENTS_PER_DOMAIN; ++i) {
+    for (uint32_t i = 0; i < DOMAIN_CAPACITY * REVOKE_EVENTS_PER_DOMAIN; ++i) {
         if (!events[i].active) {
-            slot = &events[i];
+            if (slot == NULL) { slot = &events[i]; }
         } else if (for_owner(&events[i], owner)) {
             if (events[i].handle.index == handle.index
                 && events[i].handle.generation == handle.generation) {
@@ -68,7 +68,7 @@ int32_t revoke_poll(struct domain *owner, uint32_t *request)
 {
     struct revoke_event *oldest = NULL;
     *request = 0;
-    for (uint32_t i = 0; i < 2 * REVOKE_EVENTS_PER_DOMAIN; ++i) {
+    for (uint32_t i = 0; i < DOMAIN_CAPACITY * REVOKE_EVENTS_PER_DOMAIN; ++i) {
         if (for_owner(&events[i], owner)
             && (oldest == NULL || events[i].request_id < oldest->request_id)) {
             oldest = &events[i];
@@ -134,7 +134,7 @@ int32_t revoke_ack(struct domain *owner, struct resource_handle handle, uint32_t
 }
 void revoke_expire(uint32_t now)
 {
-    for (uint32_t i = 0; i < 2 * REVOKE_EVENTS_PER_DOMAIN; ++i) {
+    for (uint32_t i = 0; i < DOMAIN_CAPACITY * REVOKE_EVENTS_PER_DOMAIN; ++i) {
         if (events[i].active && now >= events[i].deadline) {
             complete(&events[i], true);
         }
@@ -142,7 +142,7 @@ void revoke_expire(uint32_t now)
 }
 void revoke_cancel(struct domain *owner, struct resource_handle handle)
 {
-    for (uint32_t i = 0; i < 2 * REVOKE_EVENTS_PER_DOMAIN; ++i) {
+    for (uint32_t i = 0; i < DOMAIN_CAPACITY * REVOKE_EVENTS_PER_DOMAIN; ++i) {
         struct revoke_event *event = &events[i];
         if (for_owner(event, owner) && event->handle.index == handle.index
             && event->handle.generation == handle.generation) {
@@ -150,4 +150,12 @@ void revoke_cancel(struct domain *owner, struct resource_handle handle)
             ++cancelled; /* Release or domain teardown supersedes notification. */
         }
     }
+}
+
+bool revoke_domain_busy(const struct domain *owner)
+{
+    for (uint32_t i=0;i<DOMAIN_CAPACITY * REVOKE_EVENTS_PER_DOMAIN;++i) {
+        if (for_owner(&events[i],owner)) { return true; }
+    }
+    return false;
 }

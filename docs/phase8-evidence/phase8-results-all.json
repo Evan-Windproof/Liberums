@@ -1,0 +1,121 @@
+{
+  "guests": 19,
+  "gdb_audits": 18,
+  "cases": [
+    {
+      "label": "modules-2",
+      "modules": 2,
+      "loaded": 2,
+      "log": "phase8-modules-2-gdb.log"
+    },
+    {
+      "label": "modules-3",
+      "modules": 3,
+      "loaded": 3,
+      "log": "phase8-modules-3-gdb.log"
+    },
+    {
+      "label": "modules-4",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-modules-4-gdb.log"
+    },
+    {
+      "label": "modules-5",
+      "modules": 5,
+      "loaded": 4,
+      "log": "phase8-modules-5-gdb.log"
+    },
+    {
+      "label": "modules-8",
+      "modules": 8,
+      "loaded": 4,
+      "log": "phase8-modules-8-gdb.log"
+    },
+    {
+      "label": "invalid-middle",
+      "modules": 3,
+      "loaded": 2,
+      "log": "phase8-invalid-middle-gdb.log"
+    },
+    {
+      "label": "abi-middle",
+      "modules": 3,
+      "loaded": 2,
+      "log": "phase8-abi-middle-gdb.log"
+    },
+    {
+      "label": "partial-oom",
+      "modules": 3,
+      "loaded": 2,
+      "log": "phase8-partial-oom-gdb.log"
+    },
+    {
+      "label": "oom-five-pages",
+      "modules": 2,
+      "loaded": 1,
+      "log": "phase8-oom-five-pages-gdb.log"
+    },
+    {
+      "label": "transfer-isolation",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-transfer-isolation-gdb.log"
+    },
+    {
+      "label": "inbox-exit-reuse",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-inbox-exit-reuse-gdb.log"
+    },
+    {
+      "label": "reuse-24",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-reuse-24-gdb.log"
+    },
+    {
+      "label": "registers-four",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-registers-four-gdb.log"
+    },
+    {
+      "label": "revoke-reuse",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-revoke-reuse-gdb.log"
+    },
+    {
+      "label": "revoke-eight",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-revoke-eight-gdb.log"
+    },
+    {
+      "label": "device-lifetimes",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-device-lifetimes-gdb.log"
+    },
+    {
+      "label": "exclusive-vga",
+      "modules": 3,
+      "loaded": 2,
+      "log": "phase8-exclusive-vga-gdb.log"
+    },
+    {
+      "label": "exclusive-keyboard",
+      "modules": 3,
+      "loaded": 2,
+      "log": "phase8-exclusive-keyboard-gdb.log"
+    },
+    {
+      "label": "run-target",
+      "modules": 2,
+      "loaded": 2,
+      "log": "phase8-run-target-serial.log"
+    }
+  ],
+  "reuses": 24
+}

@@ -2,11 +2,18 @@
 #include <kernel/external_launch.h>
 #include <kernel/device_grants.h>
 #include <kernel/boot_info.h>
+#include <kernel/multi_external.h>
 struct external_config external_config_read(const char *args)
 {
     bool console = boot_has_option(args, "external-console");
-    struct external_config config = {console || boot_has_option(args, "external"), false, 2, 0};
+    bool multi = boot_has_option(args,"multi-external");
+    struct external_config config = {multi || console || boot_has_option(args, "external"), false, 2, 0, multi};
     if (!config.selected) { return config; }
+    if (multi) {
+        config.preempt=true; config.lifetimes=1;
+        for (uint32_t module=1;module<=BOOT_MODULE_MAX;++module) { config.devices |= multi_module_devices(args,module); }
+        return config;
+    }
     if (console || boot_has_option(args, "external-vga")) { config.devices |= DEVICE_VGA_READ | DEVICE_VGA_WRITE; }
     if (boot_has_option(args, "external-vga-readonly")) {
         config.devices = (config.devices | DEVICE_VGA_READ) & ~DEVICE_VGA_WRITE;

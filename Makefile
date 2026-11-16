@@ -23,7 +23,7 @@ C_SOURCES := kernel/main.c kernel/serial.c kernel/panic.c arch/x86/idt.c \
              kernel/capability.c kernel/resource.c tests/resource_pressure.c \
              kernel/elf_loader.c kernel/external.c arch/x86/user_space.c tests/elf_pressure.c \
              arch/x86/pic.c arch/x86/pit.c kernel/tick.c kernel/timer.c kernel/scheduler.c \
-             kernel/revoke.c tests/phase6_runtime.c kernel/vga.c kernel/vga_device.c tests/phase71_runtime.c arch/x86/ps2.c kernel/keyboard.c tests/phase72_runtime.c kernel/device_grants.c kernel/external_launch.c tests/runtime_checks.c
+             kernel/revoke.c tests/phase6_runtime.c kernel/vga.c kernel/vga_device.c tests/phase71_runtime.c arch/x86/ps2.c kernel/keyboard.c tests/phase72_runtime.c kernel/device_grants.c kernel/external_launch.c tests/runtime_checks.c kernel/domain_pool.c kernel/multi_external.c tests/phase8_runtime.c
 ASM_SOURCES := arch/x86/keyboard_irq.S arch/x86/irq.S  arch/x86/boot.S arch/x86/isr.S arch/x86/test_faults.S arch/x86/user_context.S arch/x86/user_images.S
 OBJECTS := $(addprefix $(BUILD)/,$(C_SOURCES:.c=.o) $(ASM_SOURCES:.S=.o))
 ARCH_FLAGS := -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float
@@ -123,6 +123,7 @@ test: $(KERNEL) test-memory $(BUILD)/elf-tests external-fixtures
 	$(PYTHON) tests/phase71.py --qemu "$(QEMU)" --gdb "$(GDB)"
 	$(PYTHON) tests/phase72.py --qemu "$(QEMU)" --gdb "$(GDB)"
 	$(PYTHON) tests/phase73.py --qemu "$(QEMU)" --gdb "$(GDB)"
+	$(PYTHON) tests/phase8.py --qemu "$(QEMU)" --gdb "$(GDB)"
 
 .PHONY: test-libos
 test-libos: $(KERNEL)
@@ -232,3 +233,23 @@ test-external-console: $(KERNEL) test-device-grants
 	$(PYTHON) tests/phase73.py --qemu "$(QEMU)" --gdb "$(GDB)"
 
 test: test-device-grants
+
+$(BUILD)/domain-pool-tests: tests/domain_pool_tests.c kernel/domain_pool.c $(wildcard include/kernel/*.h include/abi/*.h)
+	$(HOST_CC) -std=c11 -Wall -Wextra -Werror -Wpedantic -g -no-pie -fsanitize=address,undefined -Iinclude $(filter %.c,$^) -o $@
+.PHONY: test-domain-pool
+test-domain-pool: $(BUILD)/domain-pool-tests
+	./$(BUILD)/domain-pool-tests
+MULTI_ELFS ?= build/phase8/worker-a.elf,build/phase8/worker-b.elf
+.PHONY: run-multi
+run-multi: $(KERNEL) phase8-fixtures
+	$(QEMU) $(QEMU_FLAGS) -kernel $(KERNEL) -append "multi-external $(QEMU_APPEND)" -initrd "$(MULTI_ELFS)"
+
+.PHONY: phase8-fixtures
+phase8-fixtures:
+	$(MAKE) -C tests/fixtures/domains8 SDK="$(abspath include)" OUT="$(abspath build/phase8)" CROSS_COMPILE="$(CROSS_COMPILE)"
+
+.PHONY: test-phase8
+test-phase8: $(KERNEL) external-fixtures phase8-fixtures test-domain-pool
+	$(PYTHON) tests/phase8.py --qemu "$(QEMU)" --gdb "$(GDB)"
+
+test: phase8-fixtures test-domain-pool

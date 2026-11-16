@@ -14,7 +14,8 @@ static int32_t call(uint32_t number, struct resource_handle handle, uint32_t val
 __attribute__((noinline)) static void checkpoint(uint32_t stage)
 {
     DATA[2] = stage;
-    __asm__ volatile (".global interactive_checkpoint; interactive_checkpoint:" : : : "memory");
+    ++DATA[10]; /* Observation sequence; private fixture data, never authority. */
+    __asm__ volatile (".global interactive_checkpoint; interactive_checkpoint: nop" : : : "memory");
 }
 __attribute__((section(".text.entry"))) _Noreturn void user_entry(void)
 {

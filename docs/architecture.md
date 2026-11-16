@@ -9,6 +9,10 @@ Phase 7.2 增加 PS/2 IRQ1 的有界授权扫描码队列；字符、编辑与�
 见 [键盘输入与交互 Console](phase7-keyboard-console.md)。不提供通用输入框架或完整 Shell。
 Phase 7.3 将相同用户策略以独立 ELF 启动，通过显式可信配置发出设备 grant，
 不把 ELF note 当授权；见 [外部 Console](phase73-overview.md) 与 [边界审查](exokernel-boundary-review.md)。
+Phase 8 在保留旧单 ELF/peer profile 上，增加有界动态四槽域池和多 Multiboot ELF profile。
+使用既有 CR3/TSS、抢占、Capability 与独占设备机制；完整清理后才发布可复用槽位，Epoch 不回绕。
+不新增用户态进程服务或 LibOS 策略，见 [动态域](phase8-overview.md)、
+[模块关系](phase8-modules.md) 与 [Phase 8 边界审查](phase8-boundary-review.md)。
 
 ## 目标与安全模型
 

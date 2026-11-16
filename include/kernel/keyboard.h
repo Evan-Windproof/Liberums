@@ -14,4 +14,5 @@ int32_t keyboard_poll(struct domain *owner, struct resource_handle handle, uint3
 int32_t keyboard_stats(struct domain *owner, struct resource_handle handle, uint32_t *lost);
 int32_t keyboard_release(struct domain *owner, struct resource_handle handle);
 void keyboard_revoke(struct domain *owner);
+bool keyboard_domain_busy(const struct domain *owner);
 #endif

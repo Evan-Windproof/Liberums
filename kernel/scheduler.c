@@ -1,12 +1,10 @@
 /* SPDX-License-Identifier: GPL-3.0-or-later */
 #include <kernel/domain.h>
-#include <kernel/resource.h>
+#include <kernel/domain_pool.h>
 #include <kernel/resource_test.h>
 #include <kernel/timer.h>
 #include <kernel/revoke.h>
-#include <kernel/vga_device.h>
 #include <kernel/diagnostics.h>
-#include <kernel/keyboard.h>
 /* One delivered PIT tick per slice (~10 ms), single CPU, no kernel preemption.
  * A terminated slot is skipped; all terminal -> return to lifetime owner. */
 void domain_schedule(void)
@@ -14,7 +12,7 @@ void domain_schedule(void)
     bool runnable;
     do {
         runnable = false;
-        for (uint32_t id = 1; id <= 2; ++id) {
+        for (uint32_t id = 1; id <= DOMAIN_CAPACITY; ++id) {
             struct domain *domain = domain_slot(id);
             if (domain->state != DOMAIN_READY) {
                 continue;
@@ -22,9 +20,7 @@ void domain_schedule(void)
             if (timer_exhausted()) {
                 domain->exit_status = (uint32_t)RES_EOVERFLOW;
                 domain->state = DOMAIN_EXITED;
-                keyboard_revoke(domain);
-                vga_device_revoke(domain);
-                resource_cleanup(domain);
+                domain_cleanup(domain);
                 continue;
             }
             runnable = true;
@@ -37,9 +33,7 @@ void domain_schedule(void)
                 domain->state = DOMAIN_EXITED;
             }
             if (domain->state == DOMAIN_EXITED || domain->state == DOMAIN_FAULTED) {
-                keyboard_revoke(domain);
-                vga_device_revoke(domain);
-                resource_cleanup(domain);
+                domain_cleanup(domain);
             }
         }
     } while (runnable);

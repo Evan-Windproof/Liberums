@@ -314,3 +314,12 @@ int32_t resource_revoke_complete(struct domain *owner, struct resource_handle ha
     reclaim(owner, resource);
     return 0;
 }
+
+bool resource_domain_busy(const struct domain *owner)
+{
+    for (uint32_t i=0;i<RESOURCE_CAPACITY;++i) {
+        if (resources[i].state!=RESOURCE_FREE && resources[i].cap.owner_id==owner->id
+            && resources[i].cap.owner_epoch==owner->epoch) { return true; }
+    }
+    return false;
+}

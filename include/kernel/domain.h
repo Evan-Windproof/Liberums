@@ -6,12 +6,17 @@
 #include <kernel/capability.h>
 #include <arch/x86/irq.h>
 
-enum domain_state { DOMAIN_UNUSED, DOMAIN_READY, DOMAIN_RUNNING, DOMAIN_EXITED, DOMAIN_FAULTED };
+/* Preserve legacy values 0..4 for existing diagnostics; new private states append. */
+#define DOMAIN_CAPACITY 4u
+enum domain_state { DOMAIN_UNUSED, DOMAIN_READY, DOMAIN_RUNNING, DOMAIN_EXITED, DOMAIN_FAULTED,
+                    DOMAIN_PREPARING, DOMAIN_RECLAIMING };
 struct domain {
     uint32_t id, epoch;
     uint32_t resource_count;
     struct resource_handle inbox;
     enum domain_state state;
+    bool pool_owned; /* Dynamic lifetime owner must explicitly reap; legacy runners keep their model. */
+    enum domain_state last_state;
     struct address_space space;
     struct user_context context; /* Saved registers and complete outer-level iret frame. */
     struct segment_context segments;

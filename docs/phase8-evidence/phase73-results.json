@@ -1,0 +1,118 @@
+{
+  "cases": [
+    {
+      "label": "console",
+      "completed_lifetimes": 2,
+      "kind": "terminal"
+    },
+    {
+      "label": "persistent",
+      "completed_lifetimes": 0,
+      "kind": "persistent input verified"
+    },
+    {
+      "label": "amber",
+      "completed_lifetimes": 0,
+      "kind": "persistent input verified"
+    },
+    {
+      "label": "rebuilt",
+      "completed_lifetimes": 0,
+      "kind": "persistent input verified"
+    },
+    {
+      "label": "fault",
+      "completed_lifetimes": 2,
+      "kind": "terminal"
+    },
+    {
+      "label": "revoke-keyboard",
+      "completed_lifetimes": 2,
+      "kind": "terminal"
+    },
+    {
+      "label": "revoke-vga",
+      "completed_lifetimes": 2,
+      "kind": "terminal"
+    },
+    {
+      "label": "untrusted-note",
+      "completed_lifetimes": 2,
+      "kind": "terminal",
+      "expected_result": 0
+    },
+    {
+      "label": "untrusted-filename",
+      "completed_lifetimes": 2,
+      "kind": "terminal",
+      "expected_result": 0
+    },
+    {
+      "label": "partial-user-init",
+      "completed_lifetimes": 2,
+      "kind": "terminal",
+      "expected_result": 0
+    },
+    {
+      "label": "readonly",
+      "completed_lifetimes": 2,
+      "kind": "terminal",
+      "expected_result": 0
+    },
+    {
+      "label": "handles",
+      "completed_lifetimes": 2,
+      "kind": "terminal",
+      "expected_result": 0
+    },
+    {
+      "label": "layout",
+      "completed_lifetimes": 2,
+      "kind": "terminal",
+      "expected_result": 0
+    },
+    {
+      "label": "missing",
+      "completed_lifetimes": 2,
+      "kind": "terminal",
+      "expected_result": -8
+    },
+    {
+      "label": "invalid",
+      "completed_lifetimes": 2,
+      "kind": "terminal",
+      "expected_result": -8
+    },
+    {
+      "label": "abi",
+      "completed_lifetimes": 2,
+      "kind": "terminal",
+      "expected_result": -93
+    },
+    {
+      "label": "oom",
+      "completed_lifetimes": 2,
+      "kind": "terminal",
+      "expected_result": -12
+    },
+    {
+      "label": "no-vga",
+      "completed_lifetimes": 2,
+      "kind": "terminal",
+      "expected_result": -2
+    },
+    {
+      "label": "no-ps2",
+      "completed_lifetimes": 2,
+      "kind": "terminal",
+      "expected_result": -5
+    },
+    {
+      "label": "run-target",
+      "completed_lifetimes": 0,
+      "kind": "startup verified, VM stopped by test"
+    }
+  ],
+  "qemu_guests": 20,
+  "completed_lifetimes": 32
+}

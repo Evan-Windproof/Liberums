@@ -1,5 +1,8 @@
 # Phase 5 模块与接口
 
+本页记录 Phase 5 的单 ELF/peer 路径，该兼容路径仍保留。
+Phase 8 新增的多模块、四槽动态生命周期另见 [Phase 8 模块关系](phase8-modules.md)。
+
 ## `include/abi/`
 
 独立 SDK，只有标准整数类型和公开结构/常量，不引用内核私有头。

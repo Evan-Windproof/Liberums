@@ -61,7 +61,7 @@ static void zero_page(uint32_t va)
 __attribute__((noinline)) void resource_checkpoint(uint32_t stage)
 {
     results[10] = stage;
-    __asm__ volatile ("nop" : : : "memory");
+    __asm__ volatile (".global resource_checkpoint_observed; resource_checkpoint_observed: nop" : : : "memory");
 }
 static void checkpoint(uint32_t stage, struct resource_handle h, uint32_t pfn)
 {

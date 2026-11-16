@@ -129,3 +129,9 @@ void vga_device_revoke(struct domain *owner)
     }
     vga_device.grant_id = vga_device.grant_epoch = vga_device.grant_rights = 0;
 }
+
+bool vga_device_domain_busy(const struct domain *owner)
+{
+    return (vga_device.grant_id!=0 && vga_device.grant_id==owner->id && vga_device.grant_epoch==owner->epoch)
+        || (vga_device.active && vga_device.cap.owner_id==owner->id && vga_device.cap.owner_epoch==owner->epoch);
+}

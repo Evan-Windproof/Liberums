@@ -1,0 +1,18 @@
+make -C tests/fixtures/domains8 SDK="/workspace/Liberums/include" OUT="/workspace/Liberums/build/phase8" CROSS_COMPILE=""
+make[1]: Entering directory '/workspace/Liberums/tests/fixtures/domains8'
+mkdir -p /workspace/Liberums/build/phase8
+gcc -I/workspace/Liberums/include -m32 -march=i686 -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -mno-sse -mno-sse2 -mno-mmx -msoft-float -g3 -O2 -Wall -Wextra -Werror -Wpedantic -DWORKER_MARKER=0xa8000000u -c worker.c -o /workspace/Liberums/build/phase8/worker-a.o
+gcc -m32 -g3 -c spin.S -o /workspace/Liberums/build/phase8/spin.o
+ld -m elf_i386 -nostdlib --build-id=none -T linker.ld /workspace/Liberums/build/phase8/worker-a.o /workspace/Liberums/build/phase8/spin.o -o /workspace/Liberums/build/phase8/worker-a.elf
+gcc -I/workspace/Liberums/include -m32 -march=i686 -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -mno-sse -mno-sse2 -mno-mmx -msoft-float -g3 -O2 -Wall -Wextra -Werror -Wpedantic -DWORKER_MARKER=0xb8000000u -c worker.c -o /workspace/Liberums/build/phase8/worker-b.o
+ld -m elf_i386 -nostdlib --build-id=none -T linker.ld /workspace/Liberums/build/phase8/worker-b.o /workspace/Liberums/build/phase8/spin.o -o /workspace/Liberums/build/phase8/worker-b.elf
+make[1]: Leaving directory '/workspace/Liberums/tests/fixtures/domains8'
+gcc -std=c11 -Wall -Wextra -Werror -Wpedantic -g -no-pie -fsanitize=address,undefined -Iinclude tests/domain_pool_tests.c kernel/domain_pool.c -o build/domain-pool-tests
+./build/domain-pool-tests
+PASS: pool capacity/ID, rollback, live-slot exclusion, 64 reuses, stack/context cleanup, retained authority and epoch exhaustion
+gcc -std=c11 -Wall -Wextra -Werror -Wpedantic -g -fsanitize=address,undefined -Iinclude tests/timer_tests.c kernel/tick.c -o build/timer-tests
+gcc -std=c11 -Wall -Wextra -Werror -Wpedantic -g -no-pie -fsanitize=address,undefined -Iinclude tests/revoke_tests.c kernel/capability.c kernel/tick.c -o build/revoke-tests
+./build/timer-tests
+PASS: timer boundary assertions=1008
+./build/revoke-tests
+PASS: revocation protocol assertions=1307

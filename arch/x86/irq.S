@@ -5,6 +5,8 @@
 .type timer_irq_entry, @function
 timer_irq_entry:
     pushl $0
+    .global timer_irq_capture
+timer_irq_capture:
     pushl $32
     pushal                    /* Save EVERY GP register before using AX. */
     xorl %eax, %eax

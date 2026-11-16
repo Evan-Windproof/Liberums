@@ -1,0 +1,292 @@
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+add symbol table from file "/workspace/Liberums/build/phase8/worker-a.elf"
+
+Breakpoint -1, multi_prepared () at kernel/multi_external.c:16
+16	__attribute__((noinline)) void multi_prepared(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=1 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+IMAGE id=2 epoch=1 CR3=0x17e000 pages=9 stack=0x083fc000..0x08400000
+IMAGE id=3 epoch=1 CR3=0x187000 pages=9 stack=0x083fc000..0x08400000
+IMAGE id=4 epoch=1 CR3=0x190000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -2, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+
+Breakpoint -3, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+
+Breakpoint -4, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+
+Breakpoint -5, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+
+Breakpoint -6, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -7, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=2 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -8, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=1 id=1 old_epoch=1 new_epoch=2 terminal=EXIT owned=16 free=7731 recovered=yes
+
+Breakpoint -9, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -10, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=3 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -11, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=2 id=1 old_epoch=2 new_epoch=3 terminal=FAULT owned=16 free=7731 recovered=yes
+
+Breakpoint -12, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -13, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=4 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -14, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=3 id=1 old_epoch=3 new_epoch=4 terminal=EXIT owned=16 free=7731 recovered=yes
+
+Breakpoint -15, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -16, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=5 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -17, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=4 id=1 old_epoch=4 new_epoch=5 terminal=FAULT owned=16 free=7731 recovered=yes
+
+Breakpoint -18, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -19, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=6 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -20, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=5 id=1 old_epoch=5 new_epoch=6 terminal=EXIT owned=16 free=7731 recovered=yes
+
+Breakpoint -21, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -22, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=7 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -23, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=6 id=1 old_epoch=6 new_epoch=7 terminal=FAULT owned=16 free=7731 recovered=yes
+
+Breakpoint -24, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -25, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=8 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -26, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=7 id=1 old_epoch=7 new_epoch=8 terminal=EXIT owned=16 free=7731 recovered=yes
+
+Breakpoint -27, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -28, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=9 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -29, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=8 id=1 old_epoch=8 new_epoch=9 terminal=FAULT owned=16 free=7731 recovered=yes
+
+Breakpoint -30, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -31, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=10 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -32, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=9 id=1 old_epoch=9 new_epoch=10 terminal=EXIT owned=16 free=7731 recovered=yes
+
+Breakpoint -33, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -34, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=11 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -35, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=10 id=1 old_epoch=10 new_epoch=11 terminal=FAULT owned=16 free=7731 recovered=yes
+
+Breakpoint -36, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -37, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=12 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -38, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=11 id=1 old_epoch=11 new_epoch=12 terminal=EXIT owned=16 free=7731 recovered=yes
+
+Breakpoint -39, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -40, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=13 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -41, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=12 id=1 old_epoch=12 new_epoch=13 terminal=FAULT owned=16 free=7731 recovered=yes
+
+Breakpoint -42, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -43, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=14 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -44, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=13 id=1 old_epoch=13 new_epoch=14 terminal=EXIT owned=16 free=7731 recovered=yes
+
+Breakpoint -45, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -46, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=15 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -47, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=14 id=1 old_epoch=14 new_epoch=15 terminal=FAULT owned=16 free=7731 recovered=yes
+
+Breakpoint -48, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -49, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=16 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -50, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=15 id=1 old_epoch=15 new_epoch=16 terminal=EXIT owned=16 free=7731 recovered=yes
+
+Breakpoint -51, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -52, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=17 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -53, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=16 id=1 old_epoch=16 new_epoch=17 terminal=FAULT owned=16 free=7731 recovered=yes
+
+Breakpoint -54, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -55, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=18 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -56, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=17 id=1 old_epoch=17 new_epoch=18 terminal=EXIT owned=16 free=7731 recovered=yes
+
+Breakpoint -57, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -58, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=19 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -59, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=18 id=1 old_epoch=18 new_epoch=19 terminal=FAULT owned=16 free=7731 recovered=yes
+
+Breakpoint -60, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -61, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=20 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -62, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=19 id=1 old_epoch=19 new_epoch=20 terminal=EXIT owned=16 free=7731 recovered=yes
+
+Breakpoint -63, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -64, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=21 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -65, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=20 id=1 old_epoch=20 new_epoch=21 terminal=FAULT owned=16 free=7731 recovered=yes
+
+Breakpoint -66, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -67, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=22 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -68, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=21 id=1 old_epoch=21 new_epoch=22 terminal=EXIT owned=16 free=7731 recovered=yes
+
+Breakpoint -69, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -70, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=23 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -71, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=22 id=1 old_epoch=22 new_epoch=23 terminal=FAULT owned=16 free=7731 recovered=yes
+
+Breakpoint -72, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -73, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=24 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -74, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=23 id=1 old_epoch=23 new_epoch=24 terminal=EXIT owned=16 free=7731 recovered=yes
+
+Breakpoint -75, domain_pool_reaped () at kernel/domain_pool.c:28
+28	__attribute__((noinline)) void domain_pool_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+
+Breakpoint -76, domain_pool_ready () at kernel/domain_pool.c:27
+27	__attribute__((noinline)) void domain_pool_ready(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=25 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -77, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+REUSE cycle=24 id=1 old_epoch=24 new_epoch=25 terminal=FAULT owned=16 free=7731 recovered=yes
+
+Breakpoint -78, multi_reaped () at kernel/multi_external.c:17
+17	__attribute__((noinline)) void multi_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+RECOVERY all slots UNUSED; resources=0 events=0 devices=0 free_pages=7787 IRQ0=34 IRQ1=0
+PASS: phase8 reuse-24
+[Inferior 1 (process 1) detached]

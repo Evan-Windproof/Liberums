@@ -9,6 +9,7 @@
 #include <kernel/timer.h>
 #include <kernel/external_launch.h>
 #include <kernel/device_grants.h>
+#include <kernel/multi_external.h>
 
 static struct elf_plan external_plan;
 static int32_t external_load_result;
@@ -26,6 +27,7 @@ __attribute__((noinline)) void external_reaped(void)
 void external_domains_run(const struct boot_context *boot)
 {
     struct external_config config = external_config_read(boot->commandline);
+    if (config.multi) { multi_domains_run(boot); return; }
     const uint8_t *image = NULL;
     int32_t validation = RES_ENOEXEC;
     if (boot->module_count == 1) {

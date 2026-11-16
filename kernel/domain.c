@@ -11,7 +11,7 @@
 #include <arch/x86/gdt.h>
 #include <kernel/timer.h>
 
-static struct domain domains[2];
+static struct domain domains[DOMAIN_CAPACITY];
 static struct domain *current_domain;
 static uint32_t free_before_domains, completed_rounds;
 extern const uint8_t user_a_start[], user_a_end[], user_b_start[], user_b_end[];
@@ -31,7 +31,7 @@ __attribute__((noinline)) void domains_reaped(void)
 
 struct domain *domain_lookup(uint32_t id)
 {
-    if (id < 1 || id > 2) {
+    if (id < 1 || id > DOMAIN_CAPACITY) {
         return NULL;
     }
     struct domain *domain = &domains[id - 1];
@@ -111,7 +111,7 @@ _Noreturn void domain_fault(struct exception_frame *frame, uint32_t address)
 
 struct domain *domain_slot(uint32_t id)
 {
-    if (id < 1 || id > 2) {
+    if (id < 1 || id > DOMAIN_CAPACITY) {
         panic("invalid internal domain slot");
     }
     return &domains[id - 1];
@@ -119,6 +119,9 @@ struct domain *domain_slot(uint32_t id)
 
 void domain_initialize(struct domain *domain, uint32_t id, uint32_t entry, uint32_t stack_top)
 {
+    if (id < 1 || id > DOMAIN_CAPACITY || domain != &domains[id-1]) {
+        panic("domain slot identity mismatch");
+    }
     if (domain->epoch == UINT32_MAX || domain->resource_count != 0 || domain->inbox.index != 0) {
         panic("domain epoch exhausted or resources leaked");
     }
@@ -227,6 +230,10 @@ _Noreturn void domain_preempt(struct exception_frame *frame, const struct segmen
 }
 void domain_run_slice(struct domain *domain)
 {
+    if (domain == NULL || current_domain != NULL || domain->state != DOMAIN_READY
+        || domain_lookup(domain->id) != domain || !domain->space.live) {
+        panic("invalid runnable domain");
+    }
     current_domain = domain;
     domain->state = DOMAIN_RUNNING;
     tss_set_kernel_stack((uintptr_t)domain->kernel_stack + sizeof(domain->kernel_stack));
@@ -281,4 +288,9 @@ void domains_run(const char *commandline)
     if (resource_mode != RESOURCE_TEST_NONE) {
         serial_write("Phase 4: resource experiment completed\n");
     }
+}
+
+bool domain_is_current(const struct domain *domain)
+{
+    return current_domain == domain;
 }

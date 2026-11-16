@@ -18,4 +18,5 @@ int32_t revoke_info(struct domain *owner, uint32_t request, uint32_t field, uint
 int32_t revoke_ack(struct domain *owner, struct resource_handle handle, uint32_t request);
 void revoke_expire(uint32_t now);
 void revoke_cancel(struct domain *owner, struct resource_handle handle);
+bool revoke_domain_busy(const struct domain *owner);
 #endif

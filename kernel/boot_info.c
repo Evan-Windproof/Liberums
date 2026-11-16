@@ -85,7 +85,7 @@ bool boot_info_read(uint32_t magic, uint32_t address, struct boot_context *boot)
         return false;
     }
     if (info->flags & (1u << 3)) {
-        if (info->mods_count > 8) {
+        if (info->mods_count > BOOT_MODULE_MAX) {
             return false;
         }
         if (info->mods_count != 0) {

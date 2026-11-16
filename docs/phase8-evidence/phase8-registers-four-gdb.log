@@ -1,0 +1,69 @@
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+add symbol table from file "/workspace/Liberums/build/phase8/worker-a.elf"
+
+Breakpoint -1, multi_prepared () at kernel/multi_external.c:16
+16	__attribute__((noinline)) void multi_prepared(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=1 CR3=0x175000 pages=9 stack=0x083fc000..0x08400000
+IMAGE id=2 epoch=1 CR3=0x17e000 pages=9 stack=0x083fc000..0x08400000
+IMAGE id=3 epoch=1 CR3=0x187000 pages=9 stack=0x083fc000..0x08400000
+IMAGE id=4 epoch=1 CR3=0x190000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -2, worker_spin_begin () at spin.S:16
+16	    std
+
+Breakpoint -3, worker_spin_begin () at spin.S:16
+16	    std
+
+Breakpoint -4, worker_spin_begin () at spin.S:16
+16	    std
+
+Breakpoint -5, worker_spin_begin () at spin.S:16
+16	    std
+
+Breakpoint -6, timer_irq_capture () at arch/x86/irq.S:10
+10	    pushl $32
+
+Breakpoint -7, timer_irq_capture () at arch/x86/irq.S:10
+10	    pushl $32
+
+Breakpoint -8, worker_spin_begin () at spin.S:16
+16	    std
+IRQ0 RESTORE id=1 CPL=3 CR3=0x175000 TSS.ESP0=0x12c2a0 EIP=0x80008fa EFLAGS=0x10646 GP=7 segment=4
+
+Breakpoint -9, timer_irq_capture () at arch/x86/irq.S:10
+10	    pushl $32
+
+Breakpoint -10, timer_irq_capture () at arch/x86/irq.S:10
+10	    pushl $32
+
+Breakpoint -11, worker_spin_begin () at spin.S:16
+16	    std
+IRQ0 RESTORE id=2 CPL=3 CR3=0x17e000 TSS.ESP0=0x12e460 EIP=0x80008fa EFLAGS=0x10646 GP=7 segment=4
+
+Breakpoint -12, timer_irq_capture () at arch/x86/irq.S:10
+10	    pushl $32
+
+Breakpoint -13, timer_irq_capture () at arch/x86/irq.S:10
+10	    pushl $32
+
+Breakpoint -14, worker_spin_begin () at spin.S:16
+16	    std
+IRQ0 RESTORE id=3 CPL=3 CR3=0x187000 TSS.ESP0=0x130620 EIP=0x80008fa EFLAGS=0x10646 GP=7 segment=4
+
+Breakpoint -15, timer_irq_capture () at arch/x86/irq.S:10
+10	    pushl $32
+
+Breakpoint -16, timer_irq_capture () at arch/x86/irq.S:10
+10	    pushl $32
+
+Breakpoint -17, worker_spin_begin () at spin.S:16
+16	    std
+IRQ0 RESTORE id=4 CPL=3 CR3=0x190000 TSS.ESP0=0x1327e0 EIP=0x80008fa EFLAGS=0x10646 GP=7 segment=4
+IRQ0 round-robin observed domain IDs: [4, 1, 1, 2, 2, 3, 3, 4]
+
+Breakpoint -18, multi_reaped () at kernel/multi_external.c:17
+17	__attribute__((noinline)) void multi_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+RECOVERY all slots UNUSED; resources=0 events=0 devices=0 free_pages=7787 IRQ0=27 IRQ1=0
+PASS: phase8 registers-four
+[Inferior 1 (process 1) detached]

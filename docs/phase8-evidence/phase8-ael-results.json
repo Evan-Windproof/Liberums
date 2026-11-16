@@ -1,0 +1,28 @@
+{
+  "guests": 3,
+  "cases": [
+    {
+      "label": "ael-coexist-0",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-ael-coexist-0-gdb.log"
+    },
+    {
+      "label": "ael-coexist-1",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-ael-coexist-1-gdb.log"
+    },
+    {
+      "label": "ael-console-coexist",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-ael-console-coexist-gdb.log"
+    }
+  ],
+  "elf_sha256": {
+    "preempt-first.elf": "2a329f0704d770d05ed486a8677122d4299e7f5969af73e59dfdcd2e98680b61",
+    "preempt-best.elf": "a606601ef1f741082b82695a5699bf2ec2265493293af62d1777d460bff5fac1",
+    "console.elf": "cdc8e1faf37ae18a77080803fc877332483e25b96159eb595cbb851f24dcffc9"
+  }
+}
