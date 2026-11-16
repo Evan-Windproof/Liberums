@@ -6,6 +6,8 @@
 #include <kernel/resource_abi.h>
 #include <kernel/vga.h>
 #include <abi/vga.h>
+#include <kernel/external_launch.h>
+#include <kernel/device_grants.h>
 
 #define TABLE_ENTRIES 1024
 #define TABLE_COUNT (PHYSICAL_LIMIT / (PAGE_SIZE * TABLE_ENTRIES))
@@ -55,7 +57,9 @@ bool paging_init(const struct boot_context *boot)
             page_tables[table][index] = address | permissions;
         }
     }
-    if (boot_has_option(boot->commandline, "vga-diag")
+    struct external_config external = external_config_read(boot->commandline);
+    if ((vga_available() && (external.devices & DEVICE_VGA_READ))
+        || boot_has_option(boot->commandline, "vga-diag")
         || boot_has_option(boot->commandline, "vga-console")
         || boot_has_option(boot->commandline, "interactive-console")) {
         /* Supervisor-only MMIO alias; PCD/PWT match the later user binding. */

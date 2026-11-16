@@ -115,3 +115,9 @@ Aelthuvor 当前固定 SDK 不应自动替换。本次没有改动或构建该�
 未来独立升级时，可以显式固定 1.2 的四个公共头、要求 PREEMPTION/REVOCATION、实现 POLL/INFO/ACK，
 并更新该项目的精确版本测试与 SDK 来源检查。原 `tests/libos.py` 的 1.1 精确版本断言是历史验收工具，
 未在本次冒充为已经运行的 Aelthuvor 1.2 集成；运行兼容性使用固定旧二进制另行验证。
+
+## Phase 7.3 的外部设备使用
+
+ABI 1.2 与原 ELF profile 不变。VGA/keyboard 是可探测的可选标量扩展，见公开 `vga.h`、`keyboard.h`。
+ELF note 只声明 ABI/features，不构成设备 capability；必须由独立的可信启动配置授予资源。
+普通 external 路径没有自动 grant。使用方式和权限边界见 [Phase 7.3](phase73-device-grants.md)。

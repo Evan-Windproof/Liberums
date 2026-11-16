@@ -38,6 +38,15 @@ bool keyboard_start(void)
     pic_keyboard_mask(false);
     return true;
 }
+void keyboard_abort_start(void)
+{
+    /* Roll back only an unowned initialization, never somebody else's grant. */
+    if (keyboard.grant_id != 0) { return; }
+    pic_keyboard_mask(true);
+    keyboard.enabled = keyboard.active = false;
+    clear_queue();
+    ps2_stop();
+}
 bool keyboard_grant(struct domain *owner)
 {
     if (!keyboard.enabled || domain_lookup(owner->id) != owner || keyboard.grant_id != 0) { return false; }

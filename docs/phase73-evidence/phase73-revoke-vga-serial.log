@@ -1,0 +1,16 @@
+IDT: 32 exception gates ready
+Memory map: accepted regions=0x00000006
+Physical pages: free=0x00001e9e
+Paging: enabled with WP, cr0=0x80010011
+Phase 2: protected memory foundations ready
+Liberums: boot successful
+Phase 1: x86 32-bit C11 kernel, COM1 ready
+Multiboot handoff accepted; interrupts disabled; halting.
+External devices: grants established
+Bb
+USER FAULT domain=0x00000001 vector=0x0000000e error=0x00000006 eip=0x0800024c cr2=0x09400000
+External devices: grants established
+Bb
+USER FAULT domain=0x00000001 vector=0x0000000e error=0x00000006 eip=0x0800024c cr2=0x09400000
+Phase 5: external execution completed
+qemu-system-i386: terminating on signal 15 from pid 42713 (python3)

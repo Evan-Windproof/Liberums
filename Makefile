@@ -23,7 +23,7 @@ C_SOURCES := kernel/main.c kernel/serial.c kernel/panic.c arch/x86/idt.c \
              kernel/capability.c kernel/resource.c tests/resource_pressure.c \
              kernel/elf_loader.c kernel/external.c arch/x86/user_space.c tests/elf_pressure.c \
              arch/x86/pic.c arch/x86/pit.c kernel/tick.c kernel/timer.c kernel/scheduler.c \
-             kernel/revoke.c tests/phase6_runtime.c kernel/vga.c kernel/vga_device.c tests/phase71_runtime.c arch/x86/ps2.c kernel/keyboard.c tests/phase72_runtime.c
+             kernel/revoke.c tests/phase6_runtime.c kernel/vga.c kernel/vga_device.c tests/phase71_runtime.c arch/x86/ps2.c kernel/keyboard.c tests/phase72_runtime.c kernel/device_grants.c kernel/external_launch.c tests/runtime_checks.c
 ASM_SOURCES := arch/x86/keyboard_irq.S arch/x86/irq.S  arch/x86/boot.S arch/x86/isr.S arch/x86/test_faults.S arch/x86/user_context.S arch/x86/user_images.S
 OBJECTS := $(addprefix $(BUILD)/,$(C_SOURCES:.c=.o) $(ASM_SOURCES:.S=.o))
 ARCH_FLAGS := -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float
@@ -122,6 +122,7 @@ test: $(KERNEL) test-memory $(BUILD)/elf-tests external-fixtures
 	$(PYTHON) tests/phase6.py --qemu "$(QEMU)" --gdb "$(GDB)"
 	$(PYTHON) tests/phase71.py --qemu "$(QEMU)" --gdb "$(GDB)"
 	$(PYTHON) tests/phase72.py --qemu "$(QEMU)" --gdb "$(GDB)"
+	$(PYTHON) tests/phase73.py --qemu "$(QEMU)" --gdb "$(GDB)"
 
 .PHONY: test-libos
 test-libos: $(KERNEL)
@@ -185,8 +186,8 @@ test-vga-compat: $(KERNEL)
 $(BUILD)/user/interactive_console.o: user/interactive_console.c $(wildcard include/abi/*.h) Makefile
 	mkdir -p $(dir $@)
 	$(CC) -Iinclude $(KERNEL_CFLAGS) -Os -c $< -o $@
-$(BUILD)/interactive-user.elf: $(BUILD)/user/interactive_console.o user/linker.ld
-	$(LD) -m elf_i386 -nostdlib --build-id=none -T user/linker.ld $< -o $@
+$(BUILD)/interactive-user.elf: $(BUILD)/user/interactive_console.o $(BUILD)/user/console/core.o user/linker.ld
+	$(LD) -m elf_i386 -nostdlib --build-id=none -T user/linker.ld $(filter %.o,$^) -o $@
 $(BUILD)/interactive-user.bin: $(BUILD)/interactive-user.elf
 	$(OBJCOPY) -O binary $< $@
 $(BUILD)/arch/x86/user_images.o: $(BUILD)/interactive-user.bin
@@ -204,3 +205,30 @@ test-keyboard-native: $(BUILD)/keyboard-tests
 test-keyboard: test-keyboard-native
 
 test: test-keyboard-native
+
+$(BUILD)/user/console/core.o: user/console/core.c user/console/core.h $(wildcard include/abi/*.h) Makefile
+	mkdir -p $(dir $@)
+	$(CC) -Iinclude $(KERNEL_CFLAGS) -Os -c $< -o $@
+$(BUILD)/user/interactive_console.o: user/console/core.h
+.PHONY: external-console
+external-console:
+	$(MAKE) -C user/external_console SDK="$(abspath include)" OUT="$(abspath build/external)" CROSS_COMPILE="$(CROSS_COMPILE)"
+
+CONSOLE_ELF ?= build/external/console.elf
+.PHONY: run-external-console
+run-external-console: external-console
+	test -r "$(KERNEL)"
+	test -r "$(CONSOLE_ELF)"
+	$(QEMU) $(subst -display none,-display $(QEMU_DISPLAY),$(QEMU_FLAGS)) -kernel $(KERNEL) -append "external-console $(QEMU_APPEND)" -initrd "$(CONSOLE_ELF)"
+
+$(BUILD)/device-grants-tests: tests/device_grants_tests.c kernel/device_grants.c kernel/vga_device.c kernel/keyboard.c kernel/capability.c $(wildcard include/kernel/*.h include/abi/*.h)
+	$(HOST_CC) -std=c11 -Wall -Wextra -Werror -Wpedantic -g -no-pie -fsanitize=address,undefined -Iinclude $(filter %.c,$^) -o $@
+.PHONY: test-device-grants
+test-device-grants: $(BUILD)/device-grants-tests
+	./$(BUILD)/device-grants-tests
+
+.PHONY: test-external-console
+test-external-console: $(KERNEL) test-device-grants
+	$(PYTHON) tests/phase73.py --qemu "$(QEMU)" --gdb "$(GDB)"
+
+test: test-device-grants

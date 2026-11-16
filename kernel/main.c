@@ -14,6 +14,9 @@
 #include <kernel/phase71_test.h>
 #include <kernel/keyboard.h>
 #include <kernel/phase72_test.h>
+#include <kernel/external_launch.h>
+#include <kernel/device_grants.h>
+#include <kernel/diagnostics.h>
 
 static struct boot_context boot;
 extern char __kernel_start[], __kernel_end[];
@@ -32,6 +35,8 @@ _Noreturn void kernel_main(uint32_t boot_magic, uint32_t boot_info_address)
     if (!boot_info_read(boot_magic, boot_info_address, &boot)) {
         panic("invalid or unsupported Multiboot memory information");
     }
+    struct external_config external = external_config_read(boot.commandline);
+    diagnostics_init(boot.commandline);
     serial_write("Memory map: accepted regions=");
     serial_hex((uint32_t)boot.map.count);
     serial_write("\n");
@@ -48,6 +53,9 @@ _Noreturn void kernel_main(uint32_t boot_magic, uint32_t boot_info_address)
         || boot_has_option(boot.commandline, "interactive-console")) && !vga_probe()) {
         panic("unsupported VGA boot mode");
     }
+    /* An unavailable external device is reported by transactional launch,
+     * after ELF validation, without granting or retaining an address space. */
+    if (external.devices & DEVICE_VGA_READ) { (void)vga_probe(); }
     if (!paging_init(&boot)) {
         panic("paging initialization failed");
     }
@@ -72,7 +80,7 @@ _Noreturn void kernel_main(uint32_t boot_magic, uint32_t boot_info_address)
     }
     if (boot_has_option(boot.commandline, "preempt") || phase6_test_selected(boot.commandline)
         || boot_has_option(boot.commandline, "keyboard-diag")
-        || boot_has_option(boot.commandline, "interactive-console")) {
+        || boot_has_option(boot.commandline, "interactive-console") || external.preempt) {
         timer_start();
     }
     if (boot_has_option(boot.commandline, "keyboard-diag")) {
@@ -84,7 +92,7 @@ _Noreturn void kernel_main(uint32_t boot_magic, uint32_t boot_info_address)
         phase71_test_run(boot.commandline);
     } else if (phase6_test_selected(boot.commandline)) {
         phase6_test_run(boot.commandline);
-    } else if (boot_has_option(boot.commandline, "external")) {
+    } else if (external.selected) {
         external_domains_run(&boot);
     } else {
         domains_run(boot.commandline);

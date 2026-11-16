@@ -1,0 +1,10 @@
+IDT: 32 exception gates ready
+Memory map: accepted regions=0x00000006
+Physical pages: free=0x00001ea1
+Paging: enabled with WP, cr0=0x80010011
+Phase 2: protected memory foundations ready
+Liberums: boot successful
+Phase 1: x86 32-bit C11 kernel, COM1 ready
+Multiboot handoff accepted; interrupts disabled; halting.
+BbBbPhase 5: external execution completed
+qemu-system-i386: terminating on signal 15 from pid 42713 (python3)

@@ -1,0 +1,31 @@
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+Hardware assisted breakpoint 1 at 0x104610: file kernel/external.c, line 19.
+
+Breakpoint 1, external_prepared () at kernel/external.c:19
+19	    __asm__ volatile ("" : : : "memory");
+ELF: image+stack pages= 7 CR3= 0x145000 stack_top=0x08400000
+Hardware assisted breakpoint 2 at 0x8000000
+
+Breakpoint 2, 0x08000000 in ?? ()
+CPL3: EIP= 0x8000000 ESP= 0x83ffffc CR3= 0x145000
+Hardware assisted breakpoint 3 at 0x104620: file kernel/external.c, line 23.
+
+Breakpoint 3, external_reaped () at kernel/external.c:23
+23	    __asm__ volatile ("" : : : "memory");
+PASS: external image, stack, tables and dynamic resources reclaimed
+Hardware assisted breakpoint 4 at 0x104610: file kernel/external.c, line 19.
+
+Breakpoint 4, external_prepared () at kernel/external.c:19
+19	    __asm__ volatile ("" : : : "memory");
+ELF: image+stack pages= 7 CR3= 0x145000 stack_top=0x08400000
+Hardware assisted breakpoint 5 at 0x8000000
+
+Breakpoint 5, 0x08000000 in ?? ()
+CPL3: EIP= 0x8000000 ESP= 0x83ffffc CR3= 0x145000
+Hardware assisted breakpoint 6 at 0x104620: file kernel/external.c, line 23.
+
+Breakpoint 6, external_reaped () at kernel/external.c:23
+23	    __asm__ volatile ("" : : : "memory");
+PASS: external image, stack, tables and dynamic resources reclaimed
+[Inferior 1 (process 1) detached]

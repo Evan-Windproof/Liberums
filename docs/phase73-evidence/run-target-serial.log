@@ -1,0 +1,16 @@
+make -C user/external_console SDK="/workspace/Liberums/include" OUT="/workspace/Liberums/build/external" CROSS_COMPILE=""
+make[1]: Nothing to be done for 'all'.
+test -r "build/liberums.elf"
+test -r "/workspace/Liberums/build/external/amber.elf"
+qemu-system-i386 -machine pc -accel tcg -cpu qemu32 -m 32M -smp 1 -display none -serial stdio -monitor none -nic none -no-reboot -no-shutdown -kernel build/liberums.elf -append "external-console " -initrd "/workspace/Liberums/build/external/amber.elf"
+IDT: 32 exception gates ready
+Memory map: accepted regions=0x00000006
+Physical pages: free=0x00001e9f
+Paging: enabled with WP, cr0=0x80010011
+Phase 2: protected memory foundations ready
+Liberums: boot successful
+Phase 1: x86 32-bit C11 kernel, COM1 ready
+Multiboot handoff accepted; interrupts disabled; halting.
+External devices: grants established
+Bbqemu-system-i386: terminating on signal 15 from pid 42713 (python3)
+make: *** [Makefile:222: run-external-console] Terminated

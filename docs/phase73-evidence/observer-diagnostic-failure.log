@@ -1,0 +1,22 @@
+Traceback (most recent call last):
+  File "<stdin>", line 4, in <module>
+  File "/workspace/Liberums/tests/phase73.py", line 202, in console
+    output=connect_and_run(p,log,port,gdb,script,'phase73-'+label)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Liberums/tests/phase2.py", line 32, in connect_and_run
+    require(result.returncode == 0, f"{label}: GDB failed\n{result.stdout}")
+  File "/workspace/Liberums/tests/phase1.py", line 28, in require
+    raise RuntimeError(message)
+RuntimeError: phase73-console: GDB failed
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+add symbol table from file "/workspace/Liberums/build/external/console-test.elf"
+ELF: image+stack pages= 7 CR3= 0x148000 stack_top=0x08400000
+PASS: external image, stack, tables and dynamic resources reclaimed
+ELF: image+stack pages= 7 CR3= 0x148000 stack_top=0x08400000
+Traceback (most recent call last):
+  File "<string>", line 98, in stop
+  File "<string>", line 65, in irq_return
+  File "<string>", line 6, in check
+gdb.GdbError: IRQ1 EOI mismatch
+[Inferior 1 (process 1) detached]

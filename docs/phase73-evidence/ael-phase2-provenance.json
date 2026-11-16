@@ -1,0 +1,27 @@
+{
+  "commit": "1d288be418ddeef89462914769d5ea84bb557ade",
+  "sdk": {
+    "repository": "https://github.com/Evan-Windproof/Liberums",
+    "commit": "85a493466afe2038ca22a9870f6f9ce37dd7f3a8",
+    "abi": {
+      "major": 1,
+      "minor": 2
+    },
+    "sha256": {
+      "elf.h": "2fcfab45adc03ee39169f36b7d43068ad5dd2c008b2b686f94ae137f8e659e5c",
+      "resource.h": "9641ad44d3b036019c80ca7d75e85eb6a4347184b139f345279fa60c3772a298",
+      "syscall.h": "d7da6bab9cc84a34e0b23cfc644dc19334cce868b2b189ffd8baa0b195232a46",
+      "event.h": "210586e4b1e86123b2f14a1d15f2f71918da7993a54ae93cde792063f96d1826"
+    }
+  },
+  "elf_sha256": {
+    "first": "11735a0651736228501543306d9ba398caa659244d7b6a8648ad23b0918e070b",
+    "best": "e8f95d13b2dfa16ec4f7d2b7d826c0203f2d4e319f963066d07377eab03bdc1a",
+    "preempt-first": "f8217aa15285eff4347c1294ea9b8be017e9824b448f2288e913d78873539e3b",
+    "preempt-best": "7aa467efe83c206e718f1e0485302b48e818a6ed829e19896857333d51705cd8"
+  },
+  "pre_integration_sha256_from_phase73_negative_audit": {
+    "first": "11735a0651736228501543306d9ba398caa659244d7b6a8648ad23b0918e070b",
+    "preempt-first": "f8217aa15285eff4347c1294ea9b8be017e9824b448f2288e913d78873539e3b"
+  }
+}

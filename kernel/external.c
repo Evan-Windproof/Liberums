@@ -7,6 +7,8 @@
 #include <kernel/serial.h>
 #include <arch/x86/gdt.h>
 #include <kernel/timer.h>
+#include <kernel/external_launch.h>
+#include <kernel/device_grants.h>
 
 static struct elf_plan external_plan;
 static int32_t external_load_result;
@@ -23,6 +25,7 @@ __attribute__((noinline)) void external_reaped(void)
 
 void external_domains_run(const struct boot_context *boot)
 {
+    struct external_config config = external_config_read(boot->commandline);
     const uint8_t *image = NULL;
     int32_t validation = RES_ENOEXEC;
     if (boot->module_count == 1) {
@@ -30,7 +33,7 @@ void external_domains_run(const struct boot_context *boot)
         validation = elf_validate_features(image, boot->modules[0].end - boot->modules[0].begin, &external_plan, abi_features());
     }
     gdt_init();
-    for (uint32_t round = 0; round < 2; ++round) {
+    for (uint32_t round = 0; round < config.lifetimes; ++round) {
         struct domain *program = domain_slot(1);
         struct domain *peer = domain_slot(2);
         external_free_before = physical_pages_free_count();
@@ -45,6 +48,15 @@ void external_domains_run(const struct boot_context *boot)
             external_load_result = address_space_create_external(&program->space, image, &external_plan);
             if (external_load_result == 0) {
                 domain_initialize(program, 1, external_plan.entry, LIBERUMS_STACK_TOP);
+                external_load_result = device_grants_apply(program, config.devices);
+                if (external_load_result != 0) {
+                    /* No program ran: roll back the created space and only the
+                     * grants issued by this transaction. ELF metadata is not authority. */
+                    address_space_destroy(&program->space);
+                    program->state = DOMAIN_UNUSED;
+                } else if (config.devices != 0) {
+                    serial_write("External devices: grants established\n");
+                }
             }
         }
         external_free_after_load = physical_pages_free_count();

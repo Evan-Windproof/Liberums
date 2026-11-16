@@ -5,6 +5,7 @@
 #include <stdbool.h>
 struct domain;
 bool keyboard_start(void);
+void keyboard_abort_start(void);
 void keyboard_diagnostic(void);
 bool keyboard_grant(struct domain *owner);
 int32_t keyboard_info(uint32_t device, uint32_t *format);

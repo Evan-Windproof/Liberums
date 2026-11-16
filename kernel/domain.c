@@ -22,11 +22,11 @@ extern const uint8_t resource_fault_start[], resource_fault_end[];
 /* Test checkpoints deliberately contain no success logic. GDB inspects state here. */
 __attribute__((noinline)) void domains_prepared(void)
 {
-    __asm__ volatile ("" : : : "memory");
+    __asm__ volatile ("nop" : : : "memory");
 }
 __attribute__((noinline)) void domains_reaped(void)
 {
-    __asm__ volatile ("" : : : "memory");
+    __asm__ volatile ("nop" : : : "memory");
 }
 
 struct domain *domain_lookup(uint32_t id)

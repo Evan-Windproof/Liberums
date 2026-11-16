@@ -1,0 +1,5 @@
+make -C user/external_console SDK="/workspace/Liberums/include" OUT="/workspace/Liberums/build/external" CROSS_COMPILE=""
+make[1]: Nothing to be done for 'all'.
+test -r "build/liberums.elf"
+test -r "/workspace/Liberums/build/nonexistent-phase73.elf"
+make: *** [Makefile:221: run-external-console] Error 1

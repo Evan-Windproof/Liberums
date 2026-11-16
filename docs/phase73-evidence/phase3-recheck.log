@@ -1,0 +1,17 @@
+PASS: normal boot 1, real CPL3/TSS/CR3/syscalls/registers/repeated cleanup
+PASS: normal boot 2, real CPL3/TSS/CR3/syscalls/registers/repeated cleanup
+PASS: normal boot 3, real CPL3/TSS/CR3/syscalls/registers/repeated cleanup
+PASS: phase3-kernel-read, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-kernel-write, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-cross-read, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-cross-write, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-cli, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-io, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-gate, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-table-write, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-physical-read, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-code-write, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-bad-stack, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-cross-read-reverse, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-cross-write-reverse, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-fpu, hardware denial, surviving peer and two clean lifecycles

@@ -1,0 +1,24 @@
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+add symbol table from file "/workspace/Liberums/build/external/console-test.elf"
+Hardware assisted breakpoint 1 at 0x104610: file kernel/external.c, line 19.
+
+Breakpoint 1, external_prepared () at kernel/external.c:19
+19	    __asm__ volatile ("" : : : "memory");
+ELF: image+stack pages= 7 CR3= 0x148000 stack_top=0x08400000
+
+Breakpoint -4, external_reaped () at kernel/external.c:23
+23	    __asm__ volatile ("" : : : "memory");
+PASS: external image, stack, tables and dynamic resources reclaimed
+PASS: external actual CPL3/ELF/PTE/IRQ1/IRET/input/cleanup console {'irq': 327, 'returns': 327, 'events': 330, 'reaped': 1}
+Hardware assisted breakpoint 2 at 0x104610: file kernel/external.c, line 19.
+
+Breakpoint 2, external_prepared () at kernel/external.c:19
+19	    __asm__ volatile ("" : : : "memory");
+ELF: image+stack pages= 7 CR3= 0x148000 stack_top=0x08400000
+
+Breakpoint -4, external_reaped () at kernel/external.c:23
+23	    __asm__ volatile ("" : : : "memory");
+PASS: external image, stack, tables and dynamic resources reclaimed
+PASS: external actual CPL3/ELF/PTE/IRQ1/IRET/input/cleanup console {'irq': 654, 'returns': 654, 'events': 660, 'reaped': 2}
+[Inferior 1 (process 1) detached]

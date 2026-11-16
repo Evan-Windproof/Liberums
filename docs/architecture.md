@@ -7,6 +7,8 @@ Phase 7.1 仅增加固定 VGA 文本页授权、同步解除映射与用户态 C
 见 [VGA 设备边界与验收](phase7-vga-console.md)；普通 RAM 与设备生命周期分开。
 Phase 7.2 增加 PS/2 IRQ1 的有界授权扫描码队列；字符、编辑与小型命令 Console 仍在 Ring 3，
 见 [键盘输入与交互 Console](phase7-keyboard-console.md)。不提供通用输入框架或完整 Shell。
+Phase 7.3 将相同用户策略以独立 ELF 启动，通过显式可信配置发出设备 grant，
+不把 ELF note 当授权；见 [外部 Console](phase73-overview.md) 与 [边界审查](exokernel-boundary-review.md)。
 
 ## 目标与安全模型
 

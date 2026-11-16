@@ -104,7 +104,7 @@ end
 '''
 
 @contextmanager
-def vm(qemu, append, label):
+def vm(qemu, append, label, initrd=None, qemu_extra=()):
     with tempfile.TemporaryDirectory(prefix='liberums-kbd-') as temp:
         endpoint=temp+'/qmp.sock'
         port=free_port()
@@ -113,7 +113,7 @@ def vm(qemu, append, label):
             process=subprocess.Popen([qemu,'-machine','pc','-accel','tcg','-cpu','qemu32',
                 '-m','32M','-smp','1','-display','none','-serial','stdio','-monitor','none',
                 '-nic','none','-no-reboot','-no-shutdown','-kernel',str(ELF),'-append',append,
-                '-qmp','unix:'+endpoint+',server=on,wait=off','-S','-gdb','tcp:127.0.0.1:'+str(port)],
+                '-qmp','unix:'+endpoint+',server=on,wait=off','-S','-gdb','tcp:127.0.0.1:'+str(port)] + ([] if initrd is None else ['-initrd',str(initrd)]) + list(qemu_extra),
                 cwd=ROOT,stdout=output,stderr=subprocess.STDOUT,start_new_session=True)
             try: yield process,log,port,endpoint
             finally:

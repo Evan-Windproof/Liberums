@@ -1,0 +1,38 @@
+make -C user/external_console SDK="/workspace/Liberums/include" OUT="/workspace/Liberums/build/external" CROSS_COMPILE=""
+make[1]: Entering directory '/workspace/Liberums/user/external_console'
+make[1]: Nothing to be done for 'all'.
+make[1]: Leaving directory '/workspace/Liberums/user/external_console'
+make: Entering directory '/workspace/Liberums/user/external_console'
+make: Nothing to be done for 'fixtures'.
+make: Leaving directory '/workspace/Liberums/user/external_console'
+make: Entering directory '/workspace/Liberums/build/phase73-standalone/external_console'
+gcc -I/workspace/Liberums/build/phase73-standalone/sdk -m32 -march=i686 -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -mno-sse -mno-sse2 -mno-mmx -msoft-float -g3 -O2 -Wall -Wextra -Werror -Wpedantic -c main.c -o /workspace/Liberums/build/phase73-standalone/out/console-main.o
+gcc -I/workspace/Liberums/build/phase73-standalone/sdk -m32 -march=i686 -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -mno-sse -mno-sse2 -mno-mmx -msoft-float -g3 -O2 -Wall -Wextra -Werror -Wpedantic -c ../console/core.c -o /workspace/Liberums/build/phase73-standalone/out/console-core.o
+ld -m elf_i386 -nostdlib --build-id=none -T linker.ld /workspace/Liberums/build/phase73-standalone/out/console-main.o /workspace/Liberums/build/phase73-standalone/out/console-core.o -o /workspace/Liberums/build/phase73-standalone/out/console.elf
+gcc -I/workspace/Liberums/build/phase73-standalone/sdk -m32 -march=i686 -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -mno-sse -mno-sse2 -mno-mmx -msoft-float -g3 -O2 -Wall -Wextra -Werror -Wpedantic -DCONSOLE_ALTERNATE -c main.c -o /workspace/Liberums/build/phase73-standalone/out/amber-main.o
+ld -m elf_i386 -nostdlib --build-id=none -T linker.ld /workspace/Liberums/build/phase73-standalone/out/amber-main.o /workspace/Liberums/build/phase73-standalone/out/console-core.o -o /workspace/Liberums/build/phase73-standalone/out/amber.elf
+make: Leaving directory '/workspace/Liberums/build/phase73-standalone/external_console'
+PASS: independent public-SDK build + edited application; kernel SHA256 unchanged 5bcc91289f6f85e79f80994445605a538bcf7da96e7e7bf8ddcf818890c371bd
+PASS: external interactive console 2 completed lifecycles
+PASS: external interactive persistent persistent input verified
+PASS: external interactive amber persistent input verified
+PASS: external interactive rebuilt persistent input verified
+PASS: external interactive fault 2 completed lifecycles
+PASS: external interactive revoke-keyboard 2 completed lifecycles
+PASS: external interactive revoke-vga 2 completed lifecycles
+PASS: external untrusted-note two actual ELF/domain/device lifecycles
+PASS: external untrusted-filename two actual ELF/domain/device lifecycles
+PASS: external partial-user-init two actual ELF/domain/device lifecycles
+PASS: external readonly two actual ELF/domain/device lifecycles
+PASS: external handles two actual ELF/domain/device lifecycles
+PASS: external layout two actual ELF/domain/device lifecycles
+PASS: external missing two actual ELF/domain/device lifecycles
+PASS: external invalid two actual ELF/domain/device lifecycles
+PASS: external abi two actual ELF/domain/device lifecycles
+PASS: external oom two actual ELF/domain/device lifecycles
+PASS: external no-vga two actual ELF/domain/device lifecycles
+PASS: external no-ps2 two actual ELF/domain/device lifecycles
+PASS: external ael-cooperative-no-grant two actual ELF/domain/device lifecycles
+PASS: external ael-preempt-no-grant two actual ELF/domain/device lifecycles
+PASS: actual run-external-console selected ELF and missing file rejection
+PASS: Phase 7.3 external console suite 22 QEMU guests, 36 completed lifecycles

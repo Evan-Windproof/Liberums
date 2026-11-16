@@ -315,6 +315,21 @@ make test-phase6
 `make test-keyboard` 执行新 native/QMP/GDB 验收，完整 `make test` 包含旧新阶段。
 详见 [Phase 7.2 教学文档与证据](docs/phase7-keyboard-console.md)。
 
+## Phase 7.3：独立 ELF Console
+
+```sh
+make -j2
+make external-console
+make run-external-console
+make run-external-console CONSOLE_ELF=build/external/amber.elf
+```
+
+新路径使用普通外部 ELF、公开 ABI 与显式可信设备 profile；ELF Note/文件名不授予权限。
+Console 策略保留在共享 Ring 3 模块，内核不解释命令或颜色。
+`run-external-console` 使用已构建内核，允许仅重建/替换用户 ELF；内核缺失时先执行 `make`。
+原 `run` / `run-vga` / `run-console` 保留，`make test` 包含新旧回归。
+见 [Phase 7.3 概览](docs/phase73-overview.md)、[架构边界审查](docs/exokernel-boundary-review.md)。
+
 ## 许可证
 
 项目代码与文档按 **GNU General Public License v3.0 or later** 发布，

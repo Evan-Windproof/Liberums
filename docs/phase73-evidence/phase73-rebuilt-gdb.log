@@ -1,0 +1,13 @@
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+add symbol table from file "/workspace/Liberums/build/phase73-standalone/out/console.elf"
+Hardware assisted breakpoint 1 at 0x104610: file kernel/external.c, line 19.
+
+Breakpoint 1, external_prepared () at kernel/external.c:19
+19	    __asm__ volatile ("" : : : "memory");
+ELF: image+stack pages= 7 CR3= 0x147000 stack_top=0x08400000
+
+Breakpoint -3, external_console_checkpoint (stage=stage@entry=2, raw=raw@entry=156) at main.c:25
+25	    __asm__ volatile (".global external_console_observed; external_console_observed: nop" : : : "memory");
+PASS: external actual persistent program without kernel probes rebuilt {'irq': 11, 'returns': 11, 'events': 10, 'reaped': 0}
+[Inferior 1 (process 1) detached]
