@@ -8,6 +8,7 @@
 #define SYS_VGA_ACQUIRE 33u
 #define SYS_VGA_MAP 34u
 #define SYS_VGA_RELEASE 35u
+#define SYS_VGA_CURSOR 36u /* EBX=index, ECX=generation, EDX=cell 0..1999. */
 #define VGA_DEVICE_TEXT 1u
 #define VGA_DEVICE_HANDLE 0x00010001u /* Separate namespace from ordinary RAM. */
 #define VGA_USER_ADDRESS 0x09400000u

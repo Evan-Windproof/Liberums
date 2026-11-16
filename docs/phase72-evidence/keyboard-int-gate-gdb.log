@@ -1,0 +1,13 @@
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+add symbol table from file "/workspace/Liberums/build/interactive-user.elf"
+READY: epoch=1 keyboard generation=1
+COMMAND: ret help clear about status
+ISOLATION: vector=13 error=0x10a
+REAPED: epoch=1 IRQ0=7 peer preemptions=6 IRQ1=11 EOI=11 PIC imr=fe isr=00
+READY: epoch=2 keyboard generation=2
+COMMAND: ret help clear about status
+ISOLATION: vector=13 error=0x10a
+REAPED: epoch=2 IRQ0=12 peer preemptions=5 IRQ1=22 EOI=22 PIC imr=fe isr=00
+PASS: actual keyboard IRQ1/CPL3/editor/lifetime audit int-gate {'irq': 22, 'returned': 22, 'peer_irq': 19, 'events': 20, 'overflow': 0, 'reaped': 2}
+[Inferior 1 (process 1) detached]

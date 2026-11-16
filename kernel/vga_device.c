@@ -90,6 +90,15 @@ int32_t vga_device_map(struct domain *owner, struct resource_handle handle,
     return error;
 }
 
+int32_t vga_device_cursor(struct domain *owner, struct resource_handle handle, uint32_t cell)
+{
+    int32_t error = resolve(owner, handle, RESOURCE_WRITE);
+    if (error != 0) { return error; }
+    if (!vga_device.mapped) { return RES_ENOENT; }
+    if (cell >= VGA_COLUMNS * VGA_ROWS) { return RES_EINVAL; }
+    return vga_cursor_set(cell) ? 0 : -5; /* EIO: hardware readback mismatch. */
+}
+
 static void release_binding(struct domain *owner)
 {
     if (vga_device.mapped && !address_space_vga_unbind(&owner->space)) {

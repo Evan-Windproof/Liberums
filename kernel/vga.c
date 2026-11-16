@@ -83,3 +83,20 @@ void vga_diagnostic(void)
     vga_diagnostic_written();
     serial_write("VGA: Ring 0 diagnostic written\n");
 }
+
+/* Only a validated device capability may reach this port operation. The user
+ * chooses the cell; the kernel enforces the fixed text-mode register boundary. */
+bool vga_cursor_set(uint32_t cell)
+{
+    if (!available || cell >= 2000) { return false; }
+    uint8_t saved = inb(0x3d4);
+    outb(0x3d4, 15); outb(0x3d5, cell & 255);
+    outb(0x3d4, 14); outb(0x3d5, cell >> 8);
+    /* Preserve firmware cursor shape, enable it, and verify actual position. */
+    outb(0x3d4, 10); uint8_t shape = inb(0x3d5);
+    outb(0x3d5, shape & ~0x20u);
+    outb(0x3d4, 14); uint32_t actual = (uint32_t)inb(0x3d5) << 8;
+    outb(0x3d4, 15); actual |= inb(0x3d5);
+    outb(0x3d4, saved);
+    return actual == cell;
+}

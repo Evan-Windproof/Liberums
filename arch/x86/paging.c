@@ -56,7 +56,8 @@ bool paging_init(const struct boot_context *boot)
         }
     }
     if (boot_has_option(boot->commandline, "vga-diag")
-        || boot_has_option(boot->commandline, "vga-console")) {
+        || boot_has_option(boot->commandline, "vga-console")
+        || boot_has_option(boot->commandline, "interactive-console")) {
         /* Supervisor-only MMIO alias; PCD/PWT match the later user binding. */
         page_tables[0][VGA_PHYSICAL / PAGE_SIZE] = VGA_PHYSICAL | 0x1bu;
     }

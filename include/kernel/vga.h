@@ -9,4 +9,5 @@
 bool vga_probe(void); /* Boot only, before paging removes the firmware BDA. */
 bool vga_available(void);
 void vga_diagnostic(void);
+bool vga_cursor_set(uint32_t cell);
 #endif

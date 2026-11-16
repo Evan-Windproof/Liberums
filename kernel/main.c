@@ -12,6 +12,8 @@
 #include <kernel/phase6_test.h>
 #include <kernel/vga.h>
 #include <kernel/phase71_test.h>
+#include <kernel/keyboard.h>
+#include <kernel/phase72_test.h>
 
 static struct boot_context boot;
 extern char __kernel_start[], __kernel_end[];
@@ -42,7 +44,8 @@ _Noreturn void kernel_main(uint32_t boot_magic, uint32_t boot_info_address)
     serial_write("\n");
     /* Probe firmware BDA before paging deliberately removes page zero. */
     if ((boot_has_option(boot.commandline, "vga-diag")
-        || boot_has_option(boot.commandline, "vga-console")) && !vga_probe()) {
+        || boot_has_option(boot.commandline, "vga-console")
+        || boot_has_option(boot.commandline, "interactive-console")) && !vga_probe()) {
         panic("unsupported VGA boot mode");
     }
     if (!paging_init(&boot)) {
@@ -67,10 +70,17 @@ _Noreturn void kernel_main(uint32_t boot_magic, uint32_t boot_info_address)
         vga_diagnostic();
         kernel_stop();
     }
-    if (boot_has_option(boot.commandline, "preempt") || phase6_test_selected(boot.commandline)) {
+    if (boot_has_option(boot.commandline, "preempt") || phase6_test_selected(boot.commandline)
+        || boot_has_option(boot.commandline, "keyboard-diag")
+        || boot_has_option(boot.commandline, "interactive-console")) {
         timer_start();
     }
-    if (boot_has_option(boot.commandline, "vga-console")) {
+    if (boot_has_option(boot.commandline, "keyboard-diag")) {
+        if (!keyboard_start()) { panic("PS/2 initialization failed"); }
+        keyboard_diagnostic();
+    } else if (boot_has_option(boot.commandline, "interactive-console")) {
+        phase72_run(boot.commandline);
+    } else if (boot_has_option(boot.commandline, "vga-console")) {
         phase71_test_run(boot.commandline);
     } else if (phase6_test_selected(boot.commandline)) {
         phase6_test_run(boot.commandline);

@@ -54,6 +54,11 @@ void idt_init(void)
     idt[32].offset_high = (uint16_t)(irq_address >> 16);
     idt[32].selector = 0x08;
     idt[32].attributes = 0x8e;
+    irq_address = (uintptr_t)keyboard_irq_entry;
+    idt[33].offset_low = (uint16_t)irq_address;
+    idt[33].offset_high = (uint16_t)(irq_address >> 16);
+    idt[33].selector = 0x08;
+    idt[33].attributes = 0x8e; /* DPL0: user INT 0x21 is forbidden. */
     const struct idt_pointer pointer = {sizeof(idt) - 1, (uintptr_t)idt};
     __asm__ volatile ("lidt %0" : : "m"(pointer) : "memory");
 }

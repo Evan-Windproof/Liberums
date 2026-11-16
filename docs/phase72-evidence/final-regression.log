@@ -1,0 +1,215 @@
+./build/memory-tests
+PASS: variable-size map, bounds, overflow, capacity, gaps and reserved overlaps
+PASS: exhausted 2169 pages without duplicates/reserved pages; free/reallocate/double-free checks
+PASS: 10890 host assertions
+./build/capability-tests
+PASS: 15 capability assertions: full generation boundary, epoch, owner and rights
+make -C tests/fixtures/external_user SDK="/workspace/Liberums/include" OUT="/workspace/Liberums/build/external" CC="gcc" LD="ld"
+make[1]: Entering directory '/workspace/Liberums/tests/fixtures/external_user'
+make[1]: Nothing to be done for 'all'.
+make[1]: Leaving directory '/workspace/Liberums/tests/fixtures/external_user'
+./build/vga-device-tests
+PASS: VGA authority: grant attenuation, epoch, namespace, exclusive owner, rights, bounds, OOM rollback, stale handles, revoke, generation exhaustion
+./build/keyboard-tests
+PASS: keyboard bounded drain/FIFO/wrap, unowned drop, overflow reset/saturation, authority/epoch/namespace, release/revoke/generation, IRQ0 mask preservation
+python3 tests/phase1.py --qemu "qemu-system-i386" --gdb "gdb"
+PASS: ELF32/i386, entry 0x100010, Multiboot at file offset 0x1000
+PASS: make run emitted all three expected serial lines
+PASS: make debug + GDB verified _start and kernel_main; boot resumed successfully
+python3 tests/phase2.py --qemu "qemu-system-i386" --gdb "gdb"
+PASS: GDB verified enabled PG/WP, identity map, read-only kernel and boot data
+PASS: QEMU physical page reservations, exhaustion, uniqueness, free and reuse
+PASS: actual Multiboot module, descriptor and strings remain reserved and mapped
+PASS: independent fault-ud guest; vector/error/EIP and fatal stop verified
+PASS: independent fault-divide guest; vector/error/EIP and fatal stop verified
+PASS: independent fault-gp guest; vector/error/EIP and fatal stop verified
+PASS: independent fault-pf-read guest; vector/error/EIP and fatal stop verified
+PASS: independent fault-pf-null guest; vector/error/EIP and fatal stop verified
+PASS: independent fault-ro-write guest; vector/error/EIP and fatal stop verified
+PASS: independent fault-tlb guest; vector/error/EIP and fatal stop verified
+PASS: malformed wrong-magic rejected before allocation or paging
+PASS: malformed invalid-info-address rejected before allocation or paging
+PASS: malformed empty-map rejected before allocation or paging
+PASS: malformed module-count rejected before allocation or paging
+PASS: malformed module-pointer rejected before allocation or paging
+PASS: malformed unterminated-commandline rejected before allocation or paging
+PASS: malformed missing-map rejected before allocation or paging
+PASS: malformed unsupported-flags rejected before allocation or paging
+PASS: malformed truncated-map rejected before allocation or paging
+PASS: malformed pointer-overflow rejected before allocation or paging
+PASS: malformed record-overflow rejected before allocation or paging
+PASS: malformed range-overflow rejected before allocation or paging
+python3 tests/phase3.py --qemu "qemu-system-i386" --gdb "gdb"
+PASS: normal boot 1, real CPL3/TSS/CR3/syscalls/registers/repeated cleanup
+PASS: normal boot 2, real CPL3/TSS/CR3/syscalls/registers/repeated cleanup
+PASS: normal boot 3, real CPL3/TSS/CR3/syscalls/registers/repeated cleanup
+PASS: phase3-kernel-read, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-kernel-write, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-cross-read, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-cross-write, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-cli, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-io, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-gate, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-table-write, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-physical-read, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-code-write, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-bad-stack, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-cross-read-reverse, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-cross-write-reverse, hardware denial, surviving peer and two clean lifecycles
+PASS: phase3-fpu, hardware denial, surviving peer and two clean lifecycles
+python3 tests/phase4.py --qemu "qemu-system-i386" --gdb "gdb"
+PASS: phase4-basic ownership, PTEs, generation, hardware access and two clean lifecycles
+PASS: phase4-transfer ownership, PTEs, generation, hardware access and two clean lifecycles
+PASS: phase4-unmap-fault ownership, PTEs, generation, hardware access and two clean lifecycles
+PASS: phase4-release-fault ownership, PTEs, generation, hardware access and two clean lifecycles
+PASS: phase4-readonly ownership, PTEs, generation, hardware access and two clean lifecycles
+PASS: phase4-transfer-fault ownership, PTEs, generation, hardware access and two clean lifecycles
+PASS: phase4-exit ownership, PTEs, generation, hardware access and two clean lifecycles
+PASS: phase4-generation ownership, PTEs, generation, hardware access and two clean lifecycles
+PASS: phase4-map-failure ownership, PTEs, generation, hardware access and two clean lifecycles
+PASS: phase4-claim-failure ownership, PTEs, generation, hardware access and two clean lifecycles
+python3 tests/phase5.py --qemu "qemu-system-i386" --gdb "gdb"
+make[1]: Entering directory '/workspace/Liberums/tests/fixtures/external_user'
+make[1]: Nothing to be done for 'all'.
+make[1]: Leaving directory '/workspace/Liberums/tests/fixtures/external_user'
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/minimal.elf (0)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/normal.elf (0)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/fault.elf (0)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/code-fault.elf (0)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/runtime-abi.elf (0)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/no-sections.elf (0)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/bad-magic.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/elf64.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/big-endian.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/bad-ident-version.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/wrong-osabi.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/wrong-machine.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/dynamic-type.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/elf-flags.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/header-size.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/ph-overflow.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/ph-overlap-header.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/ph-count.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/ph-entry-size.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/offset-overflow.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/filesz-overflow.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/filesz-gt-memsz.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/zero-load.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/kernel-address.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/resource-address.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/address-wrap.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/memory-overflow.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/bad-alignment.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/huge-alignment.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/noncongruent.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/load-overlap.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/page-overlap.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/writable-code.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/unreadable.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/entry-null.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/entry-data.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/entry-bss.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/interp.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/dynamic-header.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/tls.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/missing-note.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/bad-note-size.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/bad-note-name.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/abi-major.elf (-93)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/abi-minor.elf (-93)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/abi-features.elf (-93)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/truncated.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/oversized.elf (-8)
+PASS: bounded ELF parser /workspace/Liberums/build/external-sdk/segment-budget.elf (-8)
+PASS: minimal ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: multi ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: kernel-fault ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: code-fault ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: runtime-abi ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: no-sections ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: repeat ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: oom ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: no-module ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: bad-magic ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: elf64 ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: big-endian ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: bad-ident-version ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: wrong-osabi ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: wrong-machine ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: dynamic-type ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: elf-flags ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: header-size ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: ph-overflow ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: ph-overlap-header ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: ph-count ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: ph-entry-size ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: offset-overflow ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: filesz-overflow ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: filesz-gt-memsz ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: zero-load ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: kernel-address ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: resource-address ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: address-wrap ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: memory-overflow ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: bad-alignment ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: huge-alignment ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: noncongruent ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: load-overlap ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: page-overlap ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: writable-code ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: unreadable ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: entry-null ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: entry-data ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: entry-bss ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: interp ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: dynamic-header ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: tls ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: missing-note ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: bad-note-size ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: bad-note-name ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: abi-major ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: abi-minor ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: abi-features ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: truncated ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: oversized ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: segment-budget ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: Phase 5 guest total= 52 parser corpus= 49
+python3 tests/phase6.py --qemu "qemu-system-i386" --gdb "gdb"
+PASS: phase6-spin two real hardware lifecycles
+PASS: phase6-ack two real hardware lifecycles
+PASS: phase6-force two real hardware lifecycles
+PASS: phase6-release two real hardware lifecycles
+PASS: phase6-exit-pending two real hardware lifecycles
+PASS: phase6-immutable-abi11 ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: phase6-cooperative-note ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: phase6-cooperative-note-rejected no COOPERATIVE promise under preemption
+PASS: phase6-profile-rejection ELF/ABI/hardware/peer/rollback and two lifecycles
+PASS: phase6-external-preempt two independently built ELF lifecycles
+PASS: Phase 6 QEMU guests=10 / lifecycle rounds=20; native boundary suites=2
+python3 tests/phase71.py --qemu "qemu-system-i386" --gdb "gdb"
+PASS: independent Ring0 VGA diagnostic (actual device memory)
+PASS: VGA normal / two lifecycles, actual CPL3/PTE/fault/cleanup checks
+PASS: VGA revoke / two lifecycles, actual CPL3/PTE/fault/cleanup checks
+PASS: VGA upper / two lifecycles, actual CPL3/PTE/fault/cleanup checks
+PASS: VGA physical / two lifecycles, actual CPL3/PTE/fault/cleanup checks
+PASS: VGA readonly / two lifecycles, actual CPL3/PTE/fault/cleanup checks
+PASS: VGA kernel / two lifecycles, actual CPL3/PTE/fault/cleanup checks
+PASS: VGA io / two lifecycles, actual CPL3/PTE/fault/cleanup checks
+PASS: VGA table / two lifecycles, actual CPL3/PTE/fault/cleanup checks
+PASS: VGA release / two lifecycles, actual CPL3/PTE/fault/cleanup checks
+PASS: VGA lower / two lifecycles, actual CPL3/PTE/fault/cleanup checks
+PASS: VGA oom / two lifecycles, actual CPL3/PTE/fault/cleanup checks
+PASS: QEMU VGA renderer screenshot 720x400, white/yellow/green text, blue cleared background; SHA256=52d73b732e1543c31e969dd0ad4edbb3bd0bc94cab9f62d5947b8223602583d3
+PASS: actual make run-vga-diag QEMU_DISPLAY=none functional boot
+PASS: actual make run-vga QEMU_DISPLAY=none functional boot
+python3 tests/phase72.py --qemu "qemu-system-i386" --gdb "gdb"
+PASS: independent real PS/2 IRQ1 diagnostic
+PASS: keyboard functional two real IRQ1/Ring3 lifecycles
+PASS: keyboard in-port two real IRQ1/Ring3 lifecycles
+PASS: keyboard out-port two real IRQ1/Ring3 lifecycles
+PASS: keyboard int-gate two real IRQ1/Ring3 lifecycles
+PASS: keyboard fault-cleanup two real IRQ1/Ring3 lifecycles
+PASS: keyboard revoke two real IRQ1/Ring3 lifecycles
+PASS: keyboard release two real IRQ1/Ring3 lifecycles
+PASS: keyboard overflow two real IRQ1/Ring3 lifecycles
+PASS: actual make run-console QEMU_DISPLAY=none startup

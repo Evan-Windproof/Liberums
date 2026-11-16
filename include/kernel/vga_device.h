@@ -10,6 +10,7 @@ int32_t vga_device_acquire(struct domain *owner, uint32_t device, uint32_t right
                           struct resource_handle *handle);
 int32_t vga_device_map(struct domain *owner, struct resource_handle handle,
                       uint32_t address, uint32_t rights);
+int32_t vga_device_cursor(struct domain *owner, struct resource_handle handle, uint32_t cell);
 int32_t vga_device_release(struct domain *owner, struct resource_handle handle);
 /* Trusted revocation also removes the boot grant, so reacquisition is denied. */
 void vga_device_revoke(struct domain *owner);

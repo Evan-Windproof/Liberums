@@ -1,0 +1,11 @@
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+add symbol table from file "/workspace/Liberums/build/interactive-user.elf"
+READY: epoch=1 keyboard generation=1
+COMMAND: ret help clear about status
+REAPED: epoch=1 IRQ0=17 peer preemptions=11 IRQ1=88 EOI=88 PIC imr=fe isr=00
+READY: epoch=2 keyboard generation=2
+COMMAND: ret help clear about status
+REAPED: epoch=2 IRQ0=35 peer preemptions=11 IRQ1=174 EOI=174 PIC imr=fe isr=00
+PASS: actual keyboard IRQ1/CPL3/editor/lifetime audit overflow-stress0 {'irq': 174, 'returned': 174, 'peer_irq': 97, 'events': 20, 'overflow': 2, 'reaped': 2}
+[Inferior 1 (process 1) detached]

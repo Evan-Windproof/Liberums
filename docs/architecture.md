@@ -5,6 +5,8 @@
 默认合作兼容模式仍支持旧 ELF，不链接或修改 Aelthuvor。当前无 SMP、通用设备/DMA 撤销或完整 LibOS。
 Phase 7.1 仅增加固定 VGA 文本页授权、同步解除映射与用户态 Console，
 见 [VGA 设备边界与验收](phase7-vga-console.md)；普通 RAM 与设备生命周期分开。
+Phase 7.2 增加 PS/2 IRQ1 的有界授权扫描码队列；字符、编辑与小型命令 Console 仍在 Ring 3，
+见 [键盘输入与交互 Console](phase7-keyboard-console.md)。不提供通用输入框架或完整 Shell。
 
 ## 目标与安全模型
 

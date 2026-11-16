@@ -1,0 +1,15 @@
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+add symbol table from file "/workspace/Liberums/build/interactive-user.elf"
+READY: epoch=1 keyboard generation=1
+COMMAND: ret help clear about status
+COMMAND: ret Liberums Exokernel - Ring 3 interactive console
+COMMAND: ret Ring 3 | ABI 1.2 | IRQ0 preempt | PS/2 IRQ1
+REAPED: epoch=1 IRQ0=169 peer preemptions=169 IRQ1=327 EOI=327 PIC imr=fe isr=00
+READY: epoch=2 keyboard generation=2
+COMMAND: ret help clear about status
+COMMAND: ret Liberums Exokernel - Ring 3 interactive console
+COMMAND: ret Ring 3 | ABI 1.2 | IRQ0 preempt | PS/2 IRQ1
+REAPED: epoch=2 IRQ0=335 peer preemptions=166 IRQ1=654 EOI=654 PIC imr=fe isr=00
+PASS: actual keyboard IRQ1/CPL3/editor/lifetime audit functional {'irq': 654, 'returned': 654, 'peer_irq': 644, 'events': 660, 'overflow': 0, 'reaped': 2}
+[Inferior 1 (process 1) detached]

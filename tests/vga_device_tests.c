@@ -11,6 +11,7 @@ static int32_t bind_result;
 static uint32_t binds, unbinds;
 static bool hardware = true;
 struct domain *domain_lookup(uint32_t id) { return id >= 1 && id <= 2 ? &owners[id-1] : NULL; }
+bool vga_cursor_set(uint32_t cell) { return cell < 2000; }
 bool vga_available(void) { return hardware; }
 int32_t address_space_vga_bind(struct address_space *space, bool writable)
 {
@@ -64,6 +65,7 @@ int main(void)
     assert(!vga_device.mapped && vga_device.active); /* rollback, retryable */
     bind_result=0;
     assert(vga_device_map(a,h,VGA_USER_ADDRESS,1)==0);
+    assert(vga_device_cursor(a,h,0)==RES_EPERM);
     assert(vga_device_map(a,h,VGA_USER_ADDRESS,1)==RES_EBUSY);
     assert(vga_device_release(a,h)==0 && unbinds==1);
     assert(vga_device_release(a,h)==RES_ESTALE);
@@ -77,6 +79,9 @@ int main(void)
     vga_device.cap.generation=UINT32_MAX-1;
     assert(vga_device_acquire(b,1,3,&h)==0 && h.generation==UINT32_MAX);
     assert(vga_device_map(b,h,VGA_USER_ADDRESS,3)==0);
+    assert(vga_device_cursor(b,h,1999)==0);
+    assert(vga_device_cursor(b,h,2000)==RES_EINVAL);
+    assert(vga_device_cursor(a,h,0)==RES_EPERM);
     vga_device_revoke(b);
     assert(unbinds==2);
     assert(vga_device_grant(b,3));

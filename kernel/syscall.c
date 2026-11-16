@@ -7,12 +7,38 @@
 #include <kernel/timer.h>
 #include <kernel/revoke.h>
 #include <kernel/vga_device.h>
+#include <kernel/keyboard.h>
 
 void syscall_dispatch(struct exception_frame *frame)
 {
     struct domain *domain = domain_from_trap(frame);
     ++domain->syscalls;
     switch (frame->eax) {
+    case SYS_KBD_INFO: {
+        uint32_t format = 0;
+        frame->eax = keyboard_info(frame->ebx, &format);
+        frame->edx = format;
+        break;
+    }
+    case SYS_KBD_ACQUIRE: {
+        struct resource_handle handle;
+        int32_t error = keyboard_acquire(domain, frame->ebx, &handle);
+        frame->eax = error == 0 ? handle.index : (uint32_t)error;
+        frame->edx = error == 0 ? handle.generation : 0;
+        break;
+    }
+    case SYS_KBD_POLL:
+    case SYS_KBD_STATS: {
+        uint32_t value = 0;
+        struct resource_handle handle = {frame->ebx, frame->ecx};
+        frame->eax = frame->eax == SYS_KBD_POLL ? keyboard_poll(domain, handle, &value)
+                                               : keyboard_stats(domain, handle, &value);
+        frame->edx = value;
+        break;
+    }
+    case SYS_KBD_RELEASE:
+        frame->eax = keyboard_release(domain, (struct resource_handle){frame->ebx, frame->ecx});
+        break;
     case SYS_VGA_INFO: {
         uint32_t bytes = 0;
         frame->eax = vga_device_info(frame->ebx, &bytes);
@@ -29,6 +55,9 @@ void syscall_dispatch(struct exception_frame *frame)
     case SYS_VGA_MAP:
         frame->eax = vga_device_map(domain, (struct resource_handle){frame->ebx, frame->ecx},
                                     frame->edx, frame->esi);
+        break;
+    case SYS_VGA_CURSOR:
+        frame->eax = vga_device_cursor(domain, (struct resource_handle){frame->ebx, frame->ecx}, frame->edx);
         break;
     case SYS_VGA_RELEASE:
         frame->eax = vga_device_release(domain, (struct resource_handle){frame->ebx, frame->ecx});

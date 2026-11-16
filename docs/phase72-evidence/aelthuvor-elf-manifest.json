@@ -1,0 +1,14 @@
+{
+  "source_commit": "b10d337d254b18e98204990203a77a215c82c568",
+  "sdk_commit": "49d5dbf2e78f7ad7ed6ec4acdeece68b1b6568d0",
+  "elf_sha256": {
+    "first": "f8aa3c80edfbbc31763cccbc08b4fc9095fe0edec3f3d2c342ef224a6ffb248d",
+    "best": "1f877d47339109e15795f5e2182d4b6e8cb92083d35b6ba76b8f74964c39988e",
+    "fault": "059245d71380cc17ba6cacf61184d88f5a14cd0861a785d3cb6c9a470cfd0857",
+    "readonly": "890573892ea095fd7fc5e9bd15d84bdcb1b835d4448ab4f555fd94bbe20b2e10",
+    "exit-live": "534f13ca6db2c8ed115a7993b6a017a39a1f572908269222751d7932cd851f15",
+    "runtime-abi": "332d52ef95cc5295ed8051bf61d2103e2ebb71979b2219fb199ad3cd35707d8c"
+  },
+  "guests": 15,
+  "lifecycles": 30
+}

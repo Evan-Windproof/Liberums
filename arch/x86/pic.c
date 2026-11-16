@@ -30,3 +30,14 @@ void pic_timer_eoi(void)
 {
     outb(0x20, 0x20); /* IRQ0 belongs only to the master. */
 }
+
+/* Caller has IF=0. Preserve IRQ0 and every other mask bit. */
+void pic_keyboard_mask(bool masked)
+{
+    uint8_t mask = inb(0x21);
+    outb(0x21, masked ? mask | 2u : mask & ~2u);
+}
+void pic_keyboard_eoi(void)
+{
+    outb(0x20, 0x20); /* IRQ1 is also on the master; no slave EOI. */
+}

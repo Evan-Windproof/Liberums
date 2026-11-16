@@ -23,8 +23,8 @@ C_SOURCES := kernel/main.c kernel/serial.c kernel/panic.c arch/x86/idt.c \
              kernel/capability.c kernel/resource.c tests/resource_pressure.c \
              kernel/elf_loader.c kernel/external.c arch/x86/user_space.c tests/elf_pressure.c \
              arch/x86/pic.c arch/x86/pit.c kernel/tick.c kernel/timer.c kernel/scheduler.c \
-             kernel/revoke.c tests/phase6_runtime.c kernel/vga.c kernel/vga_device.c tests/phase71_runtime.c
-ASM_SOURCES := arch/x86/irq.S  arch/x86/boot.S arch/x86/isr.S arch/x86/test_faults.S arch/x86/user_context.S arch/x86/user_images.S
+             kernel/revoke.c tests/phase6_runtime.c kernel/vga.c kernel/vga_device.c tests/phase71_runtime.c arch/x86/ps2.c kernel/keyboard.c tests/phase72_runtime.c
+ASM_SOURCES := arch/x86/keyboard_irq.S arch/x86/irq.S  arch/x86/boot.S arch/x86/isr.S arch/x86/test_faults.S arch/x86/user_context.S arch/x86/user_images.S
 OBJECTS := $(addprefix $(BUILD)/,$(C_SOURCES:.c=.o) $(ASM_SOURCES:.S=.o))
 ARCH_FLAGS := -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float
 KERNEL_CFLAGS := $(ARCH_FLAGS) -std=c11 -ffreestanding -fno-builtin \
@@ -121,6 +121,7 @@ test: $(KERNEL) test-memory $(BUILD)/elf-tests external-fixtures
 	$(PYTHON) tests/phase5.py --qemu "$(QEMU)" --gdb "$(GDB)"
 	$(PYTHON) tests/phase6.py --qemu "$(QEMU)" --gdb "$(GDB)"
 	$(PYTHON) tests/phase71.py --qemu "$(QEMU)" --gdb "$(GDB)"
+	$(PYTHON) tests/phase72.py --qemu "$(QEMU)" --gdb "$(GDB)"
 
 .PHONY: test-libos
 test-libos: $(KERNEL)
@@ -180,3 +181,26 @@ test: test-vga-native
 .PHONY: test-vga-compat
 test-vga-compat: $(KERNEL)
 	$(PYTHON) tests/phase71_compat.py --aelthuvor "$(AELTHUVOR)" --qemu "$(QEMU)" --gdb "$(GDB)"
+
+$(BUILD)/user/interactive_console.o: user/interactive_console.c $(wildcard include/abi/*.h) Makefile
+	mkdir -p $(dir $@)
+	$(CC) -Iinclude $(KERNEL_CFLAGS) -Os -c $< -o $@
+$(BUILD)/interactive-user.elf: $(BUILD)/user/interactive_console.o user/linker.ld
+	$(LD) -m elf_i386 -nostdlib --build-id=none -T user/linker.ld $< -o $@
+$(BUILD)/interactive-user.bin: $(BUILD)/interactive-user.elf
+	$(OBJCOPY) -O binary $< $@
+$(BUILD)/arch/x86/user_images.o: $(BUILD)/interactive-user.bin
+.PHONY: run-console test-keyboard
+run-console: $(KERNEL)
+	$(QEMU) $(subst -display none,-display $(QEMU_DISPLAY),$(QEMU_FLAGS)) -kernel $(KERNEL) -append "interactive-console $(QEMU_APPEND)"
+test-keyboard: $(KERNEL)
+	$(PYTHON) tests/phase72.py --qemu "$(QEMU)" --gdb "$(GDB)"
+
+$(BUILD)/keyboard-tests: tests/keyboard_tests.c kernel/keyboard.c kernel/capability.c $(wildcard include/abi/*.h include/kernel/*.h include/arch/x86/*.h) | $(BUILD)
+	$(HOST_CC) -std=c11 -Wall -Wextra -Werror -Wpedantic -g -no-pie -fsanitize=address,undefined -Iinclude tests/keyboard_tests.c kernel/capability.c -o $@
+.PHONY: test-keyboard-native
+test-keyboard-native: $(BUILD)/keyboard-tests
+	./$(BUILD)/keyboard-tests
+test-keyboard: test-keyboard-native
+
+test: test-keyboard-native

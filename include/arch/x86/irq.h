@@ -11,5 +11,7 @@ struct irq_frame {
 };
 _Static_assert(sizeof(struct segment_context) == 16, "IRQ segment prefix");
 void timer_irq_entry(void);
+void keyboard_irq_entry(void);
+void keyboard_dispatch(struct irq_frame *frame);
 void timer_dispatch(struct irq_frame *frame);
 #endif

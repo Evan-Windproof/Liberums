@@ -306,6 +306,15 @@ make test-phase6
 接口是 ABI 1.2 的可探测可选扩展，旧 ELF 保持兼容。
 机制、页粒度限制、运行命令及证据见 [Phase 7.1 教学文档](docs/phase7-vga-console.md)。
 
+## Phase 7.2：Keyboard Input 与交互 Console
+
+`make run-console` 启动 PS/2 IRQ1 + Ring 3 交互 Console（默认 GTK，可覆盖 `QEMU_DISPLAY`）。
+支持回显、Backspace、Enter、光标及 `help` / `clear` / `about` / `status`。
+内核只提供有界原始扫描码队列、授权和必要端口访问，字符解释/输入编辑/命令均在用户态。
+原 `make run`、`make run-vga`、COM1、IRQ0 和 ABI 1.2 保持原有行为。
+`make test-keyboard` 执行新 native/QMP/GDB 验收，完整 `make test` 包含旧新阶段。
+详见 [Phase 7.2 教学文档与证据](docs/phase7-keyboard-console.md)。
+
 ## 许可证
 
 项目代码与文档按 **GNU General Public License v3.0 or later** 发布，

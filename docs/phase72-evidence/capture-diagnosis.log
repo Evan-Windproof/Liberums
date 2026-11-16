@@ -1,0 +1,26 @@
+PASS: keyboard overflow-probe0 two real IRQ1/Ring3 lifecycles
+Traceback (most recent call last):
+  File "<stdin>", line 5, in <module>
+  File "/workspace/Liberums/tests/phase72.py", line 357, in console
+    output=connect_and_run(p,log,port,gdb,script,'keyboard-'+label)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Liberums/tests/phase2.py", line 32, in connect_and_run
+    require(result.returncode == 0, f"{label}: GDB failed\n{result.stdout}")
+  File "/workspace/Liberums/tests/phase1.py", line 28, in require
+    raise RuntimeError(message)
+RuntimeError: keyboard-overflow-probe1: GDB failed
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+add symbol table from file "/workspace/Liberums/build/interactive-user.elf"
+READY: epoch=1 keyboard generation=1
+COMMAND: ret help clear about status
+REAPED: epoch=1 IRQ0=17 peer preemptions=11 IRQ1=81 EOI=81 PIC imr=fe isr=00
+READY: epoch=2 keyboard generation=2
+COMMAND: ret help clear about status
+REAPED: epoch=2 IRQ0=35 peer preemptions=11 IRQ1=164 EOI=164 PIC imr=fe isr=00
+Traceback (most recent call last):
+  File "<string>", line 143, in stop
+  File "<string>", line 124, in reaped
+  File "<string>", line 6, in check
+gdb.GdbError: IRQ1 frame audit mismatch: {'irq': 165, 'returned': 164, 'peer_irq': 85, 'events': 20, 'overflow': 2, 'reaped': 2}
+[Inferior 1 (process 1) detached]

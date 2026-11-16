@@ -31,3 +31,9 @@ phase6_user_end:
 vga_user_start:
 .incbin "build/vga-user.bin"
 vga_user_end:
+
+.section .rodata,"a"
+.global interactive_user_start, interactive_user_end
+interactive_user_start:
+.incbin "build/interactive-user.bin"
+interactive_user_end:
