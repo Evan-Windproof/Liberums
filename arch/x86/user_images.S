@@ -25,3 +25,9 @@ resource_fault_end:
 phase6_user_start:
 .incbin "build/phase6-user.bin"
 phase6_user_end:
+
+.section .rodata,"a"
+.global vga_user_start, vga_user_end
+vga_user_start:
+.incbin "build/vga-user.bin"
+vga_user_end:

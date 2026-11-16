@@ -297,6 +297,15 @@ make test-phase6
 详细调用关系、教学说明及测试证据见 [概览](docs/phase6-overview.md)、[模块](docs/phase6-modules.md)、
 [抢占](docs/phase6-preemption.md)、[撤销 ABI](docs/phase6-revocation.md)、[实际验收](docs/phase6-validation.md)。
 
+## Phase 7.1：VGA 用户态 Console
+
+显式 `make run-vga` 在支持 GTK 的本地 QEMU 中启动 Ring 3 文本 Console；
+`make run-vga-diag` 只执行独立 Ring 0 诊断。默认 `make run` 和 COM1 保持不变。
+可覆盖 `QEMU_DISPLAY=none`；云端通过实际显存、PTE、Ring 3 和 QMP 截图验收，
+没有验证本地 WSLg 窗口。`make test-vga` 执行新设备边界与硬件测试，`make test` 包含新旧回归。
+接口是 ABI 1.2 的可探测可选扩展，旧 ELF 保持兼容。
+机制、页粒度限制、运行命令及证据见 [Phase 7.1 教学文档](docs/phase7-vga-console.md)。
+
 ## 许可证
 
 项目代码与文档按 **GNU General Public License v3.0 or later** 发布，

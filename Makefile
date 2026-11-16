@@ -23,7 +23,7 @@ C_SOURCES := kernel/main.c kernel/serial.c kernel/panic.c arch/x86/idt.c \
              kernel/capability.c kernel/resource.c tests/resource_pressure.c \
              kernel/elf_loader.c kernel/external.c arch/x86/user_space.c tests/elf_pressure.c \
              arch/x86/pic.c arch/x86/pit.c kernel/tick.c kernel/timer.c kernel/scheduler.c \
-             kernel/revoke.c tests/phase6_runtime.c
+             kernel/revoke.c tests/phase6_runtime.c kernel/vga.c kernel/vga_device.c tests/phase71_runtime.c
 ASM_SOURCES := arch/x86/irq.S  arch/x86/boot.S arch/x86/isr.S arch/x86/test_faults.S arch/x86/user_context.S arch/x86/user_images.S
 OBJECTS := $(addprefix $(BUILD)/,$(C_SOURCES:.c=.o) $(ASM_SOURCES:.S=.o))
 ARCH_FLAGS := -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float
@@ -120,6 +120,7 @@ test: $(KERNEL) test-memory $(BUILD)/elf-tests external-fixtures
 	$(PYTHON) tests/phase4.py --qemu "$(QEMU)" --gdb "$(GDB)"
 	$(PYTHON) tests/phase5.py --qemu "$(QEMU)" --gdb "$(GDB)"
 	$(PYTHON) tests/phase6.py --qemu "$(QEMU)" --gdb "$(GDB)"
+	$(PYTHON) tests/phase71.py --qemu "$(QEMU)" --gdb "$(GDB)"
 
 .PHONY: test-libos
 test-libos: $(KERNEL)
@@ -150,3 +151,32 @@ test-phase6-native: $(BUILD)/timer-tests $(BUILD)/revoke-tests
 	./$(BUILD)/revoke-tests
 test-phase6: $(KERNEL)
 	$(PYTHON) tests/phase6.py --qemu "$(QEMU)" --gdb "$(GDB)"
+
+# Graphical display is opt-in; original run/debug stay headless.
+QEMU_DISPLAY ?= gtk
+.PHONY: run-vga-diag
+run-vga-diag: $(KERNEL)
+	$(QEMU) $(subst -display none,-display $(QEMU_DISPLAY),$(QEMU_FLAGS)) -kernel $(KERNEL) -append "vga-diag"
+
+$(BUILD)/vga-user.elf: $(BUILD)/user/vga_console.o user/linker.ld
+	$(LD) -m elf_i386 -nostdlib --build-id=none -T user/linker.ld $< -o $@
+$(BUILD)/vga-user.bin: $(BUILD)/vga-user.elf
+	$(OBJCOPY) -O binary $< $@
+$(BUILD)/arch/x86/user_images.o: $(BUILD)/vga-user.bin
+.PHONY: run-vga test-vga
+run-vga: $(KERNEL)
+	$(QEMU) $(subst -display none,-display $(QEMU_DISPLAY),$(QEMU_FLAGS)) -kernel $(KERNEL) -append "vga-console $(QEMU_APPEND)"
+test-vga: $(KERNEL)
+	$(PYTHON) tests/phase71.py --qemu "$(QEMU)" --gdb "$(GDB)"
+
+$(BUILD)/vga-device-tests: tests/vga_device_tests.c kernel/vga_device.c kernel/capability.c $(wildcard include/abi/*.h include/kernel/*.h) | $(BUILD)
+	$(HOST_CC) -std=c11 -Wall -Wextra -Werror -Wpedantic -g -no-pie -fsanitize=address,undefined -Iinclude tests/vga_device_tests.c kernel/capability.c -o $@
+.PHONY: test-vga-native
+test-vga-native: $(BUILD)/vga-device-tests
+	./$(BUILD)/vga-device-tests
+test-vga: test-vga-native
+
+test: test-vga-native
+.PHONY: test-vga-compat
+test-vga-compat: $(KERNEL)
+	$(PYTHON) tests/phase71_compat.py --aelthuvor "$(AELTHUVOR)" --qemu "$(QEMU)" --gdb "$(GDB)"

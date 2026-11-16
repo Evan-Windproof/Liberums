@@ -1,0 +1,9 @@
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+Hardware assisted breakpoint 1 at 0x105760: file kernel/vga.c, line 67.
+
+Breakpoint 1, vga_diagnostic_written () at kernel/vga.c:67
+67	    __asm__ volatile ("" : : : "memory");
+VGA BOOT: {mode = 3, columns = 80, rows = 25, page_offset = 0, graphics_misc = 14, crtc_start = 0, pat_supported = 1, pat3 = 0}
+PASS: Ring0 VGA text, color and supervisor PCD/PWT PTE
+[Inferior 1 (process 1) detached]

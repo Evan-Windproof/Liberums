@@ -2,7 +2,9 @@
 
 本文描述长期 Exokernel 边界与当前实现。Phase 6 在外部 ELF/资源保护上增加公开 ABI 1.2、
 显式 PIT 抢占模式与普通资源页的可见撤销，见 [Phase 6 概览](phase6-overview.md)。
-默认合作兼容模式仍支持旧 ELF，不链接或修改 Aelthuvor。当前无 SMP、设备/DMA 撤销或完整 LibOS。
+默认合作兼容模式仍支持旧 ELF，不链接或修改 Aelthuvor。当前无 SMP、通用设备/DMA 撤销或完整 LibOS。
+Phase 7.1 仅增加固定 VGA 文本页授权、同步解除映射与用户态 Console，
+见 [VGA 设备边界与验收](phase7-vga-console.md)；普通 RAM 与设备生命周期分开。
 
 ## 目标与安全模型
 
@@ -114,7 +116,7 @@ Phase 5 已提供外部程序边界：独立的 ET_EXEC、公开的 ABI/ELF prof
 
 未来 LibOS 应以独立用户软件使用这些接口，不把堆、缓存、文件系统等策略迁入内核。
 Phase 6 已实现单 CPU IRQ0、一 tick 轮转、有界事件/ACK/超时强制回收；默认模式不改变旧用户的 IF/顺序假设。
-通用 ELF、用户指针、APIC/SMP、设备撤销和更复杂的 CPU 仲裁需要独立设计。本次不开始 Phase 7。
+通用 ELF、用户指针、APIC/SMP、设备撤销和更复杂的 CPU 仲裁需要独立设计。Phase 7.1 的 VGA 页实验现已单独实现，不代表通用设备框架或完整 Phase 7。
 
 ## 参考
 

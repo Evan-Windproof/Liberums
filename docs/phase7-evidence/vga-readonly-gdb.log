@@ -1,0 +1,6 @@
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+USER VGA: round=1 stage=1 CPL=3 CR3=0x131000 PTE=0xb803d handle=0x10001:1
+USER VGA: round=2 stage=1 CPL=3 CR3=0x131000 PTE=0xb803d handle=0x10001:2
+PASS: VGA hardware audit mode=4 counts={'user': 2, 'stopped': 6, 'finished': 2, 'reaped': 2, 'drawn': 0}
+[Inferior 1 (process 1) detached]

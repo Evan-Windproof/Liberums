@@ -6,12 +6,33 @@
 #include <kernel/resource.h>
 #include <kernel/timer.h>
 #include <kernel/revoke.h>
+#include <kernel/vga_device.h>
 
 void syscall_dispatch(struct exception_frame *frame)
 {
     struct domain *domain = domain_from_trap(frame);
     ++domain->syscalls;
     switch (frame->eax) {
+    case SYS_VGA_INFO: {
+        uint32_t bytes = 0;
+        frame->eax = vga_device_info(frame->ebx, &bytes);
+        frame->edx = bytes;
+        break;
+    }
+    case SYS_VGA_ACQUIRE: {
+        struct resource_handle handle;
+        int32_t error = vga_device_acquire(domain, frame->ebx, frame->ecx, &handle);
+        frame->eax = error == 0 ? handle.index : (uint32_t)error;
+        frame->edx = error == 0 ? handle.generation : 0;
+        break;
+    }
+    case SYS_VGA_MAP:
+        frame->eax = vga_device_map(domain, (struct resource_handle){frame->ebx, frame->ecx},
+                                    frame->edx, frame->esi);
+        break;
+    case SYS_VGA_RELEASE:
+        frame->eax = vga_device_release(domain, (struct resource_handle){frame->ebx, frame->ecx});
+        break;
     case SYS_YIELD:
         frame->eax = 0;
         domain_yield(frame);

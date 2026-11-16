@@ -5,6 +5,8 @@
 #include <kernel/timer.h>
 #include <kernel/revoke.h>
 #include <kernel/phase6_test.h>
+#include <kernel/vga_device.h>
+#include <kernel/phase71_test.h>
 /* One delivered PIT tick per slice (~10 ms), single CPU, no kernel preemption.
  * A terminated slot is skipped; all terminal -> return to lifetime owner. */
 void domain_schedule(void)
@@ -20,6 +22,7 @@ void domain_schedule(void)
             if (timer_exhausted()) {
                 domain->exit_status = (uint32_t)RES_EOVERFLOW;
                 domain->state = DOMAIN_EXITED;
+                vga_device_revoke(domain);
                 resource_cleanup(domain);
                 continue;
             }
@@ -28,11 +31,13 @@ void domain_schedule(void)
             resource_test_pressure_end();
             revoke_expire(timer_now());
             phase6_test_step(domain);
+            phase71_test_step(domain);
             if (timer_exhausted() && domain->state == DOMAIN_READY) {
                 domain->exit_status = (uint32_t)RES_EOVERFLOW;
                 domain->state = DOMAIN_EXITED;
             }
             if (domain->state == DOMAIN_EXITED || domain->state == DOMAIN_FAULTED) {
+                vga_device_revoke(domain);
                 resource_cleanup(domain);
             }
         }

@@ -4,6 +4,8 @@
 #include <kernel/panic.h>
 #include <kernel/user_abi.h>
 #include <kernel/resource_abi.h>
+#include <kernel/vga.h>
+#include <abi/vga.h>
 
 #define TABLE_ENTRIES 1024
 #define TABLE_COUNT (PHYSICAL_LIMIT / (PAGE_SIZE * TABLE_ENTRIES))
@@ -52,6 +54,11 @@ bool paging_init(const struct boot_context *boot)
             }
             page_tables[table][index] = address | permissions;
         }
+    }
+    if (boot_has_option(boot->commandline, "vga-diag")
+        || boot_has_option(boot->commandline, "vga-console")) {
+        /* Supervisor-only MMIO alias; PCD/PWT match the later user binding. */
+        page_tables[0][VGA_PHYSICAL / PAGE_SIZE] = VGA_PHYSICAL | 0x1bu;
     }
     __asm__ volatile ("mov %0, %%cr3" : : "r"((uintptr_t)page_directory) : "memory");
     cr0 |= UINT32_C(0x80010000); /* PG plus WP: even ring 0 respects read-only PTEs. */
@@ -106,7 +113,7 @@ void address_space_destroy(struct address_space *space)
     if (space == NULL || space->count > ADDRESS_SPACE_PAGE_LIMIT) {
         panic("invalid address space teardown");
     }
-    if (space->dynamic_table != 0) {
+    if (space->dynamic_table != 0 || space->device_table != 0) {
         panic("destroying address space with resource bindings");
     }
     uint32_t current_cr3;
@@ -249,4 +256,53 @@ void paging_copy_kernel(uint32_t *directory)
     for (uint32_t i = 0; i < TABLE_COUNT; ++i) {
         directory[i] = page_directory[i];
     }
+}
+
+/* VGA is a fixed device binding in its own PDE. No caller-supplied PA, length,
+ * cache flags, or page-table words cross this internal interface. */
+int32_t address_space_vga_bind(struct address_space *space, bool writable)
+{
+    if (!space->live || !vga_available()) {
+        return RES_EINVAL;
+    }
+    uint32_t *directory = (void *)(uintptr_t)space->pages[0];
+    if (space->device_table != 0 || directory[VGA_USER_ADDRESS >> 22] != 0) {
+        return RES_EBUSY;
+    }
+    uint32_t table;
+    if (!physical_page_alloc(&table)) {
+        return RES_ENOMEM;
+    }
+    clear_page(table);
+    uint32_t *entries = (void *)(uintptr_t)table;
+    /* User, present, optionally writable, PWT+PCD: UC after boot has verified PAT[3].
+     * The kernel's supervisor alias has matching cache attributes. */
+    entries[0] = VGA_PHYSICAL | 0x1du | (writable ? 2u : 0u);
+    space->device_table = table;
+    directory[VGA_USER_ADDRESS >> 22] = table | 7u;
+    flush_dynamic(space, VGA_USER_ADDRESS, true);
+    return 0;
+}
+
+bool address_space_vga_unbind(struct address_space *space)
+{
+    if (!space->live || space->device_table == 0) {
+        return false;
+    }
+    uint32_t *directory = (void *)(uintptr_t)space->pages[0];
+    uint32_t *table = (void *)(uintptr_t)space->device_table;
+    if ((table[0] & 0xfffff09du) != (VGA_PHYSICAL | 0x1du)
+        || (directory[VGA_USER_ADDRESS >> 22] & ~0x20u) != (space->device_table | 7u)) {
+        return false;
+    }
+    table[0] = 0;
+    directory[VGA_USER_ADDRESS >> 22] = 0;
+    flush_dynamic(space, VGA_USER_ADDRESS, true);
+    /* Only this RAM page table is zeroed/freed, never the VGA device page. */
+    clear_page(space->device_table);
+    if (!physical_page_free(space->device_table)) {
+        panic("VGA page table release failed");
+    }
+    space->device_table = 0;
+    return true;
 }
