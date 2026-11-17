@@ -1,0 +1,19 @@
+IDT: 32 exception gates ready
+Memory map: accepted regions=0x00000006
+Physical pages: free=0x00001e6a
+Paging: enabled with WP, cr0=0x80010011
+Phase 2: protected memory foundations ready
+Liberums: boot successful
+Phase 1: x86 32-bit C11 kernel, COM1 ready
+Multiboot handoff accepted; interrupts disabled; halting.
+Multi ELF module=0x00000001 result=0x00000000 id=0x00000001 epoch=0x00000001
+Multi ELF module=0x00000002 result=0x00000000 id=0x00000002 epoch=0x00000001
+Multi ELF module=0x00000003 result=0x00000000 id=0x00000003 epoch=0x00000001
+Multi ELF module=0x00000004 result=0x00000000 id=0x00000004 epoch=0x00000001
+Independent LibOS: fixed-object pool passed
+Multi terminal id=0x00000001 epoch=0x00000001 state=0x00000003 status=0x00000060
+Multi terminal id=0x00000002 epoch=0x00000001 state=0x00000003 status=0x00000000
+Multi terminal id=0x00000003 epoch=0x00000001 state=0x00000003 status=0x00000000
+Multi terminal id=0x00000004 epoch=0x00000001 state=0x00000003 status=0x00000000
+Phase 8: multi external execution completed
+qemu-system-i386: terminating on signal 15 from pid 33245 (python3)

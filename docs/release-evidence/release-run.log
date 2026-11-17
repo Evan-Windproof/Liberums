@@ -1,0 +1,19 @@
+python3 scripts/validate_release.py --aelthuvor-build /tmp/liberums-phase9-ael/build --historical-checkouts /tmp/liberums-phase8-ael /tmp/liberums-phase73-ael /tmp/liberums-phase71-ael
+RUN make clean
+RUN make -j2
+RUN make test
+RUN make test-phase8
+RUN make test-phase9
+RUN make test-libos-examples
+RUN python3 tests/kit_tests.py
+RUN python3 scripts/check_docs.py
+RUN make test-phase9-e2e PHASE9_AEL_BUILD=/tmp/liberums-phase9-ael/build
+RUN python3 tests/phase10_compat.py --aelthuvor /tmp/liberums-phase9-ael/build
+RUN make -C /tmp/liberums-phase9-ael phase4-integration LIBERUMS=/workspace/Liberums
+RUN make -C /tmp/liberums-phase9-ael integration LIBERUMS=/workspace/Liberums
+RUN make -C /tmp/liberums-phase9-ael console-integration LIBERUMS=/workspace/Liberums
+RUN make -C /tmp/liberums-phase8-ael integration LIBERUMS=/workspace/Liberums
+RUN make -C /tmp/liberums-phase8-ael console-integration LIBERUMS=/workspace/Liberums
+RUN make -C /tmp/liberums-phase73-ael integration LIBERUMS=/workspace/Liberums
+RUN make test-vga-compat AELTHUVOR=/tmp/liberums-phase71-ael
+PASS: release validation; 17 commands, actual return codes all zero; kernel SHA256 360539a3d9e9106f792dec5cd73d89ec348243072097882b4607c780d961c5a1

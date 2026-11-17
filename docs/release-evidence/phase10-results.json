@@ -1,0 +1,107 @@
+{
+  "guests": 11,
+  "kernel_sha256": "360539a3d9e9106f792dec5cd73d89ec348243072097882b4607c780d961c5a1",
+  "kernel_unchanged": true,
+  "examples_sha256": {
+    "/workspace/Liberums/build/examples/minimal/libos.elf": "1a70aa42395a7e671e27efe145587b84fc5fa36419c8c15556e38a0b295b26ae",
+    "/workspace/Liberums/build/examples/memory-policy/libos.elf": "cc6d9b96d0f28197b6870231f6400dbf6b476ddad811496b1a757d105e7f0104",
+    "/workspace/Liberums/build/examples/console/libos.elf": "527dbd6f6c9b9a951b66ea33b3e3bb0ab24ea3fe7df4f61fabb1d5215afbeedd"
+  },
+  "cases": [
+    {
+      "label": "minimal",
+      "kind": "QEMU/GDB",
+      "modules": 1,
+      "elf_sha256": [
+        "1a70aa42395a7e671e27efe145587b84fc5fa36419c8c15556e38a0b295b26ae"
+      ]
+    },
+    {
+      "label": "bitmap",
+      "kind": "QEMU/GDB",
+      "modules": 1,
+      "elf_sha256": [
+        "cc6d9b96d0f28197b6870231f6400dbf6b476ddad811496b1a757d105e7f0104"
+      ]
+    },
+    {
+      "label": "outside-edited",
+      "kind": "QEMU/GDB",
+      "modules": 1,
+      "elf_sha256": [
+        "f8e2907e0213fc5195a9b30af0ab82d741a74f5b1c487fc79c7a98621547e7e0"
+      ]
+    },
+    {
+      "label": "two-policies",
+      "kind": "QEMU/GDB",
+      "modules": 2,
+      "elf_sha256": [
+        "cc6d9b96d0f28197b6870231f6400dbf6b476ddad811496b1a757d105e7f0104",
+        "b6937480ff9e2b71a788bff6afd0d45a6c9cb503f9c4532fd2f43132e6eaf0b8"
+      ]
+    },
+    {
+      "label": "fault-isolation",
+      "kind": "QEMU/GDB",
+      "modules": 2,
+      "elf_sha256": [
+        "cc6d9b96d0f28197b6870231f6400dbf6b476ddad811496b1a757d105e7f0104",
+        "b6937480ff9e2b71a788bff6afd0d45a6c9cb503f9c4532fd2f43132e6eaf0b8"
+      ]
+    },
+    {
+      "label": "revoke-ack",
+      "kind": "QEMU/GDB",
+      "modules": 2,
+      "elf_sha256": [
+        "cc6d9b96d0f28197b6870231f6400dbf6b476ddad811496b1a757d105e7f0104",
+        "b6937480ff9e2b71a788bff6afd0d45a6c9cb503f9c4532fd2f43132e6eaf0b8"
+      ]
+    },
+    {
+      "label": "revoke-safe",
+      "kind": "QEMU/GDB",
+      "modules": 2,
+      "elf_sha256": [
+        "cc6d9b96d0f28197b6870231f6400dbf6b476ddad811496b1a757d105e7f0104",
+        "b6937480ff9e2b71a788bff6afd0d45a6c9cb503f9c4532fd2f43132e6eaf0b8"
+      ]
+    },
+    {
+      "label": "revoke-fault",
+      "kind": "QEMU/GDB",
+      "modules": 2,
+      "elf_sha256": [
+        "cc6d9b96d0f28197b6870231f6400dbf6b476ddad811496b1a757d105e7f0104",
+        "b6937480ff9e2b71a788bff6afd0d45a6c9cb503f9c4532fd2f43132e6eaf0b8"
+      ]
+    },
+    {
+      "label": "ABI1.1-cooperative",
+      "kind": "QEMU/GDB",
+      "modules": 1,
+      "lifetimes": 2,
+      "elf_sha256": [
+        "e565514942026ede1e4335b2629796a57e8c5fb11825b20056924550016b0925"
+      ]
+    },
+    {
+      "label": "console-no-grant",
+      "kind": "QEMU/GDB",
+      "modules": 2,
+      "elf_sha256": [
+        "527dbd6f6c9b9a951b66ea33b3e3bb0ab24ea3fe7df4f61fabb1d5215afbeedd",
+        "1a70aa42395a7e671e27efe145587b84fc5fa36419c8c15556e38a0b295b26ae"
+      ]
+    },
+    {
+      "label": "console",
+      "kind": "QEMU/GDB",
+      "modules": 1,
+      "elf_sha256": [
+        "527dbd6f6c9b9a951b66ea33b3e3bb0ab24ea3fe7df4f61fabb1d5215afbeedd"
+      ]
+    }
+  ]
+}

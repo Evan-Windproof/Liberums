@@ -1,0 +1,53 @@
+make[1]: Entering directory '/workspace/Liberums'
+python3 scripts/export_kernel_sdk.py --output build/kernel-sdk
+Exported Kernel ABI 1.2 SDK: build/kernel-sdk headers= 6
+make -C examples/libos/minimal SDK="/workspace/Liberums/build/kernel-sdk" OUT="/workspace/Liberums/build/examples/minimal" CROSS_COMPILE=""
+make[2]: Entering directory '/workspace/Liberums/examples/libos/minimal'
+mkdir -p /workspace/Liberums/build/examples/minimal/
+gcc -I"/workspace/Liberums/build/kernel-sdk/include" -I"../common" -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic   -MMD -MP -c main.c -o /workspace/Liberums/build/examples/minimal/main.o
+mkdir -p /workspace/Liberums/build/examples/minimal
+gcc -I"/workspace/Liberums/build/kernel-sdk/include" -I"../common" -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic    -MMD -MP -c ../common/runtime.c -o /workspace/Liberums/build/examples/minimal/runtime.o
+mkdir -p /workspace/Liberums/build/examples/minimal
+gcc -m32 -march=i686 -g3 -c ../common/start.S -o /workspace/Liberums/build/examples/minimal/start.o
+ld -m elf_i386 -nostdlib --build-id=none -T "../common/linker.ld" -Map=/workspace/Liberums/build/examples/minimal/libos.map /workspace/Liberums/build/examples/minimal/main.o /workspace/Liberums/build/examples/minimal/runtime.o /workspace/Liberums/build/examples/minimal/start.o -o /workspace/Liberums/build/examples/minimal/libos.elf
+make[2]: Leaving directory '/workspace/Liberums/examples/libos/minimal'
+make -C examples/libos/memory-policy SDK="/workspace/Liberums/build/kernel-sdk" OUT="/workspace/Liberums/build/examples/memory-policy" CROSS_COMPILE=""
+make[2]: Entering directory '/workspace/Liberums/examples/libos/memory-policy'
+mkdir -p /workspace/Liberums/build/examples/memory-policy/
+gcc -I"/workspace/Liberums/build/kernel-sdk/include" -I"../common" -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -DLIBOS_PAGE_FEATURES=LIBERUMS_FEATURE_PAGES  -MMD -MP -c main.c -o /workspace/Liberums/build/examples/memory-policy/main.o
+mkdir -p /workspace/Liberums/build/examples/memory-policy/
+gcc -I"/workspace/Liberums/build/kernel-sdk/include" -I"../common" -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -DLIBOS_PAGE_FEATURES=LIBERUMS_FEATURE_PAGES  -MMD -MP -c pool.c -o /workspace/Liberums/build/examples/memory-policy/pool.o
+mkdir -p /workspace/Liberums/build/examples/memory-policy
+gcc -I"/workspace/Liberums/build/kernel-sdk/include" -I"../common" -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic  -DLIBOS_PAGE_FEATURES=LIBERUMS_FEATURE_PAGES  -MMD -MP -c ../common/runtime.c -o /workspace/Liberums/build/examples/memory-policy/runtime.o
+mkdir -p /workspace/Liberums/build/examples/memory-policy
+gcc -m32 -march=i686 -g3 -c ../common/start.S -o /workspace/Liberums/build/examples/memory-policy/start.o
+ld -m elf_i386 -nostdlib --build-id=none -T "../common/linker.ld" -Map=/workspace/Liberums/build/examples/memory-policy/libos.map /workspace/Liberums/build/examples/memory-policy/main.o /workspace/Liberums/build/examples/memory-policy/pool.o /workspace/Liberums/build/examples/memory-policy/runtime.o /workspace/Liberums/build/examples/memory-policy/start.o -o /workspace/Liberums/build/examples/memory-policy/libos.elf
+make[2]: Leaving directory '/workspace/Liberums/examples/libos/memory-policy'
+make -C examples/libos/console SDK="/workspace/Liberums/build/kernel-sdk" OUT="/workspace/Liberums/build/examples/console" CROSS_COMPILE=""
+make[2]: Entering directory '/workspace/Liberums/examples/libos/console'
+mkdir -p /workspace/Liberums/build/examples/console/
+gcc -I"/workspace/Liberums/build/kernel-sdk/include" -I"../common" -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic   -MMD -MP -c main.c -o /workspace/Liberums/build/examples/console/main.o
+mkdir -p /workspace/Liberums/build/examples/console/
+gcc -I"/workspace/Liberums/build/kernel-sdk/include" -I"../common" -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic   -MMD -MP -c core.c -o /workspace/Liberums/build/examples/console/core.o
+mkdir -p /workspace/Liberums/build/examples/console
+gcc -I"/workspace/Liberums/build/kernel-sdk/include" -I"../common" -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic    -MMD -MP -c ../common/runtime.c -o /workspace/Liberums/build/examples/console/runtime.o
+mkdir -p /workspace/Liberums/build/examples/console
+gcc -m32 -march=i686 -g3 -c ../common/start.S -o /workspace/Liberums/build/examples/console/start.o
+ld -m elf_i386 -nostdlib --build-id=none -T "../common/linker.ld" -Map=/workspace/Liberums/build/examples/console/libos.map /workspace/Liberums/build/examples/console/main.o /workspace/Liberums/build/examples/console/core.o /workspace/Liberums/build/examples/console/runtime.o /workspace/Liberums/build/examples/console/start.o -o /workspace/Liberums/build/examples/console/libos.elf
+make[2]: Leaving directory '/workspace/Liberums/examples/libos/console'
+python3 scripts/check_tools.py --test --cc "gcc" --ld "ld" --qemu "qemu-system-i386" --gdb "gdb"
+PASS: freestanding i686 toolchain / QEMU / GDB Python
+python3 tests/phase10.py --qemu "qemu-system-i386" --gdb "gdb"
+PASS: educational minimal
+PASS: educational bitmap
+PASS: educational outside-edited
+PASS: educational two-policies
+PASS: educational fault-isolation
+PASS: educational revoke-ack
+PASS: educational revoke-safe
+PASS: educational revoke-fault
+PASS: external phase10-abi11 two actual ELF/domain/device lifecycles
+PASS: educational console-no-grant
+PASS: educational console
+PASS: Phase 10 11 real QEMU/GDB guests; outside SDK consumers; unchanged kernel
+make[1]: Leaving directory '/workspace/Liberums'

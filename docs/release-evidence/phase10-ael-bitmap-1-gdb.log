@@ -1,0 +1,16 @@
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+add symbol table from file "/tmp/liberums-phase9-ael/build/apps/memory-best/app.elf"
+add symbol table from file "/workspace/Liberums/build/examples/memory-policy/libos.elf"
+
+Breakpoint -1, multi_prepared () at kernel/multi_external.c:16
+16	__attribute__((noinline)) void multi_prepared(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=1 CR3=0x159000 pages=18 stack=0x083fc000..0x08400000
+IMAGE id=2 epoch=1 CR3=0x16b000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -5, multi_reaped () at kernel/multi_external.c:17
+17	__attribute__((noinline)) void multi_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+RECOVERY all slots UNUSED; resources=0 events=0 devices=0 free_pages=7815 IRQ0=304 IRQ1=0
+TWO LIBOS policies=variable-size/bitmap; CR3s= ['0x159000', '0x16b000'] IRQ0 domains= {1, 2} fault= False
+PASS: educational ael-bitmap-1
+[Inferior 1 (process 1) detached]

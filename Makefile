@@ -37,6 +37,7 @@ QEMU_FLAGS := -machine pc -accel tcg -cpu qemu32 -m 32M -smp 1 \
 
 .PHONY: all run debug test test-memory clean
 all: $(KERNEL)
+all: check-build-tools
 
 $(BUILD):
 	mkdir -p $@
@@ -279,3 +280,38 @@ test-abi-contract: $(BUILD)/abi-contract-tests
 	./$(BUILD)/abi-contract-tests
 
 test: phase9-fixtures test-abi-contract
+
+# The public SDK and user examples have no dependency on an external LibOS.
+.PHONY: sdk libos-examples test-libos-examples check-build-tools check-test-tools
+check-build-tools:
+	$(PYTHON) scripts/check_tools.py --cc "$(CC)" --ld "$(LD)"
+check-test-tools:
+	$(PYTHON) scripts/check_tools.py --test --cc "$(CC)" --ld "$(LD)" --qemu "$(QEMU)" --gdb "$(GDB)"
+sdk:
+	$(PYTHON) scripts/export_kernel_sdk.py --output $(BUILD)/kernel-sdk
+libos-examples: sdk
+	$(MAKE) -C examples/libos/minimal SDK="$(abspath $(BUILD)/kernel-sdk)" OUT="$(abspath $(BUILD)/examples/minimal)" CROSS_COMPILE="$(CROSS_COMPILE)"
+	$(MAKE) -C examples/libos/memory-policy SDK="$(abspath $(BUILD)/kernel-sdk)" OUT="$(abspath $(BUILD)/examples/memory-policy)" CROSS_COMPILE="$(CROSS_COMPILE)"
+	$(MAKE) -C examples/libos/console SDK="$(abspath $(BUILD)/kernel-sdk)" OUT="$(abspath $(BUILD)/examples/console)" CROSS_COMPILE="$(CROSS_COMPILE)"
+test-libos-examples: $(KERNEL) libos-examples check-test-tools
+	$(PYTHON) tests/phase10.py --qemu "$(QEMU)" --gdb "$(GDB)"
+test: check-test-tools
+
+.PHONY: run-libos run-teaching-console test-libos-compat validate-release release
+LIBOS_ELF ?= $(BUILD)/examples/minimal/libos.elf
+run-libos: $(KERNEL)
+	test -r "$(LIBOS_ELF)"
+	$(QEMU) $(QEMU_FLAGS) -kernel $(KERNEL) -append "multi-external" -initrd "$(LIBOS_ELF)"
+run-teaching-console: $(KERNEL) libos-examples
+	$(QEMU) $(subst -display none,-display $(QEMU_DISPLAY),$(QEMU_FLAGS)) -kernel $(KERNEL) -append "multi-external multi-vga=1 multi-keyboard=1" -initrd "$(BUILD)/examples/console/libos.elf"
+PHASE10_AEL_BUILD ?= $(AELTHUVOR)/build
+test-libos-compat: $(KERNEL) libos-examples check-test-tools
+	$(PYTHON) tests/phase10_compat.py --aelthuvor "$(abspath $(PHASE10_AEL_BUILD))" --qemu "$(QEMU)" --gdb "$(GDB)"
+# Optional arguments: --aelthuvor-build PATH --historical-checkouts P3 P2 ABI11
+VALIDATION_ARGS ?=
+validate-release:
+	$(PYTHON) scripts/validate_release.py $(VALIDATION_ARGS)
+RELEASE_VERSION ?= $(shell cat VERSION)
+RELEASE_COMMIT ?= HEAD
+release:
+	$(PYTHON) scripts/package_release.py --version "$(RELEASE_VERSION)" --revision "$(RELEASE_COMMIT)" --output $(BUILD)/release

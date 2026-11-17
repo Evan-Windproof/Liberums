@@ -1,0 +1,142 @@
+{
+  "guests": 21,
+  "gdb_audits": 21,
+  "cases": [
+    {
+      "label": "phase9-abi-release",
+      "modules": 1,
+      "loaded": 1,
+      "log": "phase8-phase9-abi-release-gdb.log"
+    },
+    {
+      "label": "phase9-id-only-routing",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-phase9-id-only-routing-gdb.log"
+    },
+    {
+      "label": "phase9-diagnostic-denials",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-phase9-diagnostic-denials-gdb.log"
+    },
+    {
+      "label": "phase9-diagnostic-disabled",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-phase9-diagnostic-disabled-gdb.log"
+    },
+    {
+      "label": "reuse-128",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-reuse-128-gdb.log"
+    },
+    {
+      "label": "phase9-ram-first-ack",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-phase9-ram-first-ack-gdb.log"
+    },
+    {
+      "label": "phase9-ram-first-active-busy",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-phase9-ram-first-active-busy-gdb.log"
+    },
+    {
+      "label": "phase9-ram-first-force-safe",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-phase9-ram-first-force-safe-gdb.log"
+    },
+    {
+      "label": "phase9-ram-first-force-fault",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-phase9-ram-first-force-fault-gdb.log"
+    },
+    {
+      "label": "phase9-ram-first-pending-exit",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-phase9-ram-first-pending-exit-gdb.log"
+    },
+    {
+      "label": "phase9-ram-first-pending-fault",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-phase9-ram-first-pending-fault-gdb.log"
+    },
+    {
+      "label": "phase9-ram-first-release",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-phase9-ram-first-release-gdb.log"
+    },
+    {
+      "label": "phase9-ram-first-late-ack",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-phase9-ram-first-late-ack-gdb.log"
+    },
+    {
+      "label": "phase9-ram-best-ack",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-phase9-ram-best-ack-gdb.log"
+    },
+    {
+      "label": "phase9-ram-best-active-busy",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-phase9-ram-best-active-busy-gdb.log"
+    },
+    {
+      "label": "phase9-ram-best-force-safe",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-phase9-ram-best-force-safe-gdb.log"
+    },
+    {
+      "label": "phase9-ram-best-force-fault",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-phase9-ram-best-force-fault-gdb.log"
+    },
+    {
+      "label": "phase9-ram-best-pending-exit",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-phase9-ram-best-pending-exit-gdb.log"
+    },
+    {
+      "label": "phase9-ram-best-pending-fault",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-phase9-ram-best-pending-fault-gdb.log"
+    },
+    {
+      "label": "phase9-ram-best-release",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-phase9-ram-best-release-gdb.log"
+    },
+    {
+      "label": "phase9-ram-best-late-ack",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-phase9-ram-best-late-ack-gdb.log"
+    }
+  ],
+  "ael_sdk_e2e": true,
+  "input_sha256": {
+    "/workspace/Liberums/build/liberums.elf": "360539a3d9e9106f792dec5cd73d89ec348243072097882b4607c780d961c5a1",
+    "/workspace/Liberums/build/phase9/abi-probe.elf": "c2f8b5fcba555ac22e7f060c82f562a978286ca791f791e8eb056a857b02647a",
+    "/workspace/Liberums/build/phase8/worker-a.elf": "d2f1a5dbb7cd2dbf26fe2ad6ac115dce16bd9d4a09b8b06476d67dbd9f114cce",
+    "/workspace/Liberums/build/phase8/worker-b.elf": "9a4ef53be68b52aa58189df7380074ce1d67cfed7617cf3181234e43d0c302ca",
+    "/tmp/liberums-phase9-ael/build/independent-libos/reference.elf": "9dccac3a651774db5e73d2368b9cc253f55e9f5385e3546cbec0ac33f8f2a54f",
+    "/workspace/Liberums/build/phase9/ael-first/app.elf": "5e32c3d63adfa84ba2772d4b8d6c1da552dc4c5d7b63668b8b0415887e9c6027",
+    "/workspace/Liberums/build/phase9/ael-best/app.elf": "98f088c7cf57dbe7030aa081f2948649d36369748a8ef5bd16d179b2fad8becf"
+  }
+}

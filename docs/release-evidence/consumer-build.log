@@ -1,0 +1,41 @@
+make[2]: Entering directory '/tmp/liberums-student-pv8z6g8g/hello'
+mkdir -p build/
+gcc -I"sdk/include" -I"support" -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic   -MMD -MP -c main.c -o build/main.o
+mkdir -p build
+gcc -I"sdk/include" -I"support" -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic    -MMD -MP -c support/runtime.c -o build/runtime.o
+mkdir -p build
+gcc -m32 -march=i686 -g3 -c support/start.S -o build/start.o
+ld -m elf_i386 -nostdlib --build-id=none -T "support/linker.ld" -Map=build/libos.map build/main.o build/runtime.o build/start.o -o build/libos.elf
+make[2]: Leaving directory '/tmp/liberums-student-pv8z6g8g/hello'
+make[2]: Entering directory '/tmp/liberums-student-pv8z6g8g/hello'
+mkdir -p build/
+gcc -I"sdk/include" -I"support" -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic   -MMD -MP -c main.c -o build/main.o
+ld -m elf_i386 -nostdlib --build-id=none -T "support/linker.ld" -Map=build/libos.map build/main.o build/runtime.o build/start.o -o build/libos.elf
+make[2]: Leaving directory '/tmp/liberums-student-pv8z6g8g/hello'
+make[2]: Entering directory '/tmp/liberums-student-pv8z6g8g/policy'
+mkdir -p build/
+gcc -I"sdk/include" -I"support" -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -DLIBOS_PAGE_FEATURES=LIBERUMS_FEATURE_PAGES  -MMD -MP -c main.c -o build/main.o
+mkdir -p build/
+gcc -I"sdk/include" -I"support" -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -DLIBOS_PAGE_FEATURES=LIBERUMS_FEATURE_PAGES  -MMD -MP -c pool.c -o build/pool.o
+mkdir -p build
+gcc -I"sdk/include" -I"support" -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic  -DLIBOS_PAGE_FEATURES=LIBERUMS_FEATURE_PAGES  -MMD -MP -c support/runtime.c -o build/runtime.o
+mkdir -p build
+gcc -m32 -march=i686 -g3 -c support/start.S -o build/start.o
+ld -m elf_i386 -nostdlib --build-id=none -T "support/linker.ld" -Map=build/libos.map build/main.o build/pool.o build/runtime.o build/start.o -o build/libos.elf
+make[2]: Leaving directory '/tmp/liberums-student-pv8z6g8g/policy'
+make[2]: Entering directory '/tmp/liberums-student-pv8z6g8g/policy'
+mkdir -p build/
+gcc -I"sdk/include" -I"support" -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -DLIBOS_PAGE_FEATURES=LIBERUMS_FEATURE_PAGES -DOBJECT_BYTES=128 -MMD -MP -c main.c -o build/main.o
+mkdir -p build/
+gcc -I"sdk/include" -I"support" -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -DLIBOS_PAGE_FEATURES=LIBERUMS_FEATURE_PAGES -DOBJECT_BYTES=128 -MMD -MP -c pool.c -o build/pool.o
+mkdir -p build
+gcc -I"sdk/include" -I"support" -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic  -DLIBOS_PAGE_FEATURES=LIBERUMS_FEATURE_PAGES -DOBJECT_BYTES=128 -MMD -MP -c support/runtime.c -o build/runtime.o
+ld -m elf_i386 -nostdlib --build-id=none -T "support/linker.ld" -Map=build/libos.map build/main.o build/pool.o build/runtime.o build/start.o -o build/libos.elf
+make[2]: Leaving directory '/tmp/liberums-student-pv8z6g8g/policy'
+make[2]: Entering directory '/tmp/liberums-student-pv8z6g8g/hello'
+mkdir -p build/
+gcc -I"sdk/include" -I"support" -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic   -MMD -MP -c main.c -o build/main.o
+mkdir -p build
+gcc -I"sdk/include" -I"support" -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -DLIBOS_COOPERATIVE -DLIBOS_MIN_MINOR=1   -MMD -MP -c support/runtime.c -o build/runtime.o
+ld -m elf_i386 -nostdlib --build-id=none -T "support/linker.ld" -Map=build/libos.map build/main.o build/runtime.o build/start.o -o build/libos.elf
+make[2]: Leaving directory '/tmp/liberums-student-pv8z6g8g/hello'

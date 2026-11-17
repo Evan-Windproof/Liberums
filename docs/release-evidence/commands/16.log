@@ -1,0 +1,21 @@
+make[1]: Entering directory '/workspace/Liberums'
+python3 tests/phase71_compat.py --aelthuvor "/tmp/liberums-phase71-ael" --qemu "qemu-system-i386" --gdb "gdb"
+PASS: SDK SHA256, file set and ABI version
+PASS: phase5-aelthuvor-first two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-best two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-fault two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-readonly two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-exit-live two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-runtime-abi two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-bad-major two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-missing-feature two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-oom two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: Aelthuvor integration 9 QEMU guests / 18 lifecycles; no skipped checks
+PASS: phase6-cooperative-note-rejected no COOPERATIVE promise under preemption
+PASS: audit-aelthuvor-first-peer-read two actual denied-access lifecycles
+PASS: audit-aelthuvor-first-peer-write two actual denied-access lifecycles
+PASS: phase6-cooperative-note-rejected no COOPERATIVE promise under preemption
+PASS: audit-aelthuvor-best-peer-read two actual denied-access lifecycles
+PASS: audit-aelthuvor-best-peer-write two actual denied-access lifecycles
+PASS: Phase 7.1 unchanged Aelthuvor compatibility; 15 guests / 30 lifecycles; source and ELF bytes preserved
+make[1]: Leaving directory '/workspace/Liberums'

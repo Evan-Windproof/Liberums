@@ -1,0 +1,61 @@
+make[1]: Entering directory '/tmp/liberums-phase9-ael'
+python3 tests/legacy_build.py
+make[2]: Entering directory '/tmp/liberums-phase9-ael/build/abi11'
+python3 tests/check_sdk.py
+mkdir -p build/first/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic  -c src/runtime.c -o build/first/runtime.o
+mkdir -p build/first/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic  -c examples/memory_demo.c -o build/first/demo.o
+PASS: SDK SHA256, file set and ABI version
+mkdir -p build
+gcc -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -g3 -c arch/x86/startup.S -o build/startup.o
+mkdir -p build/tests/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c tests/memory_checks.c -o build/tests/memory_checks.o
+mkdir -p build/src/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c src/syscall.c -o build/src/syscall.o
+mkdir -p build/src/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c src/page.c -o build/src/page.o
+mkdir -p build/src/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c src/memory.c -o build/src/memory.o
+mkdir -p build/src/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c src/compat.c -o build/src/compat.o
+mkdir -p build/src/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c src/string.c -o build/src/string.o
+ar rcs build/libaelthuvor.a build/src/syscall.o build/src/page.o build/src/memory.o build/src/compat.o build/src/string.o
+ld -m elf_i386 -nostdlib --build-id=none -T linker.ld -Map=build/first.map build/first/runtime.o build/first/demo.o build/startup.o build/tests/memory_checks.o build/libaelthuvor.a -o build/first.elf
+cp build/first.elf build/aelthuvor.elf
+make[2]: Leaving directory '/tmp/liberums-phase9-ael/build/abi11'
+PASS: unchanged ABI 1.1 historical source and SDK rebuilt: b10d337d254b18e98204990203a77a215c82c568
+python3 tests/check_sdk.py
+PASS: SDK SHA256, file set and ABI version
+ld -m elf_i386 -nostdlib --build-id=none -T linker.ld -Map=build/first.map build/first/runtime.o build/first/demo.o build/startup.o build/tests/memory_checks.o build/libaelthuvor.a -o build/first.elf
+cp build/first.elf build/aelthuvor.elf
+ld -m elf_i386 -nostdlib --build-id=none -T linker.ld -Map=build/best.map build/best/runtime.o build/best/demo.o build/startup.o build/tests/memory_checks.o build/libaelthuvor.a -o build/best.elf
+ld -m elf_i386 -nostdlib --build-id=none -T linker.ld -Map=build/fault.map build/fault/runtime.o build/fault/demo.o build/startup.o build/tests/memory_checks.o build/libaelthuvor.a -o build/fault.elf
+ld -m elf_i386 -nostdlib --build-id=none -T linker.ld -Map=build/readonly.map build/readonly/runtime.o build/readonly/demo.o build/startup.o build/tests/memory_checks.o build/libaelthuvor.a -o build/readonly.elf
+ld -m elf_i386 -nostdlib --build-id=none -T linker.ld -Map=build/exit-live.map build/exit-live/runtime.o build/exit-live/demo.o build/startup.o build/tests/memory_checks.o build/libaelthuvor.a -o build/exit-live.elf
+ld -m elf_i386 -nostdlib --build-id=none -T linker.ld -Map=build/runtime-abi.map build/runtime-abi/runtime.o build/runtime-abi/demo.o build/startup.o build/tests/memory_checks.o build/libaelthuvor.a -o build/runtime-abi.elf
+ld -m elf_i386 -nostdlib --build-id=none -T linker.ld -Map=build/preempt-first.map build/preempt-first/runtime.o build/preempt-first/demo.o build/startup.o build/tests/memory_checks.o build/libaelthuvor.a -o build/preempt-first.elf
+ld -m elf_i386 -nostdlib --build-id=none -T linker.ld -Map=build/preempt-best.map build/preempt-best/runtime.o build/preempt-best/demo.o build/startup.o build/tests/memory_checks.o build/libaelthuvor.a -o build/preempt-best.elf
+python3 tests/integration.py --liberums "/workspace/Liberums" --qemu "qemu-system-i386" --gdb "gdb"
+make[2]: Entering directory '/workspace/Liberums'
+python3 scripts/check_tools.py --cc "gcc" --ld "ld"
+PASS: freestanding i686 toolchain
+make[2]: Leaving directory '/workspace/Liberums'
+PASS: SDK SHA256, file set and ABI version
+PASS: SDK SHA256, file set and ABI version; pinned Liberums source
+PASS: phase5-aelthuvor-first two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-best two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-fault two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-readonly two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-exit-live two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-runtime-abi two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-bad-major two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-missing-feature two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-oom two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase2-aelthuvor-preempt-first two non-yielding lifecycles
+PASS: phase2-aelthuvor-preempt-best two non-yielding lifecycles
+PASS: phase5-aelthuvor-abi11-historical two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: phase5-aelthuvor-cooperative-rejected-by-preempt two lifecycles; actual CPL3/ABI/PTE/ownership/peer/reclamation
+PASS: 13 QEMU guests / 26 lifecycles; no skipped checks
+make[1]: Leaving directory '/tmp/liberums-phase9-ael'

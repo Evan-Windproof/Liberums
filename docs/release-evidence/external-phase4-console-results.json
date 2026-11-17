@@ -1,0 +1,9 @@
+{
+  "kernel_commit": "2a66612b2823fe7b010257373b23f9aa38252eb0",
+  "kernel_sha256": "360539a3d9e9106f792dec5cd73d89ec348243072097882b4607c780d961c5a1",
+  "console_sha256": "a08154bca6ed141d840861a7240a8b4167f19e535cb6588487fb285bd7aa23e4",
+  "console_best_sha256": "b585085fee2042dc72919e620144a74eb24a107d79419c2a6444c2a5e1b1fbee",
+  "qemu_guests": 9,
+  "completed_lifetimes": 11,
+  "persistent_guests": 1
+}

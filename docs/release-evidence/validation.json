@@ -1,0 +1,381 @@
+{
+  "commands": [
+    {
+      "command": [
+        "make",
+        "clean"
+      ],
+      "returncode": 0,
+      "log": "build/release-checks/00.log",
+      "log_sha256": "0016eba0c1bb4751cd683a51cb2fb86685c30432ff359d1609c5f931dfd9dd27"
+    },
+    {
+      "command": [
+        "make",
+        "-j2"
+      ],
+      "returncode": 0,
+      "log": "build/release-checks/01.log",
+      "log_sha256": "ded509a8842bbcb7863d5e617dd2a98bcf57f9e25f4ddb2e120cc7ae84045e74"
+    },
+    {
+      "command": [
+        "make",
+        "test"
+      ],
+      "returncode": 0,
+      "log": "build/release-checks/02.log",
+      "log_sha256": "c532343be731b7feafdff15b158eff2582846bab4f1f41bd329d3a3ae4f2aef8"
+    },
+    {
+      "command": [
+        "make",
+        "test-phase8"
+      ],
+      "returncode": 0,
+      "log": "build/release-checks/03.log",
+      "log_sha256": "752d3c8f13fec185779a9f264687243dcc7433f5a2798e79e32ace503f1bdd1a"
+    },
+    {
+      "command": [
+        "make",
+        "test-phase9"
+      ],
+      "returncode": 0,
+      "log": "build/release-checks/04.log",
+      "log_sha256": "e58fb319dafba2c031cb6705a804fae8db4b18108ba8f51511b15b117cae79dd"
+    },
+    {
+      "command": [
+        "make",
+        "test-libos-examples"
+      ],
+      "returncode": 0,
+      "log": "build/release-checks/05.log",
+      "log_sha256": "1905a1cf6f0c8019f4e0c8fe9e1316a28321ef05134f95e68480a1910e5c536a"
+    },
+    {
+      "command": [
+        "python3",
+        "tests/kit_tests.py"
+      ],
+      "returncode": 0,
+      "log": "build/release-checks/06.log",
+      "log_sha256": "7e58e9552380bf474ecba42f569b219f8a90b7f86b6341c8ccf2d739c45bd95f"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/check_docs.py"
+      ],
+      "returncode": 0,
+      "log": "build/release-checks/07.log",
+      "log_sha256": "620d9cb34bf189b412eec56b0e9aef1a4b4f6948f2fc8ad8853acc8bbe4a09af"
+    },
+    {
+      "command": [
+        "make",
+        "test-phase9-e2e",
+        "PHASE9_AEL_BUILD=/tmp/liberums-phase9-ael/build"
+      ],
+      "returncode": 0,
+      "log": "build/release-checks/08.log",
+      "log_sha256": "6f2f792569e4af9191637dc2b2685b272801e63d5b7ff2925da60309f514116d"
+    },
+    {
+      "command": [
+        "python3",
+        "tests/phase10_compat.py",
+        "--aelthuvor",
+        "/tmp/liberums-phase9-ael/build"
+      ],
+      "returncode": 0,
+      "log": "build/release-checks/09.log",
+      "log_sha256": "d9f623daf5dcc6230485e3ddab8532645894ff4a319f4eb9d3b9734a46261735"
+    },
+    {
+      "command": [
+        "make",
+        "-C",
+        "/tmp/liberums-phase9-ael",
+        "phase4-integration",
+        "LIBERUMS=/workspace/Liberums"
+      ],
+      "returncode": 0,
+      "log": "build/release-checks/10.log",
+      "log_sha256": "1eb9a8dcac94da3cf14b29ab07594fa2c4db4564e4a580cc6dbba14bf4a762ab"
+    },
+    {
+      "command": [
+        "make",
+        "-C",
+        "/tmp/liberums-phase9-ael",
+        "integration",
+        "LIBERUMS=/workspace/Liberums"
+      ],
+      "returncode": 0,
+      "log": "build/release-checks/11.log",
+      "log_sha256": "c817a531169dd3ecb50330f96cabcb2b39ee64942d0f7de47479d5150ab32802"
+    },
+    {
+      "command": [
+        "make",
+        "-C",
+        "/tmp/liberums-phase9-ael",
+        "console-integration",
+        "LIBERUMS=/workspace/Liberums"
+      ],
+      "returncode": 0,
+      "log": "build/release-checks/12.log",
+      "log_sha256": "b8ad30f5e08d473c213d0ab98d5db65aa9d44a61c6bf02dca198cddb72ad1c09"
+    },
+    {
+      "command": [
+        "make",
+        "-C",
+        "/tmp/liberums-phase8-ael",
+        "integration",
+        "LIBERUMS=/workspace/Liberums"
+      ],
+      "returncode": 0,
+      "log": "build/release-checks/13.log",
+      "log_sha256": "e1956fe4fc871cb290e8069e002d5650e05f0663d14d2034a68826937d64583d"
+    },
+    {
+      "command": [
+        "make",
+        "-C",
+        "/tmp/liberums-phase8-ael",
+        "console-integration",
+        "LIBERUMS=/workspace/Liberums"
+      ],
+      "returncode": 0,
+      "log": "build/release-checks/14.log",
+      "log_sha256": "e6777218608fba86fed6dbb40013726eb68cd9cdde24b1f6cd730c6b5d69a295"
+    },
+    {
+      "command": [
+        "make",
+        "-C",
+        "/tmp/liberums-phase73-ael",
+        "integration",
+        "LIBERUMS=/workspace/Liberums"
+      ],
+      "returncode": 0,
+      "log": "build/release-checks/15.log",
+      "log_sha256": "87e165079b088ce7e13170de8b00fb85fbac8678fa1abbffea31baeb4fed0c3c"
+    },
+    {
+      "command": [
+        "make",
+        "test-vga-compat",
+        "AELTHUVOR=/tmp/liberums-phase71-ael"
+      ],
+      "returncode": 0,
+      "log": "build/release-checks/16.log",
+      "log_sha256": "5c8f708a196f4f6cf265b5cb6910430049bdd74d492c9c9068287edf3a06a414"
+    }
+  ],
+  "complete": true,
+  "source_inputs_sha256": {
+    "arch/x86/boot.S": "af5e3c2351d2eb39ced8f03f7896c518b9cb75e6d246200743986bbd24824546",
+    "arch/x86/gdt.c": "ed82576e2904f174792db28235f5946f01e8666a4c3cded0b200bad3d840212a",
+    "arch/x86/idt.c": "043d1df224fb33880cfd59509f35bd4c8054fa265c4bafcf30ab29ce79a04956",
+    "arch/x86/irq.S": "d42fc6ebb42ffab2ab1530c7979417657e039e5b7b097379c17c79fda4faa02c",
+    "arch/x86/isr.S": "9bd7cd419ca82746824a7d4d5c3539e8b338958c0c6d3f39a068bf8d60cade2c",
+    "arch/x86/linker.ld": "59586f1b3a380cb4f414743d021fca68f4443fb60e13f3212ca36d63f51e625d",
+    "arch/x86/paging.c": "97dfc8184c11c1ff0d85e3175b3c99c581b5ca43408e246e02291bc2514a4697",
+    "arch/x86/pic.c": "bf10d99606ad92385d9646fa9d60ffa3eb2c95115b83fbdf83b7bdfd86d39c27",
+    "arch/x86/pit.c": "57f3aec42bd66c224f2b4221d7c5e436b8b445815c2ce139ec8d8e8ed090b867",
+    "arch/x86/test_faults.S": "6ce53319e3bdcdeaf5c55487029618412c12b02601d0157252eddaa9b34d22e9",
+    "arch/x86/user_context.S": "cb57565b9929a5c5d8da209dfedebf3655c9213af7c306f6acfc211b9f356521",
+    "arch/x86/user_images.S": "9765c543ae894928652fa650a4a8ac36902d85637c8f74f140d432b66d005575",
+    "arch/x86/user_space.c": "57a476368a0d78cd83f031a56d8acabedc5753775add151e9a63d8a28e226b64",
+    "arch/x86/ps2.c": "624ad7dc5d36daf3e6cc9bb356e6b4821930a5910e36ddd7770ff6f72b767174",
+    "arch/x86/keyboard_irq.S": "dcd0c4771c50f0dceec3147f24a0e9d93e8886bc9a2c9c1d21a988d0e00e6b86",
+    "kernel/boot_info.c": "4d3a386924ccb2a48ce604026b443c074071aa30775c3cbc07a278ccc284e5bb",
+    "kernel/capability.c": "26e74d7a1c8d300d875f480761dee644da43e03dd3b14276abeb8ad5429246a7",
+    "kernel/domain.c": "373a7930ffeaaad16ad42d34756eff5323935bc846165fc05d1669809d565d17",
+    "kernel/elf_loader.c": "fa00f9d44524805796237cbb76e5f875c08918e891c11e8417852a3de2cb931b",
+    "kernel/external.c": "1f3faad3aa8efc97f85ae9a00a605f30c79c0805a5fc1ba2e3de758098fe598c",
+    "kernel/main.c": "8744445f10e5a17deda52ef31eaa86623b7c572330a80480817d34b266da50bc",
+    "kernel/memory_map.c": "4d083f667eb81eef8a32e7a2d8107d2d11f44dd60d8a2c2c2a76d19434f8799f",
+    "kernel/panic.c": "78c9a8c26b8b045cc6b8e825e2981586632d64128781840783ec50e89781680c",
+    "kernel/physical_pages.c": "997148c8567fec07518872665280ad3d7a7366cf289eab00c4e26673ab6c93e0",
+    "kernel/resource.c": "10bb78e0a858392cfd224adb31f5d83a24cb5ac24a3b146d78ae42d83c9f6e15",
+    "kernel/revoke.c": "2fadc480a385fcbe4427c59c6d1646bed206cdfade4c111c8373761afcc5e6ca",
+    "kernel/scheduler.c": "ecbe16b283b784a08b928a8bfa2561efba3e239f95432ba1b198cf1a75b4dfef",
+    "kernel/selftest.c": "2ede91e4c22c401614df1ac08cd5860e57e0fc3d5f36fed83ba2f6f776f8e290",
+    "kernel/serial.c": "33d20231feb7c3bde1b8841db0c083c1b7ca003a6724d41daf96030659fa898d",
+    "kernel/syscall.c": "1ae8a5c448c44f21c76bcc70a0aeaa4bd2e6feecc0d026226798da2503cb34cb",
+    "kernel/tick.c": "c79fe59bdc83621f1c84d3505253520f3c2568675d8d1935202528522aa106ed",
+    "kernel/timer.c": "6787f7813c7db6edbb982ac03c2dee5800774ca1c94adf6c89a666ca482fcf88",
+    "kernel/multi_external.c": "142a2d746aa05d95fb6d86074ac870e59273f89c400d33b2dd28d60e0764414f",
+    "kernel/vga_device.c": "14a7517643485de5dc5501a1f0ab6cd4e70fdd6f3824e7c7fcdfd31e19548c14",
+    "kernel/vga.c": "a03a25a3cf15cdafadd5869892a7e3be711750ffd12efd34b2eff24dad7e2850",
+    "kernel/domain_pool.c": "9626c8ce7c6afb220c0c8b878d09e5f75c34cf0e3c3a428df982a57265f4faf5",
+    "kernel/keyboard.c": "73744252b312608e0efd132f641c963fc564fff7ed24790670af23b94be513d5",
+    "kernel/external_launch.c": "88de986eccc8a22353b94b6805b289c14683a6e5f5364ab9bae333b2e7df4717",
+    "kernel/device_grants.c": "33fc229fb52f4368b1759ba5ce0937dec413307c189ccbc5a9879a3fc2e89847",
+    "include/abi/elf.h": "2fcfab45adc03ee39169f36b7d43068ad5dd2c008b2b686f94ae137f8e659e5c",
+    "include/abi/event.h": "210586e4b1e86123b2f14a1d15f2f71918da7993a54ae93cde792063f96d1826",
+    "include/abi/resource.h": "9641ad44d3b036019c80ca7d75e85eb6a4347184b139f345279fa60c3772a298",
+    "include/abi/syscall.h": "d7da6bab9cc84a34e0b23cfc644dc19334cce868b2b189ffd8baa0b195232a46",
+    "include/abi/vga.h": "bcaf47ddab8d179334b1908fb1583eb7db781f95bff5bf5053590d5906552424",
+    "include/abi/keyboard.h": "8ff0f4239e88fc4042430c5c720e5655288b0318f9b4ac519fe2facaa3ad7791",
+    "include/kernel/boot_info.h": "80ab55329afe0a1e66654518e6979c2c96b8ae110c2ddeb06ce851cfd920325b",
+    "include/kernel/capability.h": "c893b4c3ebe2d8cc98a6df9dc6c6d3f46650d3bb8feb6a2ebbfc3c7f7acc1dd5",
+    "include/kernel/domain.h": "2ab07cffb283f12c91990d7c516e5757d535b01cdef5a1656e47feedee096f18",
+    "include/kernel/elf_loader.h": "323a01b4fb2d5c28909212d707a7903a53036b1cf8842f3a762d59da2deff836",
+    "include/kernel/external.h": "7e08a368cabdfd3115e63a0839f57a69fae598fcf4c557bb25eb9aa4d1a39e05",
+    "include/kernel/memory_map.h": "845d670c451ade6c4265855071cca94585336a0a64bb1c84f7f7625e023ab523",
+    "include/kernel/panic.h": "efd4f1c215891f4899fa560743a6ea75878218456a41d5d102ec5e6e8cd4b1f4",
+    "include/kernel/phase6_test.h": "20a0e95bd3afe23ac6874b644e54d5af0c5e9f4bea52c524888f12a16ab7ee67",
+    "include/kernel/physical_pages.h": "905f291314298127fcbaa8a9474b9ae39170818aaf2563736e95f6a5588b170e",
+    "include/kernel/resource.h": "4ab05b2810a22355dac2d2fe13ca73d69deeede8173448fa356113a4974db2c6",
+    "include/kernel/resource_abi.h": "84cc7671142bfd911d461aae2d6fb893adb59241b8e961c255634c98576d98fd",
+    "include/kernel/resource_test.h": "c5cf077efc86ca2435799ba1225ca1a44dd50344c5f5a1ef9eab6be3e2dcb37f",
+    "include/kernel/revoke.h": "9ccdebc020307a2de659f14e8f5332b0e06c3bc518ff8521af1a1f65a9ed2a66",
+    "include/kernel/selftest.h": "7ac232a77bf0249a0996d63b4b4e69f8a60f58e8cb005f2c42fa95a9b54cc0ef",
+    "include/kernel/serial.h": "332f47e22560a4936b723d8cab880377147ce92168d491ec5fa2fcce66d6ebf3",
+    "include/kernel/syscall.h": "456335ae317591f05dd1866e53c0bce79ec28da77b1bbb85202bc45ecf7fc1f8",
+    "include/kernel/tick.h": "d0ab6e46d1ecfc1dbc5cc3aba29fe8cc0fc538573ef5f39d5d51621ed4f644d4",
+    "include/kernel/timer.h": "d8ab64ae6e639021747e357f272158c7176f3c76a450bcf25b2a5728e1edfbcc",
+    "include/kernel/user_abi.h": "ce1364e182bbb358041f50f4c01487aab1995e267fcef4844e3c5f659b259fdf",
+    "include/kernel/multi_external.h": "9bb624533a030f7adece4b7d57251aa2312d9d2d70b91e8ace2b5ba6654cdb5f",
+    "include/kernel/vga.h": "27b646eeda80111560f00a6fa7bf3c67969301fbad66b34dd80fcc365275b145",
+    "include/kernel/phase72_test.h": "5e997ec17eacb69d9a2140094ed12a20c01dace7b8a4f8dbdaf6893676a9ff14",
+    "include/kernel/domain_pool.h": "7e5b4d31493ea1610832dc3677cef0761506948ebbada353ff8b2054ff4a5c30",
+    "include/kernel/phase9_test.h": "fb0984600b9b71970b6c84a957faf10402c57b58aa487349c6cd5b2172ed116a",
+    "include/kernel/phase8_test.h": "3adaeae5de6ede9db40452410adec0fb32ff30ac1a5c0244fc2daffc4651cac8",
+    "include/kernel/phase71_test.h": "5b74e3ed8b5949523938d9c488fd8b81bb881d5170e3974eb5b0999ccaf7847b",
+    "include/kernel/diagnostics.h": "c66c867ad8f2b955f509742aff8424a319055d6bcc02854969ae1074938103f2",
+    "include/kernel/external_launch.h": "b8b5b882274fffcb61cc5f632d369a3d870af68ae79cba0ead4980b980619601",
+    "include/kernel/keyboard.h": "df1db455c0d6d51ecb2385aa6dfe9a7078e0767de160379dd7eecdea71dcc493",
+    "include/kernel/device_grants.h": "31e6eb1c7affcdf5a2e64d90328646b784aeea1afcd6fd899570d683b9462ad2",
+    "include/kernel/vga_device.h": "6ffe94810e59b6797af2aa36729c613d75abda9a91f20c7761da176f438c1e92",
+    "include/arch/x86/gdt.h": "a457f47de7dd230555e568e129698cd5bb53c81bdfdb2086dde52a187753ee56",
+    "include/arch/x86/idt.h": "3625b6b540b3e76af2f17724b72c2ea15b85d978a897695040c47d05adb074d3",
+    "include/arch/x86/io.h": "25353432300b9657db215d7535e2ede7a64cb95f97cdab91cec5d54d9da7a9c6",
+    "include/arch/x86/irq.h": "f3b05b34a2a5c7d06de17dcccb259f19101f6a71fc87a2a5edb336566c69288f",
+    "include/arch/x86/paging.h": "7e5a376f7a7c731ed9e411e44bdb26b1e5667fdb7ba8c5628375cd2b7235fb7a",
+    "include/arch/x86/pic.h": "88cbe5eb12fdc9e7c6bdaa657802d874e6cae20336ed0e9474113f1f18e7543d",
+    "include/arch/x86/pit.h": "48cb251cbb38e3acc99fe2b201024c95c7802393aa816d30dc3769e65d38e275",
+    "include/arch/x86/test_faults.h": "a07aafc370202079aa2cc8edfc1837eeeb5ee9d3f84fa145289eb28f1843865c",
+    "include/arch/x86/user_context.h": "c821bd62591a3052cf8b90bafde0a0cddb56fccf35e31c21006ad6b8695e21ad",
+    "include/arch/x86/ps2.h": "0d813b80ea4cb0c0fb2e35a53dd426d8804ac2a1d61fc37721820bdc3e267252",
+    "user/api.h": "df1125c6c9ade47a0921fbd548519166a57978efda1bdad9aa3d0a474a813141",
+    "user/entry_checks.S": "02b880a81a301e85c42086c904e95873974123a07ece0e6ace07b8a0cc5495c2",
+    "user/linker.ld": "003919410347e72818466038793112fddc1c6a3ded840c6a5dc593966da5d299",
+    "user/program.c": "4c0c246e52ccca016739df7cac404d9b1aa8c562db8fc56a49753acd1d3ed08d",
+    "user/resource_entry.c": "b1ed553f10e33b6f5960c7e853d10fd4e5ac132800c76b4333c879e7551a8202",
+    "user/resource_faults.S": "4027b141f5e31366d07a21ae53b4b6cec10eee434ba2e7a4781cf15d0f81b34c",
+    "user/resource_test.c": "0cf10cf7e658cb585e6160afb58667e8343f84dd7d110a9709021999d19009cd",
+    "user/test_a.c": "f5a613a054770f99f70e0c87bce1fa97846a67965cf31a68578725d1cb0abe60",
+    "user/test_b.c": "687c939ba42ee92cc8bf46194d37d1b1527ddf0d0de27d63802a8079504bdb2d",
+    "user/vga_console.c": "a72cd1e413a929b77914eb810c784937be2567e9d82d45b2f3b95d63a4e7e5d1",
+    "user/interactive_console.c": "311dd783f4f5ad6a7adc7d606d6673c3b5da1eeb23d674c429525b962bd56437",
+    "user/external_console/layout.ld": "a29d85206d2aaaef02a23b3f5b87ac9f90107b619af9b39912e574475250795b",
+    "user/external_console/main.c": "8a3920af22948bc5f3b21bcdb01e5fb3a14d3af20e91df31bd46733a20bb8a01",
+    "user/external_console/layout.c": "d1f9ec5c05ea78cfac0577e7d956fc260dfcfaf61e872022d901c0785099860d",
+    "user/external_console/linker.ld": "98e17cd0c30c29884e939436c42fb04470e4227afae7a74a2c02ff720968a2d6",
+    "user/external_console/probe.c": "6563e63baba80ef5f8d79d34d94361866907393b95878b7858efb634d09e7ea7",
+    "user/external_console/Makefile": "d79de8856ae770b2388fb1b860031c33740e77973ee747b98255c498045e2fc1",
+    "user/console/core.c": "2c2558f215fde2f0fa6d8311342de2f5f2c4ac133d2867f88ffee0ecc2d1e599",
+    "user/console/core.h": "b296957d895a56759465afa3b1979d96ea585613e295a8c05fcf8a33930f4210",
+    "examples/libos/README.md": "0845ed1e6ac57aaa7e38e59b66ca6b0d95efd72c34ed72e008e7975deafce090",
+    "examples/libos/memory-policy/pool.h": "2d31e92c67857c921ca1fd3000dda3613550a07821d52b8b7480451d02c7e00a",
+    "examples/libos/memory-policy/main.c": "d7a594b98bcb129602666656027c2f95b6bc370e971b4f129744de262d5cdb85",
+    "examples/libos/memory-policy/pool.c": "e360ea17c7571bd1deefb91ab9d157cda3855584b8913e55a46c657810d629ce",
+    "examples/libos/memory-policy/README.md": "97ae4a2ba896d3de6d52685ea69d66114e6828503e8b1905bd3a295395027edb",
+    "examples/libos/memory-policy/Makefile": "f25427dc0efe5169b7da0d32606a32dd1553f33d1854a25c583b9ab71af44016",
+    "examples/libos/console/main.c": "05dae673c97021a6469cf8d6f8ff1502cba62dd6dbb9e2751193398ef93450a2",
+    "examples/libos/console/core.c": "a98c73532ff2957418ab78c43e7425e30b0735b7a813fd1792ccf42b47073558",
+    "examples/libos/console/core.h": "f63dda03a3aecd6acc4788a463a7fbd9b919301199c76b6895e8235858510ffc",
+    "examples/libos/console/README.md": "60673ac5985de229da1659889ab533e33cc5d9d05b860ea3e2c58e8e468278a7",
+    "examples/libos/console/Makefile": "181395e29deab7de0515bf1101c880993adfd1c967094edbb3d187afae884908",
+    "examples/libos/minimal/main.c": "e7a3f3a0bfb44ec4b393e9c62e0228157c31d43f09fdcaf07f20152fdb09af27",
+    "examples/libos/minimal/README.md": "16bc25806b801c007442c195900ce0b12e78c84c0438abef19f672daa8105fa7",
+    "examples/libos/minimal/Makefile": "f13d8e787c0e5b616b423b7dcff89fce3eaa71f1c908cccffb93a4ff087d9833",
+    "examples/libos/common/runtime.h": "3a594559f51cafedf382d35bf7b699fd3886d1eb539180d3ba839e8356effe5b",
+    "examples/libos/common/runtime.c": "1d80a222b09f7005ff3ddcb767c68af4065283a1b6e61a44aea697fd2c23a0e0",
+    "examples/libos/common/linker.ld": "f9bd763faa74e710292cc06a95f6b6867d3d79624e08608bf3099b9b048f30ab",
+    "examples/libos/common/libos.mk": "93a6156d360dadb1feccdc66a5e0defbd8d07067b43f9607e966e791bb9541ac",
+    "examples/libos/common/start.S": "c3f01141d9a93919d3f742971b5858dd5edf3a37a5899d29abeee011451f34fe",
+    "scripts/check_docs.py": "06ffdbea0f387a2f084ba2a6da3bdbe4babc37a09950d1c3abae56dd6906502e",
+    "scripts/package_release.py": "a437f18bbcc742f4ef016f6b5d180ce964e64729fe89eb9184f5bb85dd22b9b0",
+    "scripts/validate_release.py": "dce3c82cd7078444174549772cb483e3adcbbab16b7f499d1cca6578c87ed9f2",
+    "scripts/new_libos.py": "ced81973090521ad0e4566066bc8abc1e3567681c3877946c018536d9b3b391c",
+    "scripts/check_tools.py": "fd341c3ccd1b517f4a2e846363e95e6e908da16f0182ca27b9ad9ce237666db9",
+    "scripts/export_kernel_sdk.py": "a2481882b001ef807290d3f3a1374d5376ff6b1e2b1ca7467df261b310a59163",
+    "tests/audit_aelthuvor.py": "f68c8fb90279e7d0382257200186cab524198c37d7c5e5075d7ecd606bd025d2",
+    "tests/capability_tests.c": "1039e5f2748551039da904d6131ef8c13094f26df6fc9d7a5924247d4daaba35",
+    "tests/elf_pressure.c": "f2e0134dc9bf3f3081bc3ff854c7aac31f5b0290371a5fb2ba7e12c527ec5909",
+    "tests/elf_tests.c": "cfdaba6adeb6959b16145d787a62ac4c503f1331cb226201901b261ab6d5a224",
+    "tests/entry.gdb": "7204210b3c48d29eed432f093cd67b21f66c47c6d873165827454fae0d29d10b",
+    "tests/libos.py": "600d713546ce3b3f58ce522f183fb0ec48b441e0b591c8bb1df2943550130738",
+    "tests/memory_tests.c": "0fca2d98c836befbb11355825169ff9a8167234987f9a6afc143678ee1375816",
+    "tests/paging.gdb": "2eec1c728636e1cbb6e5e991c7cfdc6d7ea43cf38215859005ccfb45ad05fae1",
+    "tests/phase1.py": "e07738486e5587dafef171320a9438050e639bc1440139e8a35dfe93dfaf37db",
+    "tests/phase2.py": "036526b9b4135928c397c0efc5d9b8ebe586fdd36193847b72ae4588ee5aacd8",
+    "tests/phase3.py": "5c689018653a14ba3e60481cad3c3ffb5fc0bfd9ae00c281f5320f2354c80562",
+    "tests/phase4.py": "dc58cf8a020258c822c1d5b3ace74182b0705d82fc331c60fc9ac74202e5b0ce",
+    "tests/phase5.py": "08aa23f825579682c4950de091eff320d5578ba7653eb73a9c89bae818259654",
+    "tests/phase6.py": "84b9ad4df06a3e53af98014d5e9475e809032b3657679e2ee3bfa3da02901283",
+    "tests/phase6_runtime.c": "923a7792888a563663896e74e42caf3b94fa48ec51653980e723a9ee5bd88f11",
+    "tests/resource_pressure.c": "37e50c642a91cb6419d3a895c356a56d596e9cd00a470eaf0089b753f98ba216",
+    "tests/revoke_tests.c": "f3fb3864b00fb0738c9e322b7c8c57d1c0eb6b20e245eed29c6e35623d7dab8c",
+    "tests/timer_tests.c": "498f2cd44795d7b75993158a0045b58329f40c16735aafdfb5579ef251d81580",
+    "tests/phase8_ael.py": "e560f76e910bfcdfd6c53ba9f97adb49cac70fcb1594c0ed7288fba42213b05c",
+    "tests/phase9.py": "0e54c20473e8504df92b0ea649796efec6750de978b0121fa43e8c4703c9fa71",
+    "tests/device_grants_tests.c": "d1f48c94fe194ec105c0d2df5d64cfb303d87d876ac853bf1560fa455b563f6c",
+    "tests/phase10_compat.py": "b5fa7228eb105bfd820a1cd1a2560f401d45e097bec08005a825b1e7ac34e39d",
+    "tests/phase73.py": "1028641164507dac0b2908c0f25bf213e3f986d6d805df48ee0e3a7103ea7526",
+    "tests/vga_device_tests.c": "8079e6bc33d31cef41b036716b51d8e09c961bcbaf04878480f61caa6a7ccbc4",
+    "tests/abi_contract_tests.c": "babc76433275eab5ca328fe7ca75d3efcd5fd2211127c2b05db1860db3f9aa82",
+    "tests/phase71_runtime.c": "8916be30fa03f9cf22bf0c32fdb38356b7d01888eb54082c7133d0f5b9bf0e5b",
+    "tests/phase71.py": "e29258c47e5c68ced0c524f1eb595c0031cd6d7fa4db0af1a961a43ac162a202",
+    "tests/runtime_checks.c": "004c3f05f022044b444e38fc9050ad6d5e3b05dc6db5fad9b1e49d55c4e8a0a8",
+    "tests/kit_tests.py": "e4eade926864b5cd0512d2fccfb18c575dd543707d7fe58f768e6891b82dd86b",
+    "tests/phase71_compat.py": "dd5a106cd4994fbb82f1fa4414d80a14f7e03989c46d3e28ce2cff66d9d8dc71",
+    "tests/phase8_runtime.c": "efabbe23471492e8418d9682c19d8fd6f8a138ba95690c11bb51b3bc27700541",
+    "tests/phase9_runtime.c": "86f13b342d9c4ea2278718b13450c67d61ad190cc5d0f28f5921eb1de4bfc964",
+    "tests/phase72.py": "57070231f1235404344adb519a63b5890d1fa8884a0360cc915ef782dc81fc6b",
+    "tests/phase72_runtime.c": "9b6e1d08e9e83fa121d021430639ecd2793281493b9577f7cd8e9d2719f0587d",
+    "tests/phase8.py": "116cb6681ef8d7c280763c659376caf2e8a7a476afbbb97173f93dc4e2fa5028",
+    "tests/domain_pool_tests.c": "edb45b7222351c2c55310c98625bf2a8bbf189246d125a35a6c5f27d070ed0ca",
+    "tests/keyboard_tests.c": "96a73549f746761bf17de17c3eeeaed65181f337b7c0f9596dc515049bfd164d",
+    "tests/phase10.py": "3500726d44dbba03fc9758e3a0187fc5f426b9324abfe28bd9210db66e0aaa38",
+    "tests/fixtures/compat/abi11.elf": "d1f232fae1914b8ed7c23ac5df878fbf7665b7d42d340103c7c646b5d3bd3f55",
+    "tests/fixtures/compat/manifest.json": "9af65781db605f93d4bf28306bc79d0c778024c18176a74344b095598d542034",
+    "tests/fixtures/external_user/Makefile": "5a0c92e6c552df70531aa4c9a3ba74256ea1efbc2c5096594a954fc3617cf59d",
+    "tests/fixtures/external_user/linker.ld": "98e17cd0c30c29884e939436c42fb04470e4227afae7a74a2c02ff720968a2d6",
+    "tests/fixtures/external_user/minimal.c": "6e5afe14c3c35f3fa7c5fb78f9dcc327ce267614b1746e5081106cbd900d3a24",
+    "tests/fixtures/external_user/padding.S": "a02e8ea2f87f148ecfee3870dd93da0b2642447f38c9a8e0e6ec2406c47140ec",
+    "tests/fixtures/external_user/preempt.c": "4414328c4693c780b4f65ee9372b0debfa570db55837b366b2cae0e05bb86fa6",
+    "tests/fixtures/external_user/program.c": "f60f53d2887d7e96b4e357cd05693d3be2c952fa9ec893f58b8e4309484612ff",
+    "tests/fixtures/preempt/entry.S": "ba592ae193aa9757def3dfc956157e14e65b6981c0a15a567b71371a416156c5",
+    "tests/fixtures/preempt/program.c": "14035a5ab80707a1c4d1ae65e011af103776e496afee51cf0bf3be4482c98390",
+    "tests/fixtures/domains8/spin.S": "d823e4e6eac714730f49a3842071cc790ff53bc8b53334bcf0a57cfb910d8917",
+    "tests/fixtures/domains8/worker.c": "7c2c6add2cc952231787a47a5a37a27b8bdc9e3a27bfa9f05b555138a9f83bea",
+    "tests/fixtures/domains8/linker.ld": "98e17cd0c30c29884e939436c42fb04470e4227afae7a74a2c02ff720968a2d6",
+    "tests/fixtures/domains8/Makefile": "b579f3974dc02d566be7936b06d14456fb9b267a33de9d03b82a9b7bafad0cae",
+    "tests/fixtures/security9/abi_probe.c": "e3012f0e7491f1582874d023d55afbdf72c0a2d392eda20d7bb2e77db017e20c",
+    "tests/fixtures/security9/ael_ram.c": "0155516eecb4b4630cc06b2790a90b25ea33fb593a3cdc038d5f25478198dbbc",
+    "tests/fixtures/security9/Makefile": "ae667d434e8ce052fcb72fd8f8a28c00d908fdb329afe3db1bd464bb4623cb33",
+    "Makefile": "fc304772bf6db45542454dcbfe80bfebdf059bdf24184e0258f6bc09288bcfd1",
+    "LICENSE": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986",
+    "VERSION": "59854984853104df5c353e2f681a15fc7924742f9a2e468c29af248dce45ce03"
+  },
+  "kernel_sha256": "360539a3d9e9106f792dec5cd73d89ec348243072097882b4607c780d961c5a1",
+  "tools": {
+    "gcc": "gcc (Debian 14.2.0-19) 14.2.0",
+    "ld": "GNU ld (GNU Binutils for Debian) 2.44",
+    "make": "GNU Make 4.4.1",
+    "qemu": "QEMU emulator version 10.0.13 (Debian 1:10.0.13+ds-0+deb13u1)",
+    "gdb": "GNU gdb (Debian 16.3-1) 16.3",
+    "python": "3.12.14"
+  },
+  "external_phase4": true,
+  "historical_matrix": true
+}

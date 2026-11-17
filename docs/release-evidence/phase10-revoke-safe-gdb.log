@@ -1,0 +1,28 @@
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+add symbol table from file "/workspace/Liberums/build/examples/memory-policy/libos.elf"
+add symbol table from file "/tmp/liberums-student-pv8z6g8g/policy/build/libos.elf"
+
+Breakpoint -1, multi_prepared () at kernel/multi_external.c:16
+16	__attribute__((noinline)) void multi_prepared(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=1 CR3=0x151000 pages=9 stack=0x083fc000..0x08400000
+IMAGE id=2 epoch=1 CR3=0x15a000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -2, example_observe (stage=stage@entry=1, value=151056384) at ../common/runtime.c:24
+24	    __asm__ volatile(".global example_observed; example_observed: nop" : : : "memory");
+
+Breakpoint -3, phase9_request_done () at tests/phase9_runtime.c:18
+18	    __asm__ volatile ("nop" : : : "memory");
+REQUEST id=1 epoch=1 handle=(1, 1) request=1 now=0 deadline=3
+
+Breakpoint -4, revoke_completed () at kernel/revoke.c:102
+102	    __asm__ volatile ("" : : : "memory");
+
+Breakpoint -5, domain_exit (frame=frame@entry=0x12c264 <domains+8580>, status=96) at kernel/domain.c:83
+83	    struct domain *domain = domain_from_trap(frame);
+
+Breakpoint -6, multi_reaped () at kernel/multi_external.c:17
+17	__attribute__((noinline)) void multi_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+RECOVERY all slots UNUSED; resources=0 events=0 devices=0 free_pages=7823 IRQ0=9 IRQ1=0
+PASS: educational revoke-safe
+[Inferior 1 (process 1) detached]

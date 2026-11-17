@@ -1,0 +1,45 @@
+{
+  "guests": 4,
+  "cases": [
+    {
+      "label": "ael-bitmap-0",
+      "kind": "QEMU/GDB",
+      "modules": 2,
+      "elf_sha256": [
+        "5ceec65ccbe52ed186699bd95da6e8cd3009098db578ce4921010539ccb0adf9",
+        "cc6d9b96d0f28197b6870231f6400dbf6b476ddad811496b1a757d105e7f0104"
+      ]
+    },
+    {
+      "label": "ael-bitmap-0-fault",
+      "kind": "QEMU/GDB",
+      "modules": 2,
+      "elf_sha256": [
+        "5ceec65ccbe52ed186699bd95da6e8cd3009098db578ce4921010539ccb0adf9",
+        "cc6d9b96d0f28197b6870231f6400dbf6b476ddad811496b1a757d105e7f0104"
+      ]
+    },
+    {
+      "label": "ael-bitmap-1",
+      "kind": "QEMU/GDB",
+      "modules": 2,
+      "elf_sha256": [
+        "3fab50415d9b4c69bf3c4859f59fc0726bfcc5162345547c5cc74a8213be6d9b",
+        "cc6d9b96d0f28197b6870231f6400dbf6b476ddad811496b1a757d105e7f0104"
+      ]
+    },
+    {
+      "label": "ael-bitmap-1-fault",
+      "kind": "QEMU/GDB",
+      "modules": 2,
+      "elf_sha256": [
+        "3fab50415d9b4c69bf3c4859f59fc0726bfcc5162345547c5cc74a8213be6d9b",
+        "cc6d9b96d0f28197b6870231f6400dbf6b476ddad811496b1a757d105e7f0104"
+      ]
+    }
+  ],
+  "input_sha256": [
+    "5ceec65ccbe52ed186699bd95da6e8cd3009098db578ce4921010539ccb0adf9",
+    "3fab50415d9b4c69bf3c4859f59fc0726bfcc5162345547c5cc74a8213be6d9b"
+  ]
+}

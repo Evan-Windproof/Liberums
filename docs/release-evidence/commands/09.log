@@ -1,0 +1,5 @@
+PASS: educational ael-bitmap-0
+PASS: educational ael-bitmap-0-fault
+PASS: educational ael-bitmap-1
+PASS: educational ael-bitmap-1-fault
+PASS: four Aelthuvor/neutral LibOS coexistence and fault-isolation guests; no external ELF changed

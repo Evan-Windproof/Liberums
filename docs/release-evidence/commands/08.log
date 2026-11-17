@@ -1,0 +1,60 @@
+make[1]: Entering directory '/workspace/Liberums'
+make -C tests/fixtures/domains8 SDK="/workspace/Liberums/include" OUT="/workspace/Liberums/build/phase8" CROSS_COMPILE=""
+make[2]: Entering directory '/workspace/Liberums/tests/fixtures/domains8'
+make[2]: Nothing to be done for 'all'.
+make[2]: Leaving directory '/workspace/Liberums/tests/fixtures/domains8'
+make -C tests/fixtures/security9 SDK="/workspace/Liberums/include" OUT="/workspace/Liberums/build/phase9" CROSS_COMPILE=""
+make[2]: Entering directory '/workspace/Liberums/tests/fixtures/security9'
+make[2]: Nothing to be done for 'all'.
+make[2]: Leaving directory '/workspace/Liberums/tests/fixtures/security9'
+test -r "/tmp/liberums-phase9-ael/build/app-sdk/app.mk"
+make -C tests/fixtures/security9 ael AEL_SDK="/tmp/liberums-phase9-ael/build/app-sdk" OUT="/workspace/Liberums/build/phase9" APP_POLICY=first CROSS_COMPILE=""
+make[2]: Entering directory '/workspace/Liberums/tests/fixtures/security9'
+make -f "/tmp/liberums-phase9-ael/build/app-sdk/app.mk" AEL_SDK="/tmp/liberums-phase9-ael/build/app-sdk" OUT="/workspace/Liberums/build/phase9/ael-first" SOURCES=ael_ram.c APP_PROFILE=preempt APP_POLICY="first"
+make[3]: Entering directory '/workspace/Liberums/tests/fixtures/security9'
+mkdir -p /workspace/Liberums/build/phase9/ael-first/
+gcc -I/tmp/liberums-phase9-ael/build/app-sdk/include -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c ael_ram.c -o /workspace/Liberums/build/phase9/ael-first/ael_ram.o
+ld -m elf_i386 -nostdlib --build-id=none -T /tmp/liberums-phase9-ael/build/app-sdk/linker.ld -Map=/workspace/Liberums/build/phase9/ael-first/app.map \
+  /workspace/Liberums/build/phase9/ael-first/ael_ram.o /tmp/liberums-phase9-ael/build/app-sdk/lib/crt0.o /tmp/liberums-phase9-ael/build/app-sdk/lib/runtime-preempt-first.o /tmp/liberums-phase9-ael/build/app-sdk/lib/app-entry.o  /tmp/liberums-phase9-ael/build/app-sdk/lib/libaelthuvor.a -o /workspace/Liberums/build/phase9/ael-first/app.elf
+make[3]: Leaving directory '/workspace/Liberums/tests/fixtures/security9'
+make[2]: Leaving directory '/workspace/Liberums/tests/fixtures/security9'
+make -C tests/fixtures/security9 ael AEL_SDK="/tmp/liberums-phase9-ael/build/app-sdk" OUT="/workspace/Liberums/build/phase9" APP_POLICY=best CROSS_COMPILE=""
+make[2]: Entering directory '/workspace/Liberums/tests/fixtures/security9'
+make -f "/tmp/liberums-phase9-ael/build/app-sdk/app.mk" AEL_SDK="/tmp/liberums-phase9-ael/build/app-sdk" OUT="/workspace/Liberums/build/phase9/ael-best" SOURCES=ael_ram.c APP_PROFILE=preempt APP_POLICY="best"
+make[3]: Entering directory '/workspace/Liberums/tests/fixtures/security9'
+mkdir -p /workspace/Liberums/build/phase9/ael-best/
+gcc -I/tmp/liberums-phase9-ael/build/app-sdk/include -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c ael_ram.c -o /workspace/Liberums/build/phase9/ael-best/ael_ram.o
+ld -m elf_i386 -nostdlib --build-id=none -T /tmp/liberums-phase9-ael/build/app-sdk/linker.ld -Map=/workspace/Liberums/build/phase9/ael-best/app.map \
+  /workspace/Liberums/build/phase9/ael-best/ael_ram.o /tmp/liberums-phase9-ael/build/app-sdk/lib/crt0.o /tmp/liberums-phase9-ael/build/app-sdk/lib/runtime-preempt-best.o /tmp/liberums-phase9-ael/build/app-sdk/lib/app-entry.o  /tmp/liberums-phase9-ael/build/app-sdk/lib/libaelthuvor.a -o /workspace/Liberums/build/phase9/ael-best/app.elf
+make[3]: Leaving directory '/workspace/Liberums/tests/fixtures/security9'
+make[2]: Leaving directory '/workspace/Liberums/tests/fixtures/security9'
+./build/timer-tests
+PASS: timer boundary assertions=1008
+./build/revoke-tests
+PASS: revocation protocol assertions=1321
+./build/abi-contract-tests
+PASS: frozen ABI 1.2: 26 syscall numbers, profiles, scalar layouts and minor/feature compatibility
+python3 tests/phase9.py --aelthuvor "/tmp/liberums-phase9-ael/build" --qemu "qemu-system-i386" --gdb "gdb"
+PASS: Phase 8 phase9-abi-release
+PASS: Phase 8 phase9-id-only-routing
+PASS: Phase 8 phase9-diagnostic-denials
+PASS: Phase 8 phase9-diagnostic-disabled
+PASS: Phase 8 reuse-128
+PASS: Phase 8 phase9-ram-first-ack
+PASS: Phase 8 phase9-ram-first-active-busy
+PASS: Phase 8 phase9-ram-first-force-safe
+PASS: Phase 8 phase9-ram-first-force-fault
+PASS: Phase 8 phase9-ram-first-pending-exit
+PASS: Phase 8 phase9-ram-first-pending-fault
+PASS: Phase 8 phase9-ram-first-release
+PASS: Phase 8 phase9-ram-first-late-ack
+PASS: Phase 8 phase9-ram-best-ack
+PASS: Phase 8 phase9-ram-best-active-busy
+PASS: Phase 8 phase9-ram-best-force-safe
+PASS: Phase 8 phase9-ram-best-force-fault
+PASS: Phase 8 phase9-ram-best-pending-exit
+PASS: Phase 8 phase9-ram-best-pending-fault
+PASS: Phase 8 phase9-ram-best-release
+PASS: Phase 8 phase9-ram-best-late-ack
+PASS: Phase 9 21 actual QEMU/GDB guests; external SDK RAM E2E= True
+make[1]: Leaving directory '/workspace/Liberums'

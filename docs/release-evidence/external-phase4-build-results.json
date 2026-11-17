@@ -1,0 +1,9 @@
+{
+  "isolation_directory": "/tmp/libos-phase4-consumer-d52f5f9c",
+  "application_before": "caa476a70215b92e43a06adc5bc1a39927a88ea8f0f3a4666c22f256fcde4fd2",
+  "application_after": "cbaad5cdbb06682384e6f411e366b66fb3c5bdaed5c3aed80865c31891959a02",
+  "core_unchanged": true,
+  "reference_sha256": "23a37b1ca1d4589fbb11299f5abd569cb32ea0d67fd8e3f6b813b4e8ff0d322f",
+  "entry_collision_rejected": true,
+  "reference_no_ael_dependencies": true
+}

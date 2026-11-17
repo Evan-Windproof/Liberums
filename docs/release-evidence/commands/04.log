@@ -1,0 +1,23 @@
+make[1]: Entering directory '/workspace/Liberums'
+make -C tests/fixtures/domains8 SDK="/workspace/Liberums/include" OUT="/workspace/Liberums/build/phase8" CROSS_COMPILE=""
+make[2]: Entering directory '/workspace/Liberums/tests/fixtures/domains8'
+make[2]: Nothing to be done for 'all'.
+make[2]: Leaving directory '/workspace/Liberums/tests/fixtures/domains8'
+make -C tests/fixtures/security9 SDK="/workspace/Liberums/include" OUT="/workspace/Liberums/build/phase9" CROSS_COMPILE=""
+make[2]: Entering directory '/workspace/Liberums/tests/fixtures/security9'
+make[2]: Nothing to be done for 'all'.
+make[2]: Leaving directory '/workspace/Liberums/tests/fixtures/security9'
+./build/timer-tests
+PASS: timer boundary assertions=1008
+./build/revoke-tests
+PASS: revocation protocol assertions=1321
+./build/abi-contract-tests
+PASS: frozen ABI 1.2: 26 syscall numbers, profiles, scalar layouts and minor/feature compatibility
+python3 tests/phase9.py --qemu "qemu-system-i386" --gdb "gdb"
+PASS: Phase 8 phase9-abi-release
+PASS: Phase 8 phase9-id-only-routing
+PASS: Phase 8 phase9-diagnostic-denials
+PASS: Phase 8 phase9-diagnostic-disabled
+PASS: Phase 8 reuse-128
+PASS: Phase 9 5 actual QEMU/GDB guests; external SDK RAM E2E= False
+make[1]: Leaving directory '/workspace/Liberums'
