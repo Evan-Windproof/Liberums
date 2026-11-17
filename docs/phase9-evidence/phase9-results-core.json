@@ -1,0 +1,43 @@
+{
+  "guests": 5,
+  "gdb_audits": 5,
+  "cases": [
+    {
+      "label": "phase9-abi-release",
+      "modules": 1,
+      "loaded": 1,
+      "log": "phase8-phase9-abi-release-gdb.log"
+    },
+    {
+      "label": "phase9-id-only-routing",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-phase9-id-only-routing-gdb.log"
+    },
+    {
+      "label": "phase9-diagnostic-denials",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-phase9-diagnostic-denials-gdb.log"
+    },
+    {
+      "label": "phase9-diagnostic-disabled",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-phase9-diagnostic-disabled-gdb.log"
+    },
+    {
+      "label": "reuse-128",
+      "modules": 4,
+      "loaded": 4,
+      "log": "phase8-reuse-128-gdb.log"
+    }
+  ],
+  "ael_sdk_e2e": false,
+  "input_sha256": {
+    "/workspace/Liberums/build/liberums.elf": "360539a3d9e9106f792dec5cd73d89ec348243072097882b4607c780d961c5a1",
+    "/workspace/Liberums/build/phase9/abi-probe.elf": "c2f8b5fcba555ac22e7f060c82f562a978286ca791f791e8eb056a857b02647a",
+    "/workspace/Liberums/build/phase8/worker-a.elf": "d2f1a5dbb7cd2dbf26fe2ad6ac115dce16bd9d4a09b8b06476d67dbd9f114cce",
+    "/workspace/Liberums/build/phase8/worker-b.elf": "9a4ef53be68b52aa58189df7380074ce1d67cfed7617cf3181234e43d0c302ca"
+  }
+}

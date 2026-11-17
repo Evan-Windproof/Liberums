@@ -243,10 +243,10 @@ for i in used: check(dd(i,'last_state')==3 and dd(i,'exit_status')==0,'inbox cle
     run(args,'inbox-exit-reuse',[a,b,a,b],body.replace('INBOX_IMAGE',repr((headers(a.read_bytes()),a.read_bytes()))))
 
 
-def stress(args,a,b):
+def stress(args,a,b,rounds=24):
     body=HOLD+'''
 free_running=bytes(gdb.selected_inferior().read_memory(v('&states'),16384)).count(2)
-for cycle in range(24):
+for cycle in range(REUSE_ROUNDS):
     old_epoch=dd(1,'epoch');old=handle(1)
     oldpages=saved[1]+[dd(1,'space.dynamic_table')]
     oldpages += [v('resources[%d].physical_address'%r) for r in range(16) if v('resources[%d].cap.owner_id'%r)==1]
@@ -271,11 +271,11 @@ for cycle in range(24):
     print('REUSE cycle=%d id=1 old_epoch=%d new_epoch=%d terminal=%s owned=16 free=%d recovered=yes'%(cycle+1,old_epoch,dd(1,'epoch'),'FAULT' if cycle%2 else 'EXIT',now))
 for i in used: command(i,1)
 finished()
-check(v('phase8_control.reuse_done')==24 and dd(1,'epoch')==25,'missing reuse lifetimes')
+check(v('phase8_control.reuse_done')==REUSE_ROUNDS and dd(1,'epoch')==REUSE_ROUNDS+1,'missing reuse lifetimes')
 for i in used: check(dd(i,'last_state')==3 and dd(i,'exit_status')==0,'final worker failed')
 '''
     images=[(headers(p.read_bytes()),p.read_bytes()) for p in (a,b)]
-    run(args,'reuse-24',[a,b,a,b],body.replace('STRESS_IMAGES',repr(images)))
+    run(args,'reuse-'+str(rounds),[a,b,a,b],body.replace('STRESS_IMAGES',repr(images)).replace('REUSE_ROUNDS',str(rounds)))
 
 
 def registers(args,a,b):

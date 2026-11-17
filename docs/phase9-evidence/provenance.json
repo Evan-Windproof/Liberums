@@ -1,0 +1,74 @@
+{
+  "source_base_commit": "449c78f9b12535cded2bca575cd44e0b65a0953b",
+  "kernel_elf_sha256": "360539a3d9e9106f792dec5cd73d89ec348243072097882b4607c780d961c5a1",
+  "public_abi_headers_unchanged": true,
+  "public_abi_sha256": {
+    "elf.h": "2fcfab45adc03ee39169f36b7d43068ad5dd2c008b2b686f94ae137f8e659e5c",
+    "event.h": "210586e4b1e86123b2f14a1d15f2f71918da7993a54ae93cde792063f96d1826",
+    "keyboard.h": "8ff0f4239e88fc4042430c5c720e5655288b0318f9b4ac519fe2facaa3ad7791",
+    "resource.h": "9641ad44d3b036019c80ca7d75e85eb6a4347184b139f345279fa60c3772a298",
+    "syscall.h": "d7da6bab9cc84a34e0b23cfc644dc19334cce868b2b189ffd8baa0b195232a46",
+    "vga.h": "bcaf47ddab8d179334b1908fb1583eb7db781f95bff5bf5053590d5906552424"
+  },
+  "external_checkouts": {
+    "liberums-phase9-ael": {
+      "commit": "297d7a3e2852b495b66f4a2b585b461e1bcc28b7",
+      "tracked_status_clean": true,
+      "sdk_sha256": {
+        "sdk/manifest.json": "5bee51087c12457f40052fb702303cc475cfa485da0f219751bfd691b509f0b7",
+        "sdk/include/abi/syscall.h": "d7da6bab9cc84a34e0b23cfc644dc19334cce868b2b189ffd8baa0b195232a46",
+        "sdk/include/abi/vga.h": "bcaf47ddab8d179334b1908fb1583eb7db781f95bff5bf5053590d5906552424",
+        "sdk/include/abi/elf.h": "2fcfab45adc03ee39169f36b7d43068ad5dd2c008b2b686f94ae137f8e659e5c",
+        "sdk/include/abi/event.h": "210586e4b1e86123b2f14a1d15f2f71918da7993a54ae93cde792063f96d1826",
+        "sdk/include/abi/resource.h": "9641ad44d3b036019c80ca7d75e85eb6a4347184b139f345279fa60c3772a298",
+        "sdk/include/abi/keyboard.h": "8ff0f4239e88fc4042430c5c720e5655288b0318f9b4ac519fe2facaa3ad7791"
+      }
+    },
+    "liberums-phase8-ael": {
+      "commit": "46c7284325cdb04f7f6fd6a96377cf8ab9721a67",
+      "tracked_status_clean": true,
+      "sdk_sha256": {
+        "sdk/manifest.json": "5bee51087c12457f40052fb702303cc475cfa485da0f219751bfd691b509f0b7",
+        "sdk/include/abi/syscall.h": "d7da6bab9cc84a34e0b23cfc644dc19334cce868b2b189ffd8baa0b195232a46",
+        "sdk/include/abi/vga.h": "bcaf47ddab8d179334b1908fb1583eb7db781f95bff5bf5053590d5906552424",
+        "sdk/include/abi/elf.h": "2fcfab45adc03ee39169f36b7d43068ad5dd2c008b2b686f94ae137f8e659e5c",
+        "sdk/include/abi/event.h": "210586e4b1e86123b2f14a1d15f2f71918da7993a54ae93cde792063f96d1826",
+        "sdk/include/abi/resource.h": "9641ad44d3b036019c80ca7d75e85eb6a4347184b139f345279fa60c3772a298",
+        "sdk/include/abi/keyboard.h": "8ff0f4239e88fc4042430c5c720e5655288b0318f9b4ac519fe2facaa3ad7791"
+      }
+    },
+    "liberums-phase73-ael": {
+      "commit": "1d288be418ddeef89462914769d5ea84bb557ade",
+      "tracked_status_clean": true,
+      "sdk_sha256": {
+        "sdk/manifest.json": "d245361c04b1374465c8c200e539bca22f85a603d6cdac9d5d4f12649f96b5d2",
+        "sdk/include/abi/syscall.h": "d7da6bab9cc84a34e0b23cfc644dc19334cce868b2b189ffd8baa0b195232a46",
+        "sdk/include/abi/elf.h": "2fcfab45adc03ee39169f36b7d43068ad5dd2c008b2b686f94ae137f8e659e5c",
+        "sdk/include/abi/event.h": "210586e4b1e86123b2f14a1d15f2f71918da7993a54ae93cde792063f96d1826",
+        "sdk/include/abi/resource.h": "9641ad44d3b036019c80ca7d75e85eb6a4347184b139f345279fa60c3772a298"
+      }
+    },
+    "liberums-phase71-ael": {
+      "commit": "b10d337d254b18e98204990203a77a215c82c568",
+      "tracked_status_clean": true,
+      "sdk_sha256": {
+        "sdk/manifest.json": "51854002ca4bdb9dd1f14ed174a6703949dd787ccdbf5d9ace20b625e5394ec4",
+        "sdk/include/abi/syscall.h": "cd8763a11e815807de7eb4f4b0e2289ddb2271d41f09718973c4210f18c4ad93",
+        "sdk/include/abi/elf.h": "2fcfab45adc03ee39169f36b7d43068ad5dd2c008b2b686f94ae137f8e659e5c",
+        "sdk/include/abi/resource.h": "9641ad44d3b036019c80ca7d75e85eb6a4347184b139f345279fa60c3772a298"
+      }
+    }
+  },
+  "reuse_journal_rows": 128,
+  "qemu_display_backends": [
+    "none"
+  ],
+  "ael_ram_fixture_sha256": {
+    "first": "5e32c3d63adfa84ba2772d4b8d6c1da552dc4c5d7b63668b8b0415887e9c6027",
+    "best": "98f088c7cf57dbe7030aa081f2948649d36369748a8ef5bd16d179b2fad8becf"
+  },
+  "reference_completed_after_ram_fault": {
+    "first": true,
+    "best": true
+  }
+}

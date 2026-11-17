@@ -1,0 +1,45 @@
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+add symbol table from file "/workspace/Liberums/build/phase8/worker-a.elf"
+
+Breakpoint -1, multi_prepared () at kernel/multi_external.c:16
+16	__attribute__((noinline)) void multi_prepared(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=1 CR3=0x176000 pages=18 stack=0x083fc000..0x08400000
+IMAGE id=2 epoch=1 CR3=0x188000 pages=9 stack=0x083fc000..0x08400000
+IMAGE id=3 epoch=1 CR3=0x191000 pages=9 stack=0x083fc000..0x08400000
+IMAGE id=4 epoch=1 CR3=0x19a000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -2, 0x0800003c in liberums_call (number=<optimized out>, bx=<optimized out>, cx=<optimized out>, dx=<optimized out>, si=<optimized out>, extra=<optimized out>) at /workspace/Liberums/include/abi/syscall.h:44
+44	    return (int32_t)number;
+
+Breakpoint -3, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+
+Breakpoint -4, _start () at worker.c:69
+69	            __asm__ volatile (".global worker_idle; worker_idle: nop" : : : "memory");
+
+Breakpoint -5, 0x0800003c in liberums_call (number=<optimized out>, bx=<optimized out>, cx=<optimized out>, dx=<optimized out>, si=<optimized out>, extra=<optimized out>) at /workspace/Liberums/include/abi/syscall.h:44
+44	    return (int32_t)number;
+
+Breakpoint -6, 0x08000020 in _start () at /workspace/Liberums/include/abi/syscall.h:44
+44	    return (int32_t)number;
+
+Breakpoint -7, phase9_request_done () at tests/phase9_runtime.c:18
+18	    __asm__ volatile ("nop" : : : "memory");
+REQUEST id=1 epoch=1 handle=(1, 1) request=1 now=3 deadline=6
+
+Breakpoint -8, revoke_completed () at kernel/revoke.c:102
+102	    __asm__ volatile ("" : : : "memory");
+RECLAIM handle=(1, 1) PA=0x1a3000 PTE=0 state=PAGE_FREE zero_words=1024 acknowledged=0 forced=1 cancelled=0
+
+Breakpoint -9, 0x08000020 in _start () at /workspace/Liberums/include/abi/syscall.h:44
+44	    return (int32_t)number;
+
+Breakpoint -10, 0x08000020 in _start () at /workspace/Liberums/include/abi/syscall.h:44
+44	    return (int32_t)number;
+
+Breakpoint -11, multi_reaped () at kernel/multi_external.c:17
+17	__attribute__((noinline)) void multi_reaped(void) { __asm__ volatile ("nop" : : : "memory"); }
+RECOVERY all slots UNUSED; resources=0 events=0 devices=0 free_pages=7786 IRQ0=12 IRQ1=0
+PASS: phase8 phase9-ram-first-force-fault
+[Inferior 1 (process 1) detached]

@@ -4,7 +4,11 @@
 可验证的资源所有权和用户态 LibOS。语言为 C11 与少量 x86 汇编，
 目标为 **32 位 x86（i686）+ QEMU**，许可证为 **GPL-3.0-or-later**。
 
-**当前完成 Phase 8：有界动态四域、多个独立 ELF32、IRQ0 轮转、资源隔离与安全复用。**
+**当前完成 Phase 9：安全审计、外部 LibOS 普通 RAM 撤销 E2E 与 ABI 1.2 稳定性验收。**
+四域/多 ELF/IRQ0 轮转和资源隔离保持；主动 ACK、超时强制回收、真实 #PF、不同 LibOS 并存与
+128 轮 EXIT/FAULT 复用完成实际 QEMU/GDB 检查。见 [Phase 9 概览](docs/phase9-overview.md)、
+[26 个公开调用契约](docs/phase9-abi-contract.md)、[安全审查](docs/phase9-security-audit.md) 与
+[验收证据](docs/phase9-validation.md)。不新增 syscall，不进入 Phase 10。
 公开 ABI 1.2 保持；Phase 7.1～7.3 的用户态 VGA/键盘 Console 与独占设备授权继续保留。
 动态域采用独立 CR3/栈，复用前回收设备、Capability、撤销事件和 RAM，推进 Epoch。
 见 [Phase 8 概览](docs/phase8-overview.md)、[教学模块图](docs/phase8-modules.md) 和
@@ -71,6 +75,9 @@ Liberums/
 Multiboot 模块，其中最多四域同时建立。默认无设备权限且无窗口；旧 run 系列行为保留。
 `make test-phase8` 单独执行动态域验收，`make test` 包含全部历史与本阶段回归。
 公开每域资源配额仍为四页，没有新增用户 spawn、fork/exec 或应用管理服务。
+`make test-phase9` 不依赖任何外部 LibOS；已有独立 Aelthuvor Phase 4 导出 SDK 时，可运行
+`make test-phase9-e2e PHASE9_AEL_BUILD=/path/to/Aelthuvor/build`。
+Kernel ABI 与 Aelthuvor Application SDK 是不同接口，第三方 LibOS 可以自行实现 runtime 与资源策略。
 
 ## 工具要求
 

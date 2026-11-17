@@ -1,0 +1,3 @@
+gcc -std=c11 -Wall -Wextra -Werror -Wpedantic -Iinclude tests/abi_contract_tests.c -o build/abi-contract-tests
+./build/abi-contract-tests
+PASS: frozen ABI 1.2: 26 syscall numbers, profiles, scalar layouts and minor/feature compatibility

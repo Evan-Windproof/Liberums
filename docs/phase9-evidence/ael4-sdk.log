@@ -1,0 +1,96 @@
+make: Entering directory '/tmp/liberums-phase9-ael'
+python3 tests/check_sdk.py
+PASS: SDK SHA256, file set and ABI version
+make -C apps/hello AEL_SDK="/tmp/liberums-phase9-ael/build/app-sdk" OUT="/tmp/liberums-phase9-ael/build/apps/hello"
+make[1]: Entering directory '/tmp/liberums-phase9-ael/apps/hello'
+make[1]: Leaving directory '/tmp/liberums-phase9-ael/apps/hello'
+make -C apps/memory AEL_SDK="/tmp/liberums-phase9-ael/build/app-sdk" OUT="/tmp/liberums-phase9-ael/build/apps/memory"
+make[1]: Entering directory '/tmp/liberums-phase9-ael/apps/memory'
+make[1]: Leaving directory '/tmp/liberums-phase9-ael/apps/memory'
+make -C apps/memory AEL_SDK="/tmp/liberums-phase9-ael/build/app-sdk" OUT="/tmp/liberums-phase9-ael/build/apps/memory-best" APP_POLICY=best
+make[1]: Entering directory '/tmp/liberums-phase9-ael/apps/memory'
+make[1]: Leaving directory '/tmp/liberums-phase9-ael/apps/memory'
+make -C apps/sdk-console AEL_SDK="/tmp/liberums-phase9-ael/build/app-sdk" OUT="/tmp/liberums-phase9-ael/build/apps/console"
+make[1]: Entering directory '/tmp/liberums-phase9-ael/apps/sdk-console'
+make[1]: Leaving directory '/tmp/liberums-phase9-ael/apps/sdk-console'
+make -C examples/application-template AEL_SDK="/tmp/liberums-phase9-ael/build/app-sdk" OUT="/tmp/liberums-phase9-ael/build/apps/template"
+make[1]: Entering directory '/tmp/liberums-phase9-ael/examples/application-template'
+make[1]: Leaving directory '/tmp/liberums-phase9-ael/examples/application-template'
+make -C reference/independent-libos SDK="/tmp/liberums-phase9-ael/sdk/include" OUT="/tmp/liberums-phase9-ael/build/independent-libos"
+make[1]: Entering directory '/tmp/liberums-phase9-ael/reference/independent-libos'
+make[1]: Nothing to be done for 'all'.
+make[1]: Leaving directory '/tmp/liberums-phase9-ael/reference/independent-libos'
+make -C apps/hello AEL_SDK="/tmp/liberums-phase9-ael/build/app-sdk" OUT="/tmp/liberums-phase9-ael/build/apps/hello-coop" APP_PROFILE=coop
+make[1]: Entering directory '/tmp/liberums-phase9-ael/apps/hello'
+make[1]: Leaving directory '/tmp/liberums-phase9-ael/apps/hello'
+make -f mk/fixture.mk AEL_SDK="/tmp/liberums-phase9-ael/build/app-sdk" OUT="/tmp/liberums-phase9-ael/build/apps/leak"
+make[1]: Entering directory '/tmp/liberums-phase9-ael'
+make[1]: Leaving directory '/tmp/liberums-phase9-ael'
+make -f mk/fixture.mk AEL_SDK="/tmp/liberums-phase9-ael/build/app-sdk" OUT="/tmp/liberums-phase9-ael/build/apps/fault" FAULT=1
+make[1]: Entering directory '/tmp/liberums-phase9-ael'
+make[1]: Leaving directory '/tmp/liberums-phase9-ael'
+make -C reference/independent-libos SDK="/tmp/liberums-phase9-ael/sdk/include" OUT="/tmp/liberums-phase9-ael/build/independent-diagnostic" APP_SOURCE=diagnostic-app.c
+make[1]: Entering directory '/tmp/liberums-phase9-ael/reference/independent-libos'
+make[1]: Nothing to be done for 'all'.
+make[1]: Leaving directory '/tmp/liberums-phase9-ael/reference/independent-libos'
+python3 tests/phase4_integration.py --liberums "/workspace/Liberums" --qemu "qemu-system-i386" --gdb "gdb"
+make[1]: Entering directory '/workspace/Liberums'
+make[1]: Nothing to be done for 'all'.
+make[1]: Leaving directory '/workspace/Liberums'
+make[1]: Entering directory '/tmp/libos-phase4-consumer-nslathpa/application'
+rm -rf /tmp/libos-phase4-consumer-nslathpa/app-out
+make[1]: Leaving directory '/tmp/libos-phase4-consumer-nslathpa/application'
+make[1]: Entering directory '/tmp/libos-phase4-consumer-nslathpa/application'
+mkdir -p /tmp/libos-phase4-consumer-nslathpa/app-out/
+gcc -I/tmp/libos-phase4-consumer-nslathpa/sdk/include -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c main.c -o /tmp/libos-phase4-consumer-nslathpa/app-out/main.o
+ld -m elf_i386 -nostdlib --build-id=none -T /tmp/libos-phase4-consumer-nslathpa/sdk/linker.ld -Map=/tmp/libos-phase4-consumer-nslathpa/app-out/app.map \
+  /tmp/libos-phase4-consumer-nslathpa/app-out/main.o /tmp/libos-phase4-consumer-nslathpa/sdk/lib/crt0.o /tmp/libos-phase4-consumer-nslathpa/sdk/lib/runtime-preempt-first.o /tmp/libos-phase4-consumer-nslathpa/sdk/lib/app-entry.o  /tmp/libos-phase4-consumer-nslathpa/sdk/lib/libaelthuvor.a -o /tmp/libos-phase4-consumer-nslathpa/app-out/app.elf
+make[1]: Leaving directory '/tmp/libos-phase4-consumer-nslathpa/application'
+make[1]: Entering directory '/tmp/libos-phase4-consumer-nslathpa/application'
+mkdir -p /tmp/libos-phase4-consumer-nslathpa/app-out/
+gcc -I/tmp/libos-phase4-consumer-nslathpa/sdk/include -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c main.c -o /tmp/libos-phase4-consumer-nslathpa/app-out/main.o
+ld -m elf_i386 -nostdlib --build-id=none -T /tmp/libos-phase4-consumer-nslathpa/sdk/linker.ld -Map=/tmp/libos-phase4-consumer-nslathpa/app-out/app.map \
+  /tmp/libos-phase4-consumer-nslathpa/app-out/main.o /tmp/libos-phase4-consumer-nslathpa/sdk/lib/crt0.o /tmp/libos-phase4-consumer-nslathpa/sdk/lib/runtime-preempt-first.o /tmp/libos-phase4-consumer-nslathpa/sdk/lib/app-entry.o  /tmp/libos-phase4-consumer-nslathpa/sdk/lib/libaelthuvor.a -o /tmp/libos-phase4-consumer-nslathpa/app-out/app.elf
+make[1]: Leaving directory '/tmp/libos-phase4-consumer-nslathpa/application'
+make[1]: Entering directory '/tmp/libos-phase4-consumer-nslathpa/application'
+mkdir -p /tmp/libos-phase4-consumer-nslathpa/app-out/
+gcc -I/tmp/libos-phase4-consumer-nslathpa/sdk/include -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c main.c -o /tmp/libos-phase4-consumer-nslathpa/app-out/main.o
+ld -m elf_i386 -nostdlib --build-id=none -T /tmp/libos-phase4-consumer-nslathpa/sdk/linker.ld -Map=/tmp/libos-phase4-consumer-nslathpa/app-out/app.map \
+  /tmp/libos-phase4-consumer-nslathpa/app-out/main.o /tmp/libos-phase4-consumer-nslathpa/sdk/lib/crt0.o /tmp/libos-phase4-consumer-nslathpa/sdk/lib/runtime-preempt-best.o /tmp/libos-phase4-consumer-nslathpa/sdk/lib/app-entry.o  /tmp/libos-phase4-consumer-nslathpa/sdk/lib/libaelthuvor.a -o /tmp/libos-phase4-consumer-nslathpa/app-out/app.elf
+make[1]: Leaving directory '/tmp/libos-phase4-consumer-nslathpa/application'
+make[1]: Entering directory '/tmp/libos-phase4-consumer-nslathpa/application'
+mkdir -p /tmp/libos-phase4-consumer-nslathpa/app-out/
+gcc -I/tmp/libos-phase4-consumer-nslathpa/sdk/include -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c main.c -o /tmp/libos-phase4-consumer-nslathpa/app-out/main.o
+ld -m elf_i386 -nostdlib --build-id=none -T /tmp/libos-phase4-consumer-nslathpa/sdk/linker.ld -Map=/tmp/libos-phase4-consumer-nslathpa/app-out/app.map \
+  /tmp/libos-phase4-consumer-nslathpa/app-out/main.o /tmp/libos-phase4-consumer-nslathpa/sdk/lib/crt0.o /tmp/libos-phase4-consumer-nslathpa/sdk/lib/runtime-preempt-first.o /tmp/libos-phase4-consumer-nslathpa/sdk/lib/app-entry.o  /tmp/libos-phase4-consumer-nslathpa/sdk/lib/libaelthuvor.a -o /tmp/libos-phase4-consumer-nslathpa/app-out/app.elf
+make[1]: Leaving directory '/tmp/libos-phase4-consumer-nslathpa/application'
+make[1]: Entering directory '/tmp/libos-phase4-consumer-nslathpa/reference'
+mkdir -p /tmp/libos-phase4-consumer-nslathpa/ref-out/
+gcc -I/tmp/libos-phase4-consumer-nslathpa/public/include -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c runtime.c -o /tmp/libos-phase4-consumer-nslathpa/ref-out/runtime.o
+mkdir -p /tmp/libos-phase4-consumer-nslathpa/ref-out/
+gcc -I/tmp/libos-phase4-consumer-nslathpa/public/include -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c syscall.c -o /tmp/libos-phase4-consumer-nslathpa/ref-out/syscall.o
+mkdir -p /tmp/libos-phase4-consumer-nslathpa/ref-out/
+gcc -I/tmp/libos-phase4-consumer-nslathpa/public/include -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c pool.c -o /tmp/libos-phase4-consumer-nslathpa/ref-out/pool.o
+mkdir -p /tmp/libos-phase4-consumer-nslathpa/ref-out/
+gcc -I/tmp/libos-phase4-consumer-nslathpa/public/include -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c application.c -o /tmp/libos-phase4-consumer-nslathpa/ref-out/application.o
+mkdir -p /tmp/libos-phase4-consumer-nslathpa/ref-out/
+gcc -m32 -march=i686 -g3 -c start.S -o /tmp/libos-phase4-consumer-nslathpa/ref-out/start.o
+ld -m elf_i386 -nostdlib --build-id=none -T link.ld -Map=/tmp/libos-phase4-consumer-nslathpa/ref-out/reference.map /tmp/libos-phase4-consumer-nslathpa/ref-out/runtime.o /tmp/libos-phase4-consumer-nslathpa/ref-out/syscall.o /tmp/libos-phase4-consumer-nslathpa/ref-out/pool.o /tmp/libos-phase4-consumer-nslathpa/ref-out/application.o /tmp/libos-phase4-consumer-nslathpa/ref-out/start.o -o /tmp/libos-phase4-consumer-nslathpa/ref-out/reference.elf
+make[1]: Leaving directory '/tmp/libos-phase4-consumer-nslathpa/reference'
+PASS: exported SDK, edited external app, unchanged LibOS, rejected entry collision, isolated independent LibOS
+PASS: SDK SHA256, file set and ABI version; pinned Liberums source
+PASS: Phase4 hello
+PASS: Phase4 external-application
+PASS: Phase4 memory
+PASS: Phase4 memory-best
+PASS: Phase4 independent
+PASS: Phase4 two-libos
+PASS: Phase4 two-libos-query
+PASS: Phase4 two-libos-fault
+PASS: Phase4 sdk-leak
+PASS: Phase4 sdk-fault-isolation
+PASS: Phase4 profile-rejected
+PASS: Phase4 SDK Console
+PASS: external app-sdk-cooperative two actual ELF/domain/device lifecycles
+PASS: Phase4 13 QEMU guests / 18 completed lifetimes; one unchanged Phase 8 kernel
+make: Leaving directory '/tmp/liberums-phase9-ael'

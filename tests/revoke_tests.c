@@ -204,6 +204,24 @@ int main(void)
         CHECK(revoke_ack(a, h, request) == RES_ESTALE);
     }
     CHECK(a->resource_count == 0 && b->resource_count == 0);
+    /* Adjacent ACK/deadline boundaries: the exact deadline belongs to force,
+     * even if ACK reaches the kernel before the periodic expiry sweep. */
+    h = claim(a);
+    CHECK(revoke_request(a, h, 2, REVOKE_REASON_TEST) == 0);
+    CHECK(revoke_poll(a, &request) == 0);
+    CHECK(revoke_info(a, request, REVOKE_INFO_DEADLINE, &value) == 0);
+    now = value - 1;
+    uint32_t ack_before = acknowledged;
+    CHECK(revoke_ack(a, h, request) == 0 && acknowledged == ack_before + 1);
+    h = claim(a);
+    CHECK(revoke_request(a, h, 1, REVOKE_REASON_TEST) == 0);
+    CHECK(revoke_poll(a, &request) == 0);
+    CHECK(revoke_info(a, request, REVOKE_INFO_DEADLINE, &value) == 0);
+    now = value;
+    uint32_t force_before = forced;
+    CHECK(revoke_ack(a, h, request) == RES_ESTALE && forced == force_before + 1);
+    CHECK(revoke_ack(a, h, request) == RES_ESTALE && forced == force_before + 1);
+    CHECK(a->resource_count == 0);
     for (unsigned i = 0; i < 16; ++i) { CHECK(!allocated[i]); }
     printf("PASS: revocation protocol assertions=%u\n", checks);
 }

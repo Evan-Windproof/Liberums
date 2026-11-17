@@ -38,6 +38,7 @@ void syscall_dispatch(struct exception_frame *frame)
     }
     case SYS_KBD_RELEASE:
         frame->eax = keyboard_release(domain, (struct resource_handle){frame->ebx, frame->ecx});
+        frame->edx = 0; /* Published keyboard error/output contract, including RELEASE. */
         break;
     case SYS_VGA_INFO: {
         uint32_t bytes = 0;

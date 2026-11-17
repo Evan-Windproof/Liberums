@@ -1,0 +1,24 @@
+Traceback (most recent call last):
+  File "<stdin>", line 8, in <module>
+  File "/workspace/Liberums/tests/phase8.py", line 163, in run
+    output=connect_and_run(p,log,port,args.gdb,commands.replace('CONTROL',repr(control)),'phase8-'+label)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/Liberums/tests/phase2.py", line 32, in connect_and_run
+    require(result.returncode == 0, f"{label}: GDB failed\n{result.stdout}")
+  File "/workspace/Liberums/tests/phase1.py", line 28, in require
+    raise RuntimeError(message)
+RuntimeError: phase8-phase9-abi-before: GDB failed
+The target architecture is set to "i386".
+0x0000fff0 in ?? ()
+add symbol table from file "/workspace/Liberums/build/phase8/worker-a.elf"
+
+Breakpoint -1, multi_prepared () at kernel/multi_external.c:16
+16	__attribute__((noinline)) void multi_prepared(void) { __asm__ volatile ("nop" : : : "memory"); }
+IMAGE id=1 epoch=1 CR3=0x141000 pages=9 stack=0x083fc000..0x08400000
+
+Breakpoint -2, 0x08000025 in liberums_call (number=1, bx=10, cx=0, dx=0, si=0, extra=0x0) at /workspace/Liberums/include/abi/syscall.h:39
+39	    __asm__ volatile ("int $0x80" : "+a"(number), "+d"(dx)
+KBD_RELEASE invalid EAX= 0xffffff8c EDX= 0xcafe1234
+/workspace/Liberums/build/phase8-phase9-abi-before.gdb:234: Error in sourced command file:
+published KBD error EDX=0 contract violated
+[Inferior 1 (process 1) detached]

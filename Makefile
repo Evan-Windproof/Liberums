@@ -23,7 +23,7 @@ C_SOURCES := kernel/main.c kernel/serial.c kernel/panic.c arch/x86/idt.c \
              kernel/capability.c kernel/resource.c tests/resource_pressure.c \
              kernel/elf_loader.c kernel/external.c arch/x86/user_space.c tests/elf_pressure.c \
              arch/x86/pic.c arch/x86/pit.c kernel/tick.c kernel/timer.c kernel/scheduler.c \
-             kernel/revoke.c tests/phase6_runtime.c kernel/vga.c kernel/vga_device.c tests/phase71_runtime.c arch/x86/ps2.c kernel/keyboard.c tests/phase72_runtime.c kernel/device_grants.c kernel/external_launch.c tests/runtime_checks.c kernel/domain_pool.c kernel/multi_external.c tests/phase8_runtime.c
+             kernel/revoke.c tests/phase6_runtime.c kernel/vga.c kernel/vga_device.c tests/phase71_runtime.c arch/x86/ps2.c kernel/keyboard.c tests/phase72_runtime.c kernel/device_grants.c kernel/external_launch.c tests/runtime_checks.c kernel/domain_pool.c kernel/multi_external.c tests/phase8_runtime.c tests/phase9_runtime.c
 ASM_SOURCES := arch/x86/keyboard_irq.S arch/x86/irq.S  arch/x86/boot.S arch/x86/isr.S arch/x86/test_faults.S arch/x86/user_context.S arch/x86/user_images.S
 OBJECTS := $(addprefix $(BUILD)/,$(C_SOURCES:.c=.o) $(ASM_SOURCES:.S=.o))
 ARCH_FLAGS := -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float
@@ -124,6 +124,7 @@ test: $(KERNEL) test-memory $(BUILD)/elf-tests external-fixtures
 	$(PYTHON) tests/phase72.py --qemu "$(QEMU)" --gdb "$(GDB)"
 	$(PYTHON) tests/phase73.py --qemu "$(QEMU)" --gdb "$(GDB)"
 	$(PYTHON) tests/phase8.py --qemu "$(QEMU)" --gdb "$(GDB)"
+	$(PYTHON) tests/phase9.py --qemu "$(QEMU)" --gdb "$(GDB)"
 
 .PHONY: test-libos
 test-libos: $(KERNEL)
@@ -253,3 +254,28 @@ test-phase8: $(KERNEL) external-fixtures phase8-fixtures test-domain-pool
 	$(PYTHON) tests/phase8.py --qemu "$(QEMU)" --gdb "$(GDB)"
 
 test: phase8-fixtures test-domain-pool
+
+.PHONY: phase9-fixtures phase9-ael-fixtures test-phase9 test-phase9-e2e
+phase9-fixtures:
+	$(MAKE) -C tests/fixtures/security9 SDK="$(abspath include)" OUT="$(abspath build/phase9)" CROSS_COMPILE="$(CROSS_COMPILE)"
+
+# Prebuilt, independently exported SDK. This target never builds/edits its source repository.
+PHASE9_AEL_BUILD ?= $(AELTHUVOR)/build
+phase9-ael-fixtures:
+	test -r "$(PHASE9_AEL_BUILD)/app-sdk/app.mk"
+	$(MAKE) -C tests/fixtures/security9 ael AEL_SDK="$(abspath $(PHASE9_AEL_BUILD)/app-sdk)" OUT="$(abspath build/phase9)" APP_POLICY=first CROSS_COMPILE="$(CROSS_COMPILE)"
+	$(MAKE) -C tests/fixtures/security9 ael AEL_SDK="$(abspath $(PHASE9_AEL_BUILD)/app-sdk)" OUT="$(abspath build/phase9)" APP_POLICY=best CROSS_COMPILE="$(CROSS_COMPILE)"
+
+test-phase9: $(KERNEL) phase8-fixtures phase9-fixtures test-phase6-native test-abi-contract
+	$(PYTHON) tests/phase9.py --qemu "$(QEMU)" --gdb "$(GDB)"
+
+test-phase9-e2e: $(KERNEL) phase8-fixtures phase9-fixtures phase9-ael-fixtures test-phase6-native test-abi-contract
+	$(PYTHON) tests/phase9.py --aelthuvor "$(abspath $(PHASE9_AEL_BUILD))" --qemu "$(QEMU)" --gdb "$(GDB)"
+
+$(BUILD)/abi-contract-tests: tests/abi_contract_tests.c $(wildcard include/abi/*.h) | $(BUILD)
+	$(HOST_CC) -std=c11 -Wall -Wextra -Werror -Wpedantic -Iinclude $< -o $@
+.PHONY: test-abi-contract
+test-abi-contract: $(BUILD)/abi-contract-tests
+	./$(BUILD)/abi-contract-tests
+
+test: phase9-fixtures test-abi-contract

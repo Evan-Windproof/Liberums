@@ -1,0 +1,16 @@
+{
+  "kernel_commit": "449c78f9b12535cded2bca575cd44e0b65a0953b",
+  "kernel_sha256": "360539a3d9e9106f792dec5cd73d89ec348243072097882b4607c780d961c5a1",
+  "kernel_unchanged": true,
+  "guests": 13,
+  "completed_lifetimes": 18,
+  "elf_sha256": {
+    "build/apps/hello/app.elf": "d9dfcf1b4d23010132c8d41c232521ebc70476f39a7f12a0090e9a817273f89c",
+    "build/apps/memory/app.elf": "5ceec65ccbe52ed186699bd95da6e8cd3009098db578ce4921010539ccb0adf9",
+    "build/apps/memory-best/app.elf": "3fab50415d9b4c69bf3c4859f59fc0726bfcc5162345547c5cc74a8213be6d9b",
+    "build/independent-isolated.elf": "73186d7c9fcb335e1c3a249edb45768a9dcb81019b5db3b504e758d82e74d5ad",
+    "build/independent-diagnostic/reference.elf": "2f43e641c9c34d2d2910f3363bdd6acb2547d73d9b8a4662de9ae87f82090419",
+    "build/third-party-app.elf": "8ee35e6e0baa27c080ba761ec63600e9aa0fbeef95c70110d04563d9e717612a",
+    "build/apps/console/app.elf": "1b12e72c376835d752eb1adff962768d0c419792594b52abde1df9007a7b1ebd"
+  }
+}

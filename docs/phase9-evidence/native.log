@@ -1,0 +1,6 @@
+gcc -std=c11 -Wall -Wextra -Werror -Wpedantic -g -fsanitize=address,undefined -Iinclude tests/timer_tests.c kernel/tick.c -o build/timer-tests
+gcc -std=c11 -Wall -Wextra -Werror -Wpedantic -g -no-pie -fsanitize=address,undefined -Iinclude tests/revoke_tests.c kernel/capability.c kernel/tick.c -o build/revoke-tests
+./build/timer-tests
+PASS: timer boundary assertions=1008
+./build/revoke-tests
+PASS: revocation protocol assertions=1321

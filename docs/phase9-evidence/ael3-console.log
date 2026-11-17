@@ -1,0 +1,61 @@
+make: Entering directory '/tmp/liberums-phase8-ael'
+python3 tests/check_sdk.py
+PASS: SDK SHA256, file set and ABI version
+python3 tests/console_integration.py --liberums "/workspace/Liberums" --qemu "qemu-system-i386" --gdb "gdb"
+make[1]: Entering directory '/workspace/Liberums'
+make[1]: Nothing to be done for 'all'.
+make[1]: Leaving directory '/workspace/Liberums'
+make[1]: Entering directory '/tmp/liberums-phase8-ael'
+python3 tests/check_sdk.py
+PASS: SDK SHA256, file set and ABI version
+mkdir -p build/console/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -c apps/console/main.c -o build/console/main.o
+mkdir -p build/console/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -c apps/console/console.c -o build/console/app.o
+mkdir -p build/src/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c src/vga.c -o build/src/vga.o
+mkdir -p build/src/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c src/keyboard.c -o build/src/keyboard.o
+mkdir -p build/src/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c src/text.c -o build/src/text.o
+mkdir -p build
+gcc -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -g3 -c arch/x86/startup.S -o build/startup.o
+mkdir -p build/src/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c src/syscall.c -o build/src/syscall.o
+mkdir -p build/src/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c src/page.c -o build/src/page.o
+mkdir -p build/src/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c src/memory.c -o build/src/memory.o
+mkdir -p build/src/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c src/compat.c -o build/src/compat.o
+mkdir -p build/src/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c src/string.c -o build/src/string.o
+mkdir -p build/src/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -MMD -MP -c src/revoke.c -o build/src/revoke.o
+ar rcs build/libaelthuvor.a build/src/syscall.o build/src/page.o build/src/memory.o build/src/compat.o build/src/string.o build/src/revoke.o
+mkdir -p build/console/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -DAEL_PREEMPTIVE_BUILD -c src/runtime.c -o build/console/runtime.o
+ld -m elf_i386 -nostdlib --build-id=none -T linker.ld -Map=build/console.map build/console/main.o build/console/app.o build/src/vga.o build/src/keyboard.o build/src/text.o build/startup.o build/console/runtime.o build/libaelthuvor.a -o build/console.elf
+cp build/console.elf build/ael-console.elf
+mkdir -p build/console-best/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -DAEL_PREEMPTIVE_BUILD -DAEL_BEST_FIT_BUILD -c src/runtime.c -o build/console-best/runtime.o
+ld -m elf_i386 -nostdlib --build-id=none -T linker.ld -Map=build/console-best.map build/console/main.o build/console/app.o build/src/vga.o build/src/keyboard.o build/src/text.o build/startup.o build/console-best/runtime.o build/libaelthuvor.a -o build/console-best.elf
+mkdir -p build/console-test/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -DAEL_CONSOLE_DIAGNOSTIC -c apps/console/main.c -o build/console-test/main.o
+ld -m elf_i386 -nostdlib --build-id=none -T linker.ld -Map=build/console-test.map build/console-test/main.o build/console/app.o build/src/vga.o build/src/keyboard.o build/src/text.o build/console/runtime.o build/startup.o build/libaelthuvor.a -o build/console-test.elf
+mkdir -p build/console/
+gcc -Iinclude -Isdk/include -Itests -m32 -march=i686 -mno-mmx -mno-sse -mno-sse2 -msoft-float -std=c11 -ffreestanding -fno-builtin -fno-pic -fno-pie -fno-stack-protector -fno-common -fno-asynchronous-unwind-tables -fno-unwind-tables -fno-omit-frame-pointer -g3 -O2 -Wall -Wextra -Werror -Wpedantic -c apps/console/device_probe.c -o build/console/device-probe.o
+ld -m elf_i386 -nostdlib --build-id=none -T linker.ld -Map=build/device-probe.map build/console/device-probe.o build/src/vga.o build/src/keyboard.o build/src/text.o build/console/runtime.o build/startup.o build/libaelthuvor.a -o build/device-probe.elf
+make[1]: Leaving directory '/tmp/liberums-phase8-ael'
+PASS: SDK SHA256, file set and ABI version; pinned Liberums source
+PASS: ael-phase3-persistent QMP -> PS/2 -> IRQ1 -> Aelthuvor -> VGA
+PASS: ael-phase3-exit QMP -> PS/2 -> IRQ1 -> Aelthuvor -> VGA
+PASS: ael-phase3-exit-best QMP -> PS/2 -> IRQ1 -> Aelthuvor -> VGA
+PASS: ael-phase3-fault QMP -> PS/2 -> IRQ1 -> Aelthuvor -> VGA
+PASS: ael-phase3-revoke-vga QMP -> PS/2 -> IRQ1 -> Aelthuvor -> VGA
+PASS: ael-phase3-revoke-keyboard QMP -> PS/2 -> IRQ1 -> Aelthuvor -> VGA
+PASS: external ael-console-no-grant two actual ELF/domain/device lifecycles
+PASS: external console-readonly two actual ELF/domain/device lifecycles
+PASS: external device-probe two actual ELF/domain/device lifecycles
+PASS: Phase 3: 9 guests, 11 completed lifetimes + 1 persistent Console; kernel ELF unchanged
+make: Leaving directory '/tmp/liberums-phase8-ael'

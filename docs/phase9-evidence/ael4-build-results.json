@@ -1,0 +1,9 @@
+{
+  "isolation_directory": "/tmp/libos-phase4-consumer-nslathpa",
+  "application_before": "4828d2136c9859084577d0e5d17007c70479679e60d10383905886265e3b6f14",
+  "application_after": "8ee35e6e0baa27c080ba761ec63600e9aa0fbeef95c70110d04563d9e717612a",
+  "core_unchanged": true,
+  "reference_sha256": "73186d7c9fcb335e1c3a249edb45768a9dcb81019b5db3b504e758d82e74d5ad",
+  "entry_collision_rejected": true,
+  "reference_no_ael_dependencies": true
+}

@@ -13,6 +13,11 @@ Phase 8 在保留旧单 ELF/peer profile 上，增加有界动态四槽域池和
 使用既有 CR3/TSS、抢占、Capability 与独占设备机制；完整清理后才发布可复用槽位，Epoch 不回绕。
 不新增用户态进程服务或 LibOS 策略，见 [动态域](phase8-overview.md)、
 [模块关系](phase8-modules.md) 与 [Phase 8 边界审查](phase8-boundary-review.md)。
+Phase 9 保持 ABI 1.2 和容量，审查身份/转移/撤销/设备/调度并补齐外部 LibOS 普通 RAM 撤销 E2E。
+新增的可信诊断只在显式 selftest 下提交带预期 Epoch 的撤销请求；无用户撤销能力、应用名称或私有结构耦合。
+唯一生产 syscall 修正是 KBD_RELEASE 的既有 EDX 零输出契约。
+见 [安全审查](phase9-security-audit.md)、[ABI 契约](phase9-abi-contract.md)、
+[不同 LibOS 与中立教学路线](phase9-libos-compatibility.md) 和 [新增特权边界](phase9-boundary-review.md)。
 
 ## 目标与安全模型
 
